@@ -1,0 +1,19 @@
+// make map, with starting map pixels
+	// each pixel specifies
+		1) color
+		2) type (permanent, destroyable)
+		3) projectile blocking v non-blocking
+		4) player blocking v non-blocking
+
+// make stage over the top of the map.
+	Include objects on stage that
+		1) are subject to physical laws
+			1) gravity
+			2) friction
+			3) collisions
+			4) gun kickback
+		2) Can detect collisions 
+			1) with other objects
+			2) with map
+		3) Can alter speed and aim.
+		

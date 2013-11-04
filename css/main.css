@@ -1,0 +1,38 @@
+@import url(reset.css);
+@import url(base.css);
+
+body {
+	background: #000;
+	color: #aaa;
+	font-family: 'Helvetica Neue';
+	font-weight: 300;
+	padding: 0 30px;
+}
+header.site {
+	padding: 2em 0;
+	text-align: center;
+}
+header.site .heading {
+	padding-bottom: .5em;
+}
+.stage-container {
+	position: relative;
+	margin: 0 auto;
+	max-width: 100%;	
+}
+#stage-bg {
+	background: #121212 url(../images/stage-bg.png);
+	display: block;
+	box-shadow: 0 0 15px 0px #19BAF8;
+	border: 1px solid #cca;
+	width: 100%; 
+	height: auto;
+}
+#stage {
+	position: absolute; 
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+	z-index: 1;
+}
