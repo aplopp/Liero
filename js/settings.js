@@ -7,6 +7,7 @@ define({
 	},
 	physics: {
 		gravity: 1, 
+		groundFriction: 0,
 		airFriction: 0
 	},
 	player: {
