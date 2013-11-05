@@ -92,6 +92,8 @@ define([
 					var h = player.model.attributes.height; 
 					var x = player.model.attributes.x;
 					var y = player.model.attributes.y;
+					var prevX = x; 
+					var prevY = y;
 					var vX = player.vX; 
 					var vY = player.vY; 
 					var onMap = true; // the object obviously starts on the map
@@ -113,7 +115,7 @@ define([
 						} else if ( y < 0){
 							offY = y;
 						}
-						// if X is offscreen, adjust velocity and reflect to new		
+						// if X is offscreen, adjust velocity and reflect to new position		
 						if ( offX ){ // x offscreen (hit edge)
 							hadCollision = true; 							
 							vX *= -1 * that.settings.player.bounce; 	
@@ -125,9 +127,15 @@ define([
 						} 
 						if ( offY ){ // y offscreen (hit edge)
 							hadCollision = true; 
-							vY -= that.settings.physics.gravity; // TODO: adjust gravity based on how far it traveled until the collision
+
+							// 1) find total distance from start to collision
+							// energy lost in bounce
 							vY *= -1 * that.settings.player.bounce;
+
+							vY -= that.settings.physics.gravity; // TODO: adjust gravity based on how far it traveled until the collision
+
 							if ( offY > 0 ){
+								var d = prevY - prev
 								y = that.map.canvas.height - ( offY * that.settings.player.bounce ) ;									
 							} else {
 								y = -offY * that.settings.player.bounce; 
@@ -149,7 +157,12 @@ define([
 				}				
 			});	
 		}
+		this.checkOffX = function( x, w ){
 
+		}
+		this.checkOffY = function( y, h ){
+
+		}
 		/**
 		 * Track and route key presses to actions. 
 		 */
