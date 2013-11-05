@@ -20,8 +20,8 @@ define({
 			color: '#249',
 			height: 20,
 			width: 20,
-			x: 500,
-			y: 50
+			x: 300,
+			y: 420
 		}
 	]
 });

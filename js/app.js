@@ -90,8 +90,8 @@ define([
 				// CHECK FOR ON-MAP
 					var w = player.model.attributes.width; 
 					var h = player.model.attributes.height; 
-					var x = Math.ceil( player.model.attributes.x );
-					var y = Math.ceil( player.model.attributes.y );
+					var x = player.model.attributes.x;
+					var y = player.model.attributes.y;
 					var vX = player.vX; 
 					var vY = player.vY; 
 					var onMap = true; // the object obviously starts on the map
@@ -101,19 +101,22 @@ define([
 					var hadCollision = false; // flag if a collision was encountered.					
 					do {
 						offX = offY = false; 
+						// check if X if offscreen
 						if ( x > that.map.canvas.width ){
 							offX = x - that.map.canvas.width; 
 						} else if ( x < 0){
 							offX = x;
 						}	
+						// check if Y if offscreen						
 						if ( y > that.map.canvas.height ){
 							offY = y - that.map.canvas.height; 
 						} else if ( y < 0){
 							offY = y;
-						}		
+						}
+						// if X is offscreen, adjust velocity and reflect to new		
 						if ( offX ){ // x offscreen (hit edge)
 							hadCollision = true; 							
-							vX *= -1 * that.settings.player.bounce; 		
+							vX *= -1 * that.settings.player.bounce; 	
 							if ( offX > 0 ){
 								x = that.map.canvas.width - ( offX * that.settings.player.bounce ) ;									
 							} else {
@@ -121,13 +124,18 @@ define([
 							}
 						} 
 						if ( offY ){ // y offscreen (hit edge)
-							hadCollision = true; 			
+							hadCollision = true; 
+							vY -= that.settings.physics.gravity; // TODO: adjust gravity based on how far it traveled until the collision
 							vY *= -1 * that.settings.player.bounce;
-
 							if ( offY > 0 ){
 								y = that.map.canvas.height - ( offY * that.settings.player.bounce ) ;									
 							} else {
 								y = -offY * that.settings.player.bounce; 
+							}
+							if ( Math.abs( vY ) < 3 && offY < 1.5 ){
+								vY = 0;
+								y = that.map.canvas.height;
+								offY = false; 
 							}
 						}
 					} while( offX || offY );

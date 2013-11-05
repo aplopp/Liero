@@ -12,7 +12,7 @@ define([
 		this.view = new PlayerV({ model: this.model });;
 		this.angle = 0;
 		this.vX = -5;
-		this.vY = 50;
+		this.vY = 0;
 		this.isSupported = false;
 
 	}
@@ -32,6 +32,8 @@ define([
 		this.model.set({ 'aim': this.model.get( 'aim' ) + 3 }, { validate: true });
 	}
 	p.nextPosition = function(){
+		this.model.set( 'prevX', this.model.get( 'x' ) );		
+		this.model.set( 'prevY', this.model.get( 'y' ) );
 		this.model.set( 'y', this.model.get( 'y' ) + this.vY );
 		this.model.set( 'x', this.model.get( 'x' ) + this.vX );
 
