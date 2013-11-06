@@ -4,6 +4,10 @@ define([
 	'createjs', 
 	'models/map-object'
 ], function( _, Backbone, createjs, MapObjectM ){
+	/**
+	 * maintains a model of the properties affecting the drawing of the object.
+	 * the view listens to these changes and adjusts the rendering accordingly
+	 */
 	var PlayerM = Backbone.Model.extend({
 		defaults: {
 			// personal properties
@@ -13,9 +17,7 @@ define([
 			moving: 0, // -1, 0, or 1	
 			bounce: .8, 
 			x: 0, 
-			y: 0, 
-			prevX: 0,
-			prevY: 0	
+			y: 0
 		},
 		initialize: function(){
 		},		

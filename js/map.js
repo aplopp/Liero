@@ -16,7 +16,9 @@ define([
 		this.canvas.width = this.settings.width;
 		this.canvas.height = this.settings.height;
 
+		this.simpleGrid = this.getSimpleGrid(); 
 		this.generateMap();
+
 	}
 	/**
 	 * generates canvas based on the map data
@@ -39,6 +41,27 @@ define([
 		});
 		ctx.putImageData( imageData, 0, 0 );		
 	}
-
+	/**
+	 * simplifies the grid to a single 'type' number...whether the player (or objects) can pass through, or no. 
+	 */
+	Map.prototype.getSimpleGrid = function(){
+		var simpleGrid = [];
+		var impassableCol = [];
+		for( var i = 0; i < this.canvas.width; i++ ){
+			impassableCol.push( 1 ); // unpassable left; 
+		}
+		simpleGrid.push( impassableCol ); 
+		_.each( this.grid, function( col ){
+			simpleCol = []; 
+			simpleCol.push( 1 ); // unpassable top
+			_.each( col, function( row ){
+				simpleCol.push( row.type );
+			});
+			simpleCol.push( 1 ); // unpassable bottom
+			simpleGrid.push( simpleCol );
+		});		
+		simpleGrid.push( impassableCol ); 
+		return simpleGrid; 
+	}
 	return Map; 
 });
