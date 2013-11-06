@@ -9,23 +9,40 @@ define( function(){
 				col.push({
 					location: x + ', '+ y,
 					color: [ 255,255,255, 255],
-					type: 1,
-					blockShot: 1,
-					blockPlayer: 1
+					type: 1
 				});
 			} else {
 				col.push({
 					location: x + ', '+ y,
 					color: [ 100, 100, 100, 255 ],
-					type: 0,
-					blockShot: 0,
-					blockPlayer: 0
+					type: 0
 				});
 			}
 		}
 		layout.push( col );
 	}	
+	var types = [
+		{ //  0
+			blockShot: 0,
+			blockPlayer: 0,
+			destructible: 0,
+			diggable: 0
+		}, 
+		{ // 1
+			blockShot: 1,
+			blockPlayer: 1,
+			destructible: 0,
+			diggable: 0
+		}
+	];
+	/**
+	 * retrieve type attributes from type number
+	 */
+	function getType( typeNum ){
+		return types[ typeNum ];
+	}
 	return {
+		getType: types,
 		layout: layout,
 		height: height,
 		width: width

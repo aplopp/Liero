@@ -14,6 +14,7 @@ define([
 
 			this.listenTo( this.model, 'change', this.render ); 
 		}, 
+		/** render the model to the canvas as a shape */
 		render: function( model ){
 			if ( ! model ){
 				model = {

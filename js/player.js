@@ -11,19 +11,18 @@ define([
 		this.model = new PlayerM( playerSpec );
 		this.view = new PlayerV({ model: this.model });;
 		this.angle = 0;
-		this.vX = -5;
-		this.vY = 0;
+		this.vX = 15;
+		this.vY = 30;
 		this.isSupported = false;
-
 	}
 	var p = Player.prototype;
 	p.moveLeft = function(){
 		this.model.set( 'facing', 'left' );
-		this.model.set( 'x', this.model.get( 'x' ) + 3 );
+		this.vX -= settings.player.moveSpeed; 
 	}
 	p.moveRight = function(){
 		this.model.set( 'facing', 'right' );		
-		this.model.set( 'x', this.model.get( 'x' ) - 3 );
+		this.vX += settings.player.moveSpeed; 
 	}
 	p.aimUp = function(){
 		this.model.set({ 'aim': this.model.get( 'aim' ) - 3 }, { validate: true });

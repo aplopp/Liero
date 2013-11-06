@@ -23,23 +23,6 @@ define([
 			if( attrs.aim < 0 || attrs.aim > 135 ){
 				return 'Outside accepted limits for range'; 
 			}
-		},
-		moveLeft: function(){
-			this.model.set( 'facing', 'left' );
-			this.model.set( 'x', this.model.get( 'x' ) + 3 );
-		},
-		moveRight: function(){
-			this.model.set( 'facing', 'right' );		
-			this.model.set( 'x', this.model.get( 'x' ) - 3 );
-		},
-		aimUp: function(){
-			this.model.set({ 'aim': this.model.get( 'aim' ) - 3 }, { validate: true });
-		},
-		aimDown: function(){
-			this.model.set({ 'aim': this.model.get( 'aim' ) + 3 }, { validate: true });
-		},
-		jump: function(){
-
 		}			
 	}); 
 	return PlayerM;
