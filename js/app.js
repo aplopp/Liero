@@ -30,7 +30,6 @@ define([
 		 * After setting up map, sets up players, other objects, and kicks it off.
 		 */
 		this.init = function( settings ){
-			var that = this;
 			this.settings = settings;
 			this.setupKeyPresses(); 
 			this.getMap( function( map ){
@@ -73,7 +72,6 @@ define([
 			return new createjs.Stage( canvas );
 		}
 		this.addObjectsToStage = function(){
-			var that = this;
 			// add players to stage. 
 			_.each( this.players, function( player ){
 				var playerShape = player.view.render();
@@ -84,7 +82,6 @@ define([
 		 * advance the objects position based on x and y velocity
 		 */
 		this.nextObjectPositions = function(){
-			var that = this;
 			_.each( this.players, function( player ){
 				/** based on velocity and position, move pointer to next position */
 				player.nextPosition();
