@@ -42,7 +42,7 @@ define( function(){
 		return types[ typeNum ];
 	}
 	return {
-		getType: types,
+		getType: getType,
 		layout: layout,
 		height: height,
 		width: width
