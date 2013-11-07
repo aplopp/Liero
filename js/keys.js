@@ -15,38 +15,10 @@ define([
 		 * holds a reference to all keys with actions 
 		 * NOTE: special keys - 'cmd', 'ctrl', 'alt', 'shift'
 		 */
-		var _bindings = {};
-		var _multiKeyBindings = {};
-		/**
-		 * function to set multiple key bindings at once
-		 * @param {object} keyBindings
-		 */
-		this.setBindings = function( updatedKeyBindings ){
-			if ( _.isObject( updatedKeyBindings ) ){
-				var flipped = _.invert( updatedKeyBindings ); 
+		var _bindings = {
+			single: [] // for holding single-key actions
+		};
 
-				// merges old with new, replacing where conficting
-				_bindings = _.extend( _bindings, flipped );
-				return _bindings;
-			}
-			console.log( 'keys.setBindings() needs an object');
-			return false;
-		}
-		/**
-		 * function to set one key binding
-		 * @param {string} action
-		 * @param {int|string} keyCode(s)
-		 */		
-		this.setBinding = function( action, keyCode ){
-			if ( _.isString( action ) ){
-				if ( _.isNumber(keyCode) || that.isModifierKey( keyCode ) ){
-					_bindings[ keyCode ] = action;
-					return _bindings; 
-				}
-			}
-			console.log( 'keys.setBindings() needs a string, and then a keycode');
-			return false; 
-		}
 		var _modKeys = [ 'command', 'control', 'shift', 'alt' ]; 
 
 		this.isModifierKey = function( keyCode ){
@@ -56,26 +28,60 @@ define([
 		this.getModifierKeyPriority = function( modKey ){
 			return _modKeys.indexOf( modKey );
 		}
+
 		/**
-		 * Sets multikeybinding
-		 * @param {[type]} action
-		 * @key {array} an array of keycodes
+		 * function to set multiple key bindings at once
+		 * @param {object} keyBindings
 		 */
-		this.setMultiKeyBinding = function( action, keys ){
-			if ( _.isString( keys ) || keys.length < 2 ){
-				console.log( 'you only gave one keycode to setMultiKeyBinding()' ); 
-				return false; 
+		this.setBindings = function( updatedKeyBindings ){
+			if ( !_.isObject( updatedKeyBindings ) ){
+				console.log( 'keys.setBindings() needs an object');
+				return false;				
+				
 			}
-			// sort keys array, with modifier keys in order of priority at beginning, 
-			// followed by all other keycodes in order of number
-			keys = this.sortKeyCodes( keys );
-			var binding = action;
-			for(var i = keys.length -1; i >= 0; i--){
-				var obj = {};
-				obj[ keys[i] ] = binding; 
-				binding = obj;
+			_.each( updatedKeyBindings, function( keyCodes, action ){
+				that.setBinding( action, keyCodes ); 
+			}); 
+			return _bindings;
+		}		
+		/**
+		 * Sets a key combination (single or multiple) to trigger an action
+		 * @param {string} action
+		 * @key {int|string|array} a single keycode, or a array of keycodes
+		 */
+		this.setBinding = function( action, keyCodes ){
+			// single key event
+			if ( _.isString(keyCodes) || _.isNumber( keyCodes ) ){
+				if ( _.isString( keyCodes ) || _.isNumber( keyCodes )){
+					var keyCode = keyCodes; 
+				} else if ( keyCodes.length === 1 ){
+					var keyCode = keyCodes[0]; 
+				}
+				if ( _.isString( action ) ){
+					if ( _.isNumber(keyCode) || that.isModifierKey( keyCode ) ){
+						_bindings.single[ keyCode ] = action;
+						return _bindings; 
+					}
+				}
+				return false; 		
+			
+			// multikey event
+			} else if (  _.isArray( keyCodes ) && keyCodes.length > 1 ){
+		
+				// sort keys array, with modifier keys in order of priority at beginning, 
+				// followed by all other keycodes in order of number
+				keyCodes = this.sortKeyCodes( keyCodes );
+				var binding = action;
+				for(var i = keyCodes.length -1; i >= 0; i--){
+					var obj = {};
+					obj[ keyCodes[i] ] = binding; 
+					binding = obj;
+				}
+				_bindings = $.extend( true, _bindings, binding );
+				return _bindings;
 			}
-			_multiKeyBindings = $.extend( true, _multiKeyBindings, binding );
+			console.log( 'setBinding() requires a string, followed by either a string/number, or an array of string/numbers')
+			return false; 
 		}
 		// support events
 		_.extend(this, Backbone.Events); 
@@ -122,19 +128,18 @@ define([
 		}
 		this.triggerActions = function(){
 			var pressedKeys = this.getPressed();
-			var pressedKeys = this.sortKeyCodes([ 10, 13, 14, 40, 37, 'shift', 'command' ]); 
 			var actionFound = false; 
 			
 			var actionsToTrigger = []; 
 
-			var bindings = _multiKeyBindings; 
+			var bindings = _bindings; 
 			// multi-key
 			for ( var i = 0; i< pressedKeys.length; i++ ){
 				var keyCode = pressedKeys[i]; 
 
-				if ( _.has( _multiKeyBindings, keyCode ) ){
+				if ( _.has( _bindings, keyCode ) ){
 					var hasBinding = true;					
-					var binding = _multiKeyBindings[keyCode];	
+					var binding = _binding[keyCode];	
 					var actionFound = false; 
 					var actionKeys = [ keyCode ];	
 					while( !actionFound && hasBinding ){
@@ -158,13 +163,16 @@ define([
 				}				
 			}
 			// single key
-			console.log( 'single: ', _bindings );
 			for ( var i = 0; i< pressedKeys.length; i++ ){
-				if ( _.has( _bindings, pressedKeys[i] ) ){
-					actionsToTrigger.push( _bindings[pressedKeys[i]] );
+				if ( _.has( _bindings.single, pressedKeys[i] ) ){
+					actionsToTrigger.push( _bindings.single[pressedKeys[i]] );
 				}
-			}				
-			console.log( actionsToTrigger );
+			}
+
+			// loop through actions and trigger an event by that name			
+			_.each( actionsToTrigger, function( action ){
+				that.trigger( action ); 
+			})
 		}
 		/**
 		 * Kick it off by tying it to the document 'onkeydown' and 'onkeyup' functions

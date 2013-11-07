@@ -186,34 +186,18 @@ define([
 		 * Track and route key presses to actions. 
 		 */
 		this.setupKeys = function(){
-			var keyPresses = Keys.init( this.settings.keyBindings ); 
+			var keys = Keys.init( this.settings.keyBindings ); 
 			var player1 = this.players[0];
-
-			keyPresses.on( 'keyAction', function( action ){
-				switch ( action ){
-		    		case 'left' : 
-		    			player1.moveLeft();
-		    			break;
-		    		case 'right' : 
-		    			player1.moveRight();	    		
-		    			break;
-		    		case 'up' : 
-		    			player1.aimUp();	    			    		
-		    			break;
-		    		case 'down' :
-		    			player1.aimDown();	    			    		
-		    			break;
-		    		case 'jump' : 
-		    			player1.jump(); 
-		    	}	
+			keys.on( 'left', function( action ){
+				player1.moveLeft();
 			});	
-			return keyPresses; 			
+			return keys; 			
 		}	
 		this.start = function(){
 			this.ticker = createjs.Ticker;
 			this.ticker.setFPS( this.settings.FPS );
-			$( '#' + this.settings.canvasID).on( 'click', function(){
-			// this.ticker.addEventListener( 'tick', function(){
+			// $( '#' + this.settings.canvasID).on( 'click', function(){
+			this.ticker.addEventListener( 'tick', function(){
 				that.keys.triggerActions(); 
 				that.nextObjectPositions();
 				that.nextFrame();
