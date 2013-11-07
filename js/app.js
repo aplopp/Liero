@@ -212,9 +212,9 @@ define([
 		this.start = function(){
 			this.ticker = createjs.Ticker;
 			this.ticker.setFPS( this.settings.FPS );
-			// $( '#' + this.settings.canvasID).on( 'click', function(){
-			this.ticker.addEventListener( 'tick', function(){
-				// that.pressedKeys.triggerActions(); 
+			$( '#' + this.settings.canvasID).on( 'click', function(){
+			// this.ticker.addEventListener( 'tick', function(){
+				that.keys.triggerActions(); 
 				that.nextObjectPositions();
 				that.nextFrame();
 			});
