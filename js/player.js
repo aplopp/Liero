@@ -7,10 +7,10 @@ define([
 	'views/player',
 	'models/map-object'
 ], function( settings, _, Backbone, createjs, PlayerM, PlayerV, MapObjectM ){
+
 	var Player = function( playerSpec ){
 		this.model = new PlayerM( playerSpec );
 		this.view = new PlayerV({ model: this.model });;
-		this.angle = 0;
 		this.vX = 0; // velocity in px/s
 		this.vY = 0; // velocity in px/s
 		this.isSupported = false;
