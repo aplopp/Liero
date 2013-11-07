@@ -25,19 +25,45 @@ define({
 	},
 	players: [
 		{ 
-			name: 'Joe', 
-			color: '#249',
-			height: 20,
-			width: 20,
-			x: 300,
-			y: 120
-		}
+			model: {
+				name: 'Joe', 
+				color: '#249',
+				height: 20,
+				width: 20,
+				x: 300,
+				y: 120,
+			}, 
+			keyBindings: {
+				left: 37,
+				up: 38,
+				right: 39,
+				down: 40, 
+				jump: 'alt', // option
+				shoot: 32 // space				
+			}
+
+		},
+		{ 
+			model: {
+				name: 'Sarah', 
+				color: '#350',
+				height: 30,
+				width: 30,
+				x: 330,
+				y: 120,
+			}, 
+			keyBindings: {
+				left: 65, //a
+				up: 87, // w
+				right: 68, //d
+				down: 83,// s 
+				jump: 88, // option
+				shoot: [ 'command', 88 ] // x				
+			}
+
+		}		
 	],
 	keyBindings: {
-		left: 37,
-		up: 38,
-		right: 39,
-		down: 40, 
-		jump: 18, // option
+
 	}	
 });

@@ -10,7 +10,6 @@ define([
 	var Keys = function( keyBindings ){
 		var that = this; 
 		
-
 		/**
 		 * holds a reference to all keys with actions 
 		 * NOTE: special keys - 'cmd', 'ctrl', 'alt', 'shift'
@@ -20,7 +19,13 @@ define([
 		};
 
 		var _modKeys = [ 'command', 'control', 'shift', 'alt' ]; 
-
+		this.getKeyCode = function(e){
+			if ( e.metaKey ){ return 'command'; } 
+			if ( e.ctrlKey ){ return 'control'; }
+			if ( e.shiftKey ){ return 'shift'; }
+			if ( e.altKey ){ return 'alt'; }
+			return e.keyCode; 
+		}
 		this.isModifierKey = function( keyCode ){
 			return _modKeys.indexOf( keyCode ) !== -1; 
 
@@ -129,7 +134,6 @@ define([
 		this.triggerActions = function(){
 			var pressedKeys = this.getPressed();
 			var actionFound = false; 
-			
 			var actionsToTrigger = []; 
 
 			var bindings = _bindings; 
@@ -139,7 +143,7 @@ define([
 
 				if ( _.has( _bindings, keyCode ) ){
 					var hasBinding = true;					
-					var binding = _binding[keyCode];	
+					var binding = bindings[keyCode];	
 					var actionFound = false; 
 					var actionKeys = [ keyCode ];	
 					while( !actionFound && hasBinding ){
@@ -169,7 +173,7 @@ define([
 				}
 			}
 
-			// loop through actions and trigger an event by that name			
+			// loop through actions and trigger an event by that name	
 			_.each( actionsToTrigger, function( action ){
 				that.trigger( action ); 
 			})
@@ -179,20 +183,21 @@ define([
 		 */
 		var init = function(){
 			document.onkeydown = function(e){
-				that.pressKey( e.keyCode );
+				e.preventDefault(); 
+				that.pressKey( that.getKeyCode( e ) );
 			}
 			document.onkeyup = function(e){
+				e.preventDefault(); 				
 				that.unPressKey( e.keyCode );
 			}
-			that.setBindings( keyBindings );
+			if ( keyBindings ){
+				that.setBindings( keyBindings );
+			}
 			return that;
 		}
 		init();
 	}
-	var init = function( keyBindings ){
-		var pressedKeys = new Keys( keyBindings );
-		return pressedKeys; 
-	}
-	return { init: init }
 	
+	var pressedKeys = new Keys();
+	return pressedKeys; 	
 });

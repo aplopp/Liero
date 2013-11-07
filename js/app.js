@@ -6,10 +6,9 @@ define([
 	'map', 
 	'player', 
 	'keys'
-], function( _, Backbone, $, createjs, Map, Player, Keys ){
+], function( _, Backbone, $, createjs, Map, Player, keys ){
 	Backbone.$ = $;
 	var noop = function(){}
-
 
 	/**
 	 * Main function for game.
@@ -32,14 +31,14 @@ define([
 		 */
 		this.init = function( settings ){
 			this.settings = settings;
+			this.keys = keys;
+
 			this.getMap( function( map ){
 				that.map = map;
 				that.players = that.createPlayers();				
 				that.stage = that.createStage();
 				
 				that.addObjectsToStage();
-				that.keys = that.setupKeys();
-
 				that.start();
 			});
 		}
@@ -181,18 +180,7 @@ define([
 				vY: -1 * bounciness * vY
 			}
 		}
-		
-		/**
-		 * Track and route key presses to actions. 
-		 */
-		this.setupKeys = function(){
-			var keys = Keys.init( this.settings.keyBindings ); 
-			var player1 = this.players[0];
-			keys.on( 'left', function( action ){
-				player1.moveLeft();
-			});	
-			return keys; 			
-		}	
+
 		this.start = function(){
 			this.ticker = createjs.Ticker;
 			this.ticker.setFPS( this.settings.FPS );

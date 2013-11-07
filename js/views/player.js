@@ -7,11 +7,9 @@ define([
 	'functions/animations'
 ], function( _, $, Backbone, createjs, mathFunctions, animations ){
 	var PlayerV = Backbone.View.extend({
-		shape: new createjs.Shape(),
+		shape: false,
 		initialize: function(){
-			// expose to console
-		 	myPlayer = this;			
-
+			this.shape = new createjs.Shape();
 			this.listenTo( this.model, 'change', this.render ); 
 		}, 
 		/** render the model to the canvas as a shape */

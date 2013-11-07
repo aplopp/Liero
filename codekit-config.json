@@ -75,17 +75,6 @@
       "outputAbbreviatedPath" : "\/js\/keys.min.js",
       "fileType" : 64
     },
-    "\/images\/stage-bg.png" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/images\/stage-bg.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/images\/stage-bg.png",
-      "initialSize" : 232,
-      "fileType" : 8192
-    },
     "\/js\/libs\/underscore-min.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -107,6 +96,17 @@
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/player.min.js",
       "fileType" : 64
+    },
+    "\/images\/stage-bg.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/images\/stage-bg.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/images\/stage-bg.png",
+      "initialSize" : 232,
+      "fileType" : 8192
     },
     "\/js\/functions\/math.js" : {
       "ignoreWasSetByUser" : 1,
