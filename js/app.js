@@ -4,8 +4,9 @@ define([
 	'jquery',
 	'createjs',
 	'map', 
-	'player'
-], function( _, Backbone, $, createjs, Map, Player ){
+	'player', 
+	'keys'
+], function( _, Backbone, $, createjs, Map, Player, Keys ){
 	Backbone.$ = $;
 	var noop = function(){}
 
@@ -31,13 +32,13 @@ define([
 		 */
 		this.init = function( settings ){
 			this.settings = settings;
-			this.setupKeyPresses(); 
 			this.getMap( function( map ){
 				that.map = map;
 				that.players = that.createPlayers();				
 				that.stage = that.createStage();
 				
 				that.addObjectsToStage();
+				that.keys = that.setupKeys();
 
 				that.start();
 			});
@@ -107,7 +108,7 @@ define([
 				offY = that.checkOffY( y, player.model.attributes.height );
 
 				if ( offX ){
-				hadCollision = true; 
+					hadCollision = true; 
 					var collisionX = offX < 0 ? 0 : that.map.canvas.width ; 
 					var results = that.resolveBounceX( collisionX, player.model.attributes.x, player.vX, that.settings.player.bounce );
 					x = results.x; 
@@ -184,63 +185,36 @@ define([
 		/**
 		 * Track and route key presses to actions. 
 		 */
-		this.setupKeyPresses = function(){
-			this.keyBindingsFlipped = _.invert( this.settings.keyBindings );
-			document.onkeydown = function(e){
-				that.handleKeyDown(e);
-			}
-			document.onkeyup = function(e){
-				that.handleKeyUp(e);
-			}
-			this.on( 'keyAction', function( action ){
-				that.routeAction( action ); 
-			});				
-		}
-		var currentlyPressed = []; 
-		this.handleKeyDown = function( e ){
-		    e = e || window.event;
-		    if ( currentlyPressed.indexOf( e.keyCode ) === -1 ){
-		    	currentlyPressed.push( e.keyCode ); 
-		    }
-		};
-		this.handleKeyUp = function( e ){
-		    e = e || window.event;			
-			currentlyPressed.splice( currentlyPressed.indexOf( e.keyCode), 1 ); 
-		}		
-		this.handlePressedKeys = function(){
-			var that = this;
-			_.each( currentlyPressed, function( keyCode ){
-			    if ( that.keyBindingsFlipped.hasOwnProperty( keyCode )){
-			    	var action = that.keyBindingsFlipped[ keyCode ];
-			    	that.trigger( 'keyAction', action );
-			    }
-			});
-		}
-		this.routeAction = function( action ){
+		this.setupKeys = function(){
+			var keyPresses = Keys.init( this.settings.keyBindings ); 
 			var player1 = this.players[0];
-			switch ( action ){
-	    		case 'left' : 
-	    			player1.moveLeft();
-	    			break;
-	    		case 'right' : 
-	    			player1.moveRight();	    		
-	    			break;
-	    		case 'up' : 
-	    			player1.aimUp();	    			    		
-	    			break;
-	    		case 'down' :
-	    			player1.aimDown();	    			    		
-	    			break;
-	    		case 'jump' : 
-	    			player1.jump(); 
-	    	}	
-		}
+
+			keyPresses.on( 'keyAction', function( action ){
+				switch ( action ){
+		    		case 'left' : 
+		    			player1.moveLeft();
+		    			break;
+		    		case 'right' : 
+		    			player1.moveRight();	    		
+		    			break;
+		    		case 'up' : 
+		    			player1.aimUp();	    			    		
+		    			break;
+		    		case 'down' :
+		    			player1.aimDown();	    			    		
+		    			break;
+		    		case 'jump' : 
+		    			player1.jump(); 
+		    	}	
+			});	
+			return keyPresses; 			
+		}	
 		this.start = function(){
 			this.ticker = createjs.Ticker;
 			this.ticker.setFPS( this.settings.FPS );
 			// $( '#' + this.settings.canvasID).on( 'click', function(){
 			this.ticker.addEventListener( 'tick', function(){
-				that.handlePressedKeys(); 
+				// that.pressedKeys.triggerActions(); 
 				that.nextObjectPositions();
 				that.nextFrame();
 			});
