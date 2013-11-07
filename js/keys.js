@@ -23,8 +23,10 @@ define([
 		 */
 		this.setBindings = function( updatedKeyBindings ){
 			if ( _.isObject( updatedKeyBindings ) ){
+				var flipped = _.invert( updatedKeyBindings ); 
+
 				// merges old with new, replacing where conficting
-				_bindings = _.extend( _bindings, updatedKeyBindings );
+				_bindings = _.extend( _bindings, flipped );
 				return _bindings;
 			}
 			console.log( 'keys.setBindings() needs an object');
@@ -36,10 +38,9 @@ define([
 		 * @param {int|string} keyCode(s)
 		 */		
 		this.setBinding = function( action, keyCode ){
-			if ( keyCode)
 			if ( _.isString( action ) ){
 				if ( _.isNumber(keyCode) || that.isModifierKey( keyCode ) ){
-					_bindings[ action ] = keyCode;
+					_bindings[ keyCode ] = action;
 					return _bindings; 
 				}
 			}
@@ -121,12 +122,13 @@ define([
 		}
 		this.triggerActions = function(){
 			var pressedKeys = this.getPressed();
-			var pressedKeys = this.sortKeyCodes([ 10, 13, 14, 40, 'shift', 'command' ]); 
+			var pressedKeys = this.sortKeyCodes([ 10, 13, 14, 40, 37, 'shift', 'command' ]); 
 			var actionFound = false; 
 			
-			var actionsToTrigger = [];
+			var actionsToTrigger = []; 
+
 			var bindings = _multiKeyBindings; 
-			console.log( "PRESSED", pressedKeys ); 	
+			// multi-key
 			for ( var i = 0; i< pressedKeys.length; i++ ){
 				var keyCode = pressedKeys[i]; 
 
@@ -155,35 +157,14 @@ define([
 					}
 				}				
 			}
-
-			// // for each pressed key (which are already sorted by priority), see if it exists in bindings
-			// _.each( pressedKeys, function( keyCode, keyCodeIndex ){
-			// 	if ( _.has( _multiKeyBindings, keyCode ) ){
-			// 		var binding = _multiKeyBindings[keyCode];	
-			// 		var hasBinding = true;
-			// 		var actionFound = false; 
-			// 		var actionKeys = [ keyCode ];
-			// 		while( !actionFound && hasBinding ){
-			// 			var hasBinding = false; 
-			// 			_.each( pressedKeys, function( extraKeyCode, extraKeyCodeIndex ){
-			// 				if ( _.has( binding, extraKeyCode )){
-			// 					actionKeys.push( extraKeyCode );
-			// 					binding = binding[extraKeyCode];
-			// 					hasBinding = true; 
-			// 					if ( _.isString( binding )){
-			// 						actionFound = true; 
-			// 						console.log( actionKeys );
-			// 						actionsToTrigger.push( binding );
-			// 					}
-			// 				}
-			// 			}); 
-			// 		}
-					
-			// 	}
-			// });
-			console.log( 'Pressed', pressedKeys );
-			console.log( 'Actions', actionsToTrigger );
-	
+			// single key
+			console.log( 'single: ', _bindings );
+			for ( var i = 0; i< pressedKeys.length; i++ ){
+				if ( _.has( _bindings, pressedKeys[i] ) ){
+					actionsToTrigger.push( _bindings[pressedKeys[i]] );
+				}
+			}				
+			console.log( actionsToTrigger );
 		}
 		/**
 		 * Kick it off by tying it to the document 'onkeydown' and 'onkeyup' functions
@@ -196,12 +177,6 @@ define([
 				that.unPressKey( e.keyCode );
 			}
 			that.setBindings( keyBindings );
-			that.setMultiKeyBinding( 'test', [ 'shift', 'command', 13 ] );
-			that.setMultiKeyBinding( 'hello', [ 40, 14, 13 ] );
-			that.setMultiKeyBinding( 'tostitos', [ 13, 14, 45 ] );
-			that.setMultiKeyBinding( 'hello', [ 40, 15, 13 ] );
-			that.setMultiKeyBinding( 'hello', [ 'alt', 'command', 13 ] );
-
 			return that;
 		}
 		init();
