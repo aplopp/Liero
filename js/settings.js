@@ -57,8 +57,8 @@ define({
 				up: 87, // w
 				right: 68, //d
 				down: 83,// s 
-				jump: 88, // option
-				shoot: [ 'command', 88 ] // x				
+				jump: [ 'command', 90, 'shift' ], // x				
+				shoot: [ 'command', 88, 90 ] // x				
 			}
 
 		}		

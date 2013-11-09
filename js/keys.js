@@ -14,9 +14,7 @@ define([
 		 * holds a reference to all keys with actions 
 		 * NOTE: special keys - 'cmd', 'ctrl', 'alt', 'shift'
 		 */
-		var _bindings = {
-			single: [] // for holding single-key actions
-		};
+		var _bindings = [ {} ]; // one member array for how many keys are required in binding
 
 		var _modKeys = [ 'command', 'control', 'shift', 'alt' ]; 
 		this.getKeyCode = function(e){
@@ -63,15 +61,15 @@ define([
 		 */
 		this.setBinding = function( action, keyCodes ){
 			// single key event
-			if ( _.isString(keyCodes) || _.isNumber( keyCodes ) ){
+			if ( _.isString(keyCodes) || _.isNumber( keyCodes ) || ( _.isArray( keyCodes) && keyCodes.length === 1 ) ){
 				if ( _.isString( keyCodes ) || _.isNumber( keyCodes )){
 					var keyCode = keyCodes; 
-				} else if ( keyCodes.length === 1 ){
+				} else if ( _.isArray( keyCodes) && keyCodes.length === 1 ){
 					var keyCode = keyCodes[0]; 
 				}
 				if ( _.isString( action ) ){
 					if ( _.isNumber(keyCode) || that.isModifierKey( keyCode ) ){
-						_bindings.single[ keyCode ] = action;
+						_bindings[0][ keyCode ] = action;
 						return _bindings; 
 					}
 				}
@@ -79,7 +77,9 @@ define([
 			
 			// multikey event
 			} else if (  _.isArray( keyCodes ) && keyCodes.length > 1 ){
-		
+				if ( !_.has( _bindings, keyCodes.length - 1 )){
+					_bindings[ keyCodes.length - 1 ] = {};
+				}
 				// sort keys array, with modifier keys in order of priority at beginning, 
 				// followed by all other keycodes in order of number
 				keyCodes = this.sortKeyCodes( keyCodes );
@@ -89,7 +89,7 @@ define([
 					obj[ keyCodes[i] ] = binding; 
 					binding = obj;
 				}
-				_bindings = $.extend( true, _bindings, binding );
+				_bindings[ keyCodes.length - 1 ] = $.extend( true, _bindings[keyCodes.length - 1], binding );
 				return _bindings;
 			}
 			console.log( 'setBinding() requires a string, followed by either a string/number, or an array of string/numbers')

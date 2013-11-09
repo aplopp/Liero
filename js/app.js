@@ -182,6 +182,7 @@ define([
 		}
 
 		this.start = function(){
+			console.log( keys.getBindings());
 			this.ticker = createjs.Ticker;
 			this.ticker.setFPS( this.settings.FPS );
 			// $( '#' + this.settings.canvasID).on( 'click', function(){
