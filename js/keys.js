@@ -35,6 +35,13 @@ define([
 		}
 
 		/**
+		 * function to get all key bindings
+		 * @returns {object} keyBindings
+		 */
+		this.getBindings = function(){
+			return _bindings;
+		}		
+		/**
 		 * function to set multiple key bindings at once
 		 * @param {object} keyBindings
 		 */
