@@ -16,12 +16,37 @@ define([
 		 */
 		var _bindings = [ {} ]; // one member array for how many keys are required in binding
 
-		var _modKeys = [ 'command', 'control', 'shift', 'alt' ]; 
+		var _modKeys = [ 'command-r', 'command-l', 'control-r', 'control-l', 'shift-r', 'shift-l', 'alt-r', 'alt-l' ]; 
 		this.getKeyCode = function(e){
-			if ( e.metaKey ){ return 'command'; } 
-			if ( e.ctrlKey ){ return 'control'; }
-			if ( e.shiftKey ){ return 'shift'; }
-			if ( e.altKey ){ return 'alt'; }
+			var id = e.keyIdentifier; 
+			var loc = e.location;
+			switch( id ){
+				case 'Meta' : 
+					if ( loc === 0 ){
+						return 'command-r'; 
+					} else if ( loc === 1) {
+						return 'command-l'
+					}
+					break;
+				case 'Control' : 
+					if ( loc === 1 ){
+						return 'control-l'; 
+					}
+					break;
+				case 'Shift' : 
+					if ( loc === 1 ){
+						return 'shift-l';
+					} else if ( loc === 2){
+						return 'shift-r';
+					}
+					break;
+				case 'Alt' : 
+					if ( loc === 1 ){
+						return 'alt-l';
+					} else if ( loc === 2 ){
+						return 'alt-r';
+					} 
+			}
 			return e.keyCode; 
 		}
 		this.isModifierKey = function( keyCode ){
@@ -143,43 +168,49 @@ define([
 			var actionFound = false; 
 			var actionsToTrigger = []; 
 
-			var bindings = _bindings; 
-			// multi-key
-			for ( var i = 0; i< pressedKeys.length; i++ ){
-				var keyCode = pressedKeys[i]; 
-
-				if ( _.has( _bindings, keyCode ) ){
-					var hasBinding = true;					
-					var binding = bindings[keyCode];	
-					var actionFound = false; 
-					var actionKeys = [ keyCode ];	
-					while( !actionFound && hasBinding ){
-						var hasBinding = false; 
-						for( var j = i; j < pressedKeys.length; j++ ){
-							var extraKeyCode = pressedKeys[j]; 
-							if ( _.has( binding, extraKeyCode )){
-								actionKeys.push( extraKeyCode );
-								binding = binding[extraKeyCode];
-								hasBinding = true; 
-								if ( _.isString( binding )){
-									actionFound = true; 
-									actionsToTrigger.push( binding );
-									_.each( actionKeys, function( keyCode ){
-										pressedKeys[ pressedKeys.indexOf( keyCode ) ] = ':'+binding; 
-									});
+			var bindings = _bindings; 		
+			if ( pressedKeys.length > 1 ){
+				// check multi-key
+				for( var numKeys = pressedKeys.length ; numKeys >= 1; numKeys--){
+					if ( _.has( bindings, numKeys - 1 ) ){
+						var bindings = _bindings[numKeys -1]; 
+						for ( var i = 0; i< pressedKeys.length; i++ ){
+							var keyCode = pressedKeys[i]; 
+							if ( _.has( bindings, keyCode ) ){
+								var hasBinding = true;					
+								var binding = bindings[keyCode];	
+								var actionFound = false; 
+								var actionKeys = [ keyCode ];	
+								while( !actionFound && hasBinding ){
+									hasBinding = false; 
+									for( var j = i; j < pressedKeys.length; j++ ){
+										var extraKeyCode = pressedKeys[j]; 
+										if ( _.has( binding, extraKeyCode )){
+											actionKeys.push( extraKeyCode );
+											binding = binding[extraKeyCode];
+											hasBinding = true; 
+											if ( _.isString( binding )){
+												actionFound = true; 
+												actionsToTrigger.push( binding );
+												_.each( actionKeys, function( keyCode ){
+													pressedKeys[ pressedKeys.indexOf( keyCode ) ] = ':'+binding; 
+												});
+											}
+										}							
+									}						
 								}
-							}							
-						}						
+							}				
+						}
 					}
-				}				
-			}
-			// single key
-			for ( var i = 0; i< pressedKeys.length; i++ ){
-				if ( _.has( _bindings.single, pressedKeys[i] ) ){
-					actionsToTrigger.push( _bindings.single[pressedKeys[i]] );
 				}
 			}
 
+			// single key
+			for ( var i = 0; i< pressedKeys.length; i++ ){
+				if ( _.has( _bindings[0], pressedKeys[i] ) ){
+					actionsToTrigger.push( _bindings[0][pressedKeys[i]] );
+				}
+			}
 			// loop through actions and trigger an event by that name	
 			_.each( actionsToTrigger, function( action ){
 				that.trigger( action ); 
@@ -190,12 +221,15 @@ define([
 		 */
 		var init = function(){
 			document.onkeydown = function(e){
-				e.preventDefault(); 
+				if ( e.keyCode === 9 ){ // 'tab'
+					e.preventDefault(); 
+				}
+				// console.log( 'DOWN', that.getKeyCode( e ), e );
 				that.pressKey( that.getKeyCode( e ) );
 			}
 			document.onkeyup = function(e){
-				e.preventDefault(); 				
-				that.unPressKey( e.keyCode );
+				// console.log( 'UP', that.getKeyCode( e ), e );
+				that.unPressKey( that.getKeyCode( e ) );
 			}
 			if ( keyBindings ){
 				that.setBindings( keyBindings );

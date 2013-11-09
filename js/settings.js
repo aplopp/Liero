@@ -34,12 +34,12 @@ define({
 				y: 120,
 			}, 
 			keyBindings: {
-				left: 37,
-				up: 38,
-				right: 39,
-				down: 40, 
-				jump: 'alt', // option
-				shoot: 32 // space				
+				left: 37, // l
+				up: 38, // u
+				right: 39, // r
+				down: 40, // d
+				jump: [ 'command-r' ],
+				shoot: [ 32 ] // space		
 			}
 
 		},
@@ -57,8 +57,8 @@ define({
 				up: 87, // w
 				right: 68, //d
 				down: 83,// s 
-				jump: [ 'command', 90, 'shift' ], // x				
-				shoot: [ 'command', 88, 90 ] // x				
+				jump: [ 'control-l' ],
+				shoot: 9 // tab-l
 			}
 
 		}		
