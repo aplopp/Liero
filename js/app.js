@@ -35,7 +35,7 @@ define([
 
 			this.getMap( function( map ){
 				that.map = map;
-				that.players = that.createPlayers();				
+				that.players = that.createPlayers();			
 				that.stage = that.createStage();
 				
 				that.addObjectsToStage();
@@ -109,14 +109,24 @@ define([
 				if ( offX ){
 					hadCollision = true; 
 					var collisionX = offX < 0 ? 0 : that.map.canvas.width ; 
-					var results = that.resolveBounceX( collisionX, player.model.attributes.x, player.vX, that.settings.player.bounce );
+					if ( offX < 0 ){
+						var collisionX = 0;
+					} else {
+						var collisionX = that.map.canvas.width - player.model.attributes.width;
+					}					
+					var results = that.resolveBounceX( collisionX, x, vX, that.settings.player.bounce );
 					x = results.x; 
 					vX = results.vX;	
 				}
 				if ( offY ){
 					hadCollision = true; 
-					var collisionY = offY < 0 ? 0 : that.map.canvas.height ; 
+					if ( offY < 0 ){
+						var collisionY = 0;
+					} else {
+						var collisionY = that.map.canvas.height - player.model.attributes.height;
+					}
 					var results = that.resolveBounceY( collisionY, y, vY, that.settings.player.bounce );
+					console.log( results );
 					y = results.y; 
 					vY = results.vY;
 				}
@@ -133,8 +143,8 @@ define([
 		 * check if object is offscreen on the X axis
 		 */
 		this.checkOffX = function( x, w ){
-			if ( x > that.map.canvas.width ){
-				return x - that.map.canvas.width; 
+			if ( x + w > that.map.canvas.width ){
+				return x + w - that.map.canvas.width; 
 			} else if ( x < 0){
 				return x;
 			}	
@@ -144,8 +154,8 @@ define([
 		 * check if object is offscreen on the Y axis
 		 */
 		this.checkOffY = function( y, h ){
-			if ( y > that.map.canvas.height ){
-				return y - that.map.canvas.height; 
+			if ( ( y + h ) > that.map.canvas.height ){
+				return y + h - that.map.canvas.height; 
 			} else if ( y < 0){
 				return y;
 			}

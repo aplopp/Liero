@@ -12,7 +12,7 @@ define([
 		this.model = new PlayerM( playerSpec.model );
 		this.view = new PlayerV({ model: this.model });;
 		this.vX = 0; // velocity in px/s
-		this.vY = 0; // velocity in px/s
+		this.vY = 1000; // velocity in px/s
 		this.isSupported = false;
 		
 		_.each( playerSpec.keyBindings, function( keyCodes, action ){

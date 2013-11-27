@@ -77,7 +77,7 @@ define({
 			projectile: 'bullet', 
 			auto: false,
 			color: '#249',
-			length: 20,
+			length: 40,
 			width: 2
 		},
 		grenadeLauncher: {
@@ -88,7 +88,7 @@ define({
 			projectile: 'grenade',
 			auto: false,
 			color: '#0f0',
-			length: 15, 
+			length: 10, 
 			width: 4		
 
 		},
@@ -100,7 +100,7 @@ define({
 			projectile: 'bullet',
 			auto: true,
 			color: '#000', 
-			length: 15, 
+			length: 20, 
 			width: 3
 		}
 	}, 
