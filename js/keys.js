@@ -163,6 +163,7 @@ define([
 				}
 			}); 
 		}
+		var _prevActions;
 		this.triggerActions = function(){
 			var pressedKeys = this.getPressed();
 			var actionFound = false; 
@@ -214,7 +215,11 @@ define([
 			// loop through actions and trigger an event by that name	
 			_.each( actionsToTrigger, function( action ){
 				that.trigger( action ); 
-			})
+				if ( _prevActions.indexOf( action ) === -1 ){
+					that.trigger( action + ':start' );
+				}
+			});
+			_prevActions = actionsToTrigger; 
 		}
 		/**
 		 * Kick it off by tying it to the document 'onkeydown' and 'onkeyup' functions
