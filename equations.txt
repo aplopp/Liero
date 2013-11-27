@@ -1,0 +1,28 @@
+1.5x2- 9x + 11.5 = -0.2x2- 0.4x + 2.8
+
+y = ax2 + bx + c
+
+y = 
+
+EQUATIONS
+distance =  v*t + (a * t*t)/2
+finalV = initialV + a * t
+finalVsq = initialVsq + 2*a*d
+
+y = G * t2 + 
+
+y = ax2 + bx + c
+
+y = ax2 + bx + startY
+
+y = a0 + b0 + startY; 
+0
+
+y = 9.8 * 1 * 1 + 0*1 + startY
+9.8
+
+y = 9.8 * 2 * 2 + 0*1 + startY
+
+
+yPos = G * time * time + startVY * t + startY
+xPos = startVX + startX

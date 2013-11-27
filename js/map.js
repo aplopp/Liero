@@ -17,6 +17,8 @@ define([
 		this.canvas.height = this.settings.height;
 
 		this.simpleGrid = this.getSimpleGrid(); 
+
+		// create map, add generated pixels to canvas 
 		this.generateMap();
 
 	}

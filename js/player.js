@@ -5,9 +5,8 @@ define([
 	'createjs',
 	'models/player',
 	'views/player',
-	'models/map-object',
 	'keys'
-], function( settings, _, Backbone, createjs, PlayerM, PlayerV, MapObjectM, keys ){
+], function( settings, _, Backbone, createjs, PlayerM, PlayerV, keys ){
 	var id = 0; 
 	var Player = function( playerSpec ){
 		this.model = new PlayerM( playerSpec.model );
@@ -20,6 +19,7 @@ define([
 			keys.setBinding( prefixActionName( action ), keyCodes );		
 		}); 
 		this.handleKeyPresses();
+		this.id = id;
 		id++; 
 	}
 	function prefixActionName( action ){
@@ -42,12 +42,18 @@ define([
 			that.aimDown();
 		});
 
-		keys.on( prefixActionName( 'jump' ), function(){
+		keys.on( prefixActionName( 'jump:start' ), function(){
 			that.jump();
 		});
 		keys.on( prefixActionName( 'shoot' ), function(){
 			that.shoot();
 		});
+		keys.on( prefixActionName( 'prevWeapon:start' ), function(){
+			that.switchWeapon( false );
+		});
+		keys.on( prefixActionName( 'nextWeapon:start' ), function(){
+			that.switchWeapon( true );
+		});				
 	}
 	p.moveLeft = function(){
 		this.model.set( 'facing', 'left' );
@@ -65,6 +71,19 @@ define([
 	}
 	p.jump = function(){
 		this.vY -= settings.player.jumpPower; 
+	}
+	p.switchWeapon = function( forward ){
+		var current = this.model.get( 'activeWeapon');
+		var weapons = this.model.get( 'weapons' );
+		if ( forward ){
+			var newWeapon = this.model.get( 'activeWeapon') + 1;
+			if ( newWeapon > weapons.length - 1 ) newWeapon = 0;
+		} else {
+			var newWeapon = this.model.get( 'activeWeapon') - 1;
+			if ( newWeapon < 0 ) newWeapon = weapons.length - 1; 
+		}
+		this.model.set( 'activeWeapon', newWeapon );
+		console.log( 'Player '+ this.model.get( 'name' ) + ' switched to ' + weapons[newWeapon]);
 	}
 	p._shooting = false; 
 	p._stopShooting = false;
@@ -93,7 +112,7 @@ define([
 			if ( this.vX < 1 ){
 				this.vX = 0; 				
 			}
-			this.vX *= settings.physics.friction/settings.FPS;			
+			this.vX *= ( 1 - settings.physics.groundFriction/settings.FPS );			
 		}
 		this.vY *= ( 1 - settings.physics.airFriction/settings.FPS );
 		this.vX *= ( 1 - settings.physics.airFriction/settings.FPS );

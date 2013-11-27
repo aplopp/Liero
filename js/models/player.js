@@ -1,9 +1,8 @@
 define([ 
 	'underscore', 
 	'backbone',
-	'createjs', 
-	'models/map-object'
-], function( _, Backbone, createjs, MapObjectM ){
+	'createjs'
+], function( _, Backbone, createjs ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -16,6 +15,8 @@ define([
 			aim: 0, // -45 to 90
 			moving: 0, // -1, 0, or 1	
 			bounce: .8, 
+			weapons: [],
+			activeWeapon: 0,
 			x: 0, 
 			y: 0
 		},
