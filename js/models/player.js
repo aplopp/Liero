@@ -1,8 +1,10 @@
 define([ 
 	'underscore', 
 	'backbone',
-	'createjs'
-], function( _, Backbone, createjs ){
+	'createjs', 
+	'models/weapon',
+	'settings'
+], function( _, Backbone, createjs, WeaponM, settings ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -20,7 +22,18 @@ define([
 			x: 0, 
 			y: 0
 		},
+		getActiveWeapon: function(){
+			return this.get( 'weapons')[ this.get('activeWeapon') ];
+		},
 		initialize: function(){
+			// convert weaponIDs into weaponModels
+			var weaponIDs = this.get('weapons'); 
+			var weapons = [];
+			_.each( weaponIDs, function(weaponID){
+				var weaponSpec = settings.weapons[ weaponID ];
+				weapons.push( new WeaponM( weaponSpec) );
+			});
+			this.set( 'weapons', weapons );
 		},		
 		validate: function( attrs, options ){
 			if( attrs.aim < 0 || attrs.aim > 135 ){

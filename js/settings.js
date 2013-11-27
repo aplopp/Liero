@@ -48,7 +48,7 @@ define({
 		},
 		{ 
 			model: {
-				name: 'Sarah', 
+				name: 'Sarah',
 				color: '#350',
 				height: 30,
 				width: 30,
@@ -62,31 +62,46 @@ define({
 				right: 68, //d
 				down: 83,// s 
 				jump: [ 'control-l' ],
-				shoot: 9 // tab-l
+				shoot: 9, // tab-l
+				prevWeapon: [ 65, 'shift-l' ],
+				nextWeapon: [ 68, 'shift-l' ]				
 			}
 		}		
 	],
 	weapons: {
 		gun: {
-			title: 'Gun', 
+			name: 'Gun', 
 			reload: 2, // shots/s
 			recoil: 10, // pixels/s
 			speed: 600, // pixels/s
-			projectile: 'bullet'
+			projectile: 'bullet', 
+			auto: false,
+			color: '#249',
+			length: 20,
+			width: 2
 		},
 		grenadeLauncher: {
-			title: 'Grenade Launcher', 
+			name: 'Grenade Launcher', 
 			reload: .5, // shots/s
 			recoil: 30, // pixels/s
 			speed: 100, // pixels/s
-			projectile: 'grenade'
+			projectile: 'grenade',
+			auto: false,
+			color: '#0f0',
+			length: 15, 
+			width: 4		
+
 		},
 		machineGun: {
-			title: 'Machine Gun', 
+			name: 'Machine Gun', 
 			reload: 20, // shots/s
 			recoil: 1, // pixels/s
 			speed: 300, // pixels/s
-			projectile: 'bullet'
+			projectile: 'bullet',
+			auto: true,
+			color: '#000', 
+			length: 15, 
+			width: 3
 		}
 	}, 
 	keyBindings: {

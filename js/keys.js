@@ -136,6 +136,7 @@ define([
 		    if ( currentlyPressed.indexOf( keyCode ) === -1 ){
 		    	currentlyPressed.push( keyCode ); 
 		    }
+		    this.setCurrentActions();
 		}
 		/**
 		 * remove key from array
@@ -143,6 +144,7 @@ define([
 		 */
 		this.unPressKey = function( keyCode ){
 			currentlyPressed.splice( currentlyPressed.indexOf( keyCode ), 1 ); 
+			this.setCurrentActions();
 		}			
 		/** get array of currently pressed keys */
 		this.getPressed = function(){
@@ -163,8 +165,14 @@ define([
 				}
 			}); 
 		}
-		var _prevActions;
-		this.triggerActions = function(){
+		/**
+		 * based on currently pressed keys, set actions to trigger if 'triggerActions' is called
+		 * and trigger :start and :end methods
+		 */
+		this.prevActions = [];
+		this.currentActions = [];
+		this.setCurrentActions = function(){
+
 			var pressedKeys = this.getPressed();
 			var actionFound = false; 
 			var actionsToTrigger = []; 
@@ -211,15 +219,29 @@ define([
 				if ( _.has( _bindings[0], pressedKeys[i] ) ){
 					actionsToTrigger.push( _bindings[0][pressedKeys[i]] );
 				}
-			}
-			// loop through actions and trigger an event by that name	
-			_.each( actionsToTrigger, function( action ){
-				that.trigger( action ); 
-				if ( _prevActions.indexOf( action ) === -1 ){
+			}	
+			this.prevActions = this.currentActions;			
+			this.currentActions = actionsToTrigger;	
+
+			// trigger start action
+			_.each( this.currentActions, function( action ){		
+				if ( that.prevActions.indexOf( action ) === -1 ){
 					that.trigger( action + ':start' );
 				}
+			}); 
+			// trigger end action
+			_.each( this.prevActions, function( action ){
+				if ( that.currentActions.indexOf( action ) === -1 ){
+					that.trigger( action + ':end' );
+				}				
+			});			
+		}
+		this.triggerActions = function(){
+			var that = this;
+			// loop through actions and trigger an event by that name	
+			_.each( this.currentActions, function( action ){
+				that.trigger( action ); 
 			});
-			_prevActions = actionsToTrigger; 
 		}
 		/**
 		 * Kick it off by tying it to the document 'onkeydown' and 'onkeyup' functions

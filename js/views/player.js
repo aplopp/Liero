@@ -26,19 +26,23 @@ define([
 				|| _.has( model.changed, 'width' )  
 				|| _.has( model.changed, 'facing' ) 
 				|| _.has( model.changed, 'aim' )  
+				|| _.has( model.changed, 'activeWeapon' ) 
 			){
+				// draw body
 		 		this.shape.graphics
 		 			.clear()
 		 			.beginFill( this.model.get( 'color' ) )
 		 			.drawRect(0, 0, this.model.get( 'width' ), this.model.get( 'height') )
 		 			.endFill();
 		 		
+		 		// draw weapon
+		 		var activeWeapon = this.model.getActiveWeapon();
 		 		var dir = this.model.get( 'facing' ) === 'left' ? -1 : 1
-		 		var end = mathFunctions.getPointOnCircle(  this.model.get( 'width' )/2, this.model.get( 'height' )/2, this.model.get( 'width' )/1.3, dir * this.model.get( 'aim' ) );
+		 		var end = mathFunctions.getPointOnCircle(  this.model.get( 'width' )/2, this.model.get( 'height' )/2, activeWeapon.get('length'), dir * this.model.get( 'aim' ) );
 		 		this.shape.graphics
 		 			.moveTo( this.model.get( 'width')/2, this.model.get( 'height' )/2 )
-		 			.beginStroke( '#fff' )
-		 			.setStrokeStyle( 4 )
+		 			.beginStroke( activeWeapon.get( 'color' ) )
+		 			.setStrokeStyle( activeWeapon.get( 'width' ) )
 		 			.lineTo( end.x, end.y )
 
 		 	}

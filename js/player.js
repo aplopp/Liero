@@ -42,11 +42,14 @@ define([
 			that.aimDown();
 		});
 
-		keys.on( prefixActionName( 'jump:start' ), function(){
+		keys.on( prefixActionName( 'jump:end' ), function(){
 			that.jump();
 		});
-		keys.on( prefixActionName( 'shoot' ), function(){
-			that.shoot();
+		keys.on( prefixActionName( 'shoot:start' ), function(){
+			that.startShooting();
+		});
+		keys.on( prefixActionName( 'shoot:end' ), function(){
+			that.endShooting();
 		});
 		keys.on( prefixActionName( 'prevWeapon:start' ), function(){
 			that.switchWeapon( false );
@@ -87,20 +90,11 @@ define([
 	}
 	p._shooting = false; 
 	p._stopShooting = false;
-	p.shoot = function(){
-		var that = this;
-		clearTimeout( this._stopShooting ); // continue shooting
-		if ( !this._shooting ){
-			console.log( 'bang!');
-			this._shooting = setInterval( function(){
-				console.log( 'bang!');
-			}, 500); 
-		} 
-		// set timeout, so if shooting stops before next frame, it will end.
-		this._stopShooting = setTimeout( function(){
-			clearInterval( that._shooting );
-			that._shooting = false; 
-		}, ( 1/settings.FPS ) * 1000 ); 		
+	p.startShooting = function(){
+		this.model.getActiveWeapon().startShooting();
+	}
+	p.endShooting = function(){
+		this.model.getActiveWeapon().stopShooting();
 	}
 	p.nextPosition = function(){
 		this.model.set( 'y', this.model.get( 'y' ) + this.vY/settings.FPS );
