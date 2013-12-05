@@ -9,26 +9,30 @@ define([
 	var PlayerV = Backbone.View.extend({
 		shape: false,
 		initialize: function(){
+			var that = this;
 			this.shape = new createjs.Shape();
-			this.listenTo( this.model, 'change', this.render ); 
+			this.listenTo( this.model, 'change', function(){
+				that.render( that.model.changed );
+			}); 
 		}, 
+		setPos: function( pos ){
+		 	this.shape.x =  pos.x;
+		 	this.shape.y = pos.y; 
+		},
 		/** render the model to the canvas as a shape */
-		render: function( model ){
-			if ( ! model ){
-				model = {
-					changed: this.model.attributes
-				};
+		render: function( changed ){
+			if ( ! changed ){
+				changed = this.model.attributes
 			}
 			// set up the shape
 			if ( 
-				_.has( model.changed, 'color' ) 
-				|| _.has( model.changed, 'height' ) 
-				|| _.has( model.changed, 'width' )  
-				|| _.has( model.changed, 'facing' ) 
-				|| _.has( model.changed, 'aim' )  
-				|| _.has( model.changed, 'activeWeapon' ) 
-			){
-				// draw body
+				_.has( changed, 'color' ) 
+				|| _.has( changed, 'height' ) 
+				|| _.has( changed, 'width' )  
+				|| _.has( changed, 'facing' ) 
+				|| _.has( changed, 'aim' )  
+				|| _.has( changed, 'activeWeapon' ) 
+			){				// draw body
 		 		this.shape.graphics
 		 			.clear()
 		 			.beginFill( this.model.get( 'color' ) )
@@ -46,12 +50,7 @@ define([
 		 			.lineTo( end.x, end.y )
 
 		 	}
-		 	if ( _.has( model.changed, 'x') ){
-			 	this.shape.x =  model.changed.x;
-		 	}
-		 	if ( _.has( model.changed, 'y') ){
-			 	this.shape.y = model.changed.y; 
-		 	}		
+	
 		 	return this.shape; 
 		}
 	}); 

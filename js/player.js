@@ -13,6 +13,8 @@ define([
 		this.view = new PlayerV({ model: this.model });;
 		this.vX = 0; // velocity in px/s
 		this.vY = 1000; // velocity in px/s
+		this.x = 0; // x coordinate
+		this.y = 0; // y coordinate
 		this.isSupported = false;
 		
 		_.each( playerSpec.keyBindings, function( keyCodes, action ){
@@ -97,8 +99,14 @@ define([
 		this.model.getActiveWeapon().stopShooting();
 	}
 	p.nextPosition = function(){
-		this.model.set( 'y', this.model.get( 'y' ) + this.vY/settings.FPS );
-		this.model.set( 'x', this.model.get( 'x' ) + this.vX/settings.FPS );
+		this.x += this.vX/settings.FPS;
+		this.y += this.vY/settings.FPS;
+
+		this.view.setPos({
+			x: this.x, 
+			y: this.y
+		});
+
 
 		if ( ! this.isSupported ){
 			this.vY += settings.physics.gravity/settings.FPS; 

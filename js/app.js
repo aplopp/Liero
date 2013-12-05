@@ -96,9 +96,9 @@ define([
 		 */
 		this.respondToEdgeCollision = function( player ){
 			var hadCollision = false; 				
-			var x = player.model.attributes.x;
+			var x = player.x;
 			var vX = player.vX; 
-			var y = player.model.attributes.y; 				
+			var y = player.y; 				
 			var vY = player.vY; 
 
 			var offX = offY = false; 
@@ -126,7 +126,6 @@ define([
 						var collisionY = that.map.canvas.height - player.model.attributes.height;
 					}
 					var results = that.resolveBounceY( collisionY, y, vY, that.settings.player.bounce );
-					console.log( results );
 					y = results.y; 
 					vY = results.vY;
 				}
@@ -135,8 +134,8 @@ define([
 			if ( hadCollision ){
 				player.vY = vY; 
 				player.vX = vX; 
-				player.model.set( 'x', x );
-				player.model.set( 'y', y );
+				player.x = x;
+				player.y = y;
 			}			
 		}
 		/**
@@ -194,12 +193,19 @@ define([
 		this.start = function(){
 			this.ticker = createjs.Ticker;
 			this.ticker.setFPS( this.settings.FPS );
-			// $( '#' + this.settings.canvasID).on( 'click', function(){
-			this.ticker.addEventListener( 'tick', function(){
-				that.keys.triggerActions(); 
-				that.nextObjectPositions();
-				that.nextFrame();
-			});
+			if ( window.location.hash ){
+				$( '#' + this.settings.canvasID).on( 'click', function(){
+					that.keys.triggerActions(); 
+					that.nextObjectPositions();
+					that.nextFrame();
+				});					
+			} else {
+				this.ticker.addEventListener( 'tick', function(){
+					that.keys.triggerActions(); 
+					that.nextObjectPositions();
+					that.nextFrame();
+				});
+			}
 		};
 		this.nextFrame = function(){
 			this.stage.update();

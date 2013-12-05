@@ -18,9 +18,7 @@ define([
 			moving: 0, // -1, 0, or 1	
 			bounce: .8, 
 			weapons: [],
-			activeWeapon: 0,
-			x: 0, 
-			y: 0
+			activeWeapon: 0
 		},
 		getActiveWeapon: function(){
 			return this.get( 'weapons')[ this.get('activeWeapon') ];
