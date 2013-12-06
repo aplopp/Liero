@@ -25,12 +25,16 @@ define({
 	},
 	players: [
 		{ 
+			x: 0,
+			y: 0,
+			vX: 0,
+			vY: 1000,
 			model: {
 				name: 'Joe', 
 				color: '#249',
 				height: 20,
 				width: 20,
-				weapons: [ 'grenadeLauncher', 'machineGun' ]
+				weapons: [ 'grenadeLauncher', 'machineGun', 'gun' ]
 			}, 
 			keyBindings: {
 				left: 37, // l
@@ -45,12 +49,16 @@ define({
 
 		},
 		{ 
+			x: 0,
+			y: 0,
+			vX: 0,
+			vY: 1000,			
 			model: {
 				name: 'Sarah',
 				color: '#350',
 				height: 30,
 				width: 30,
-				weapons: [ 'gun', 'grenadeLauncher']
+				weapons: [ 'gun', 'grenadeLauncher', 'hugeGun']
 			}, 
 			keyBindings: {
 				left: 65, //a
@@ -76,11 +84,22 @@ define({
 			length: 40,
 			width: 2
 		},
+		hugeGun: {
+			name: 'Gun', 
+			reload: 2, // shots/s
+			recoil: 10, // pixels/s
+			speed: 600, // pixels/s
+			projectile: 'flame', 
+			auto: false,
+			color: '#00f',
+			length: 80,
+			width: 10
+		},
 		grenadeLauncher: {
 			name: 'Grenade Launcher', 
 			reload: .5, // shots/s
 			recoil: 30, // pixels/s
-			speed: 100, // pixels/s
+			speed: 1000, // pixels/s
 			projectile: 'grenade',
 			auto: false,
 			color: '#0f0',
@@ -92,7 +111,7 @@ define({
 			name: 'Machine Gun', 
 			reload: 20, // shots/s
 			recoil: 1, // pixels/s
-			speed: 300, // pixels/s
+			speed: 3000, // pixels/s
 			projectile: 'bullet',
 			auto: true,
 			color: '#000', 
@@ -100,6 +119,23 @@ define({
 			width: 3
 		}
 	}, 
+	projectiles: {
+		grenade: {
+			color: '#cc0000',
+			width: 4,
+			height: 4
+		},
+		bullet: {
+			color: '#000',
+			width: 3,
+			height: 3	
+		},
+		flame: {
+			color: 'orange',
+			width: 10,
+			height: 10
+		}
+	},
 	keyBindings: {
 
 	}	

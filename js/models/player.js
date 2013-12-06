@@ -18,18 +18,20 @@ define([
 			moving: 0, // -1, 0, or 1	
 			bounce: .8, 
 			weapons: [],
-			activeWeapon: 0
+			activeWeapon: 0,
 		},
 		getActiveWeapon: function(){
 			return this.get( 'weapons')[ this.get('activeWeapon') ];
 		},
-		initialize: function(){
+		initialize: function( atts, id ){
+			var that = this;
 			// convert weaponIDs into weaponModels
 			var weaponIDs = this.get('weapons'); 
-			var weapons = [];
+			var weapons = [];	
 			_.each( weaponIDs, function(weaponID){
 				var weaponSpec = settings.weapons[ weaponID ];
-				weapons.push( new WeaponM( weaponSpec) );
+				weaponSpec.holdingPlayer = that.id;
+				weapons.push( new WeaponM( weaponSpec ) );
 			});
 			this.set( 'weapons', weapons );
 		},		

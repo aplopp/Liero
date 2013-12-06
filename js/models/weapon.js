@@ -3,7 +3,8 @@ define([
 	'backbone',
 	'createjs', 
 	'settings',
-], function( _, Backbone, createjs, settings ){
+	'projectile'
+], function( _, Backbone, createjs, settings, Projectile ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -16,7 +17,23 @@ define([
 			recoil: 100, // pixels/s
 			speed: 500, // pixels/s
 			projectile: 'bullet',
-			auto: false
+			auto: false,
+
+			holdingPlayer: false
+		},
+		launchProjectile: function(){
+			var player = app.players[ this.get( 'holdingPlayer' ) ] ;
+			var projectile = new Projectile({
+				// end of barrel coordinates
+				x: player.x, // TODO, end of barrel
+				y: player.y, // TODO, end of barrel
+				// x/y components of speed, depending on angle of barrel
+				vX: this.get( 'speed' ) + player.vX,
+				vY: player.vY,
+				model: settings.projectiles[ this.get('projectile') ]
+			});
+			console.log( projectile ); 
+			app.addObject( projectile );
 		},
 		_delay: false,
 		fire: function(){
@@ -27,7 +44,9 @@ define([
 				setTimeout( function(){
 					that._delay = false;
 				}, 1000/this.get('reload') );
-				console.log( count++, this.get( 'name' ) + ': fired ' + this.get( 'projectile' ) );							
+
+				console.log( count++, this.get( 'name' ) + ': fired ' + this.get( 'projectile' ) );
+				this.launchProjectile();
 			} else {
 				console.log( this.get( 'name' ) + ': too soon to fire ')
 			}
@@ -47,7 +66,6 @@ define([
 		},
 		stopShooting: function(){
 			clearInterval( this._shooting );
-			console.log( 'Stopped shooting ' + this.get( 'name' ));
 		},
 		initialize: function(){
 		}		

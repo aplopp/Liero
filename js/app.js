@@ -38,7 +38,7 @@ define([
 				that.players = that.createPlayers();			
 				that.stage = that.createStage();
 				
-				that.addObjectsToStage();
+				that.addInitialObjectsToStage();
 				that.start();
 			});
 		}
@@ -71,23 +71,28 @@ define([
 			canvas.height = this.map.settings.height; 
 			return new createjs.Stage( canvas );
 		}
-		this.addObjectsToStage = function(){
+		this.mapObjects = [];
+		this.addInitialObjectsToStage = function(){
+			var that = this;
 			// add players to stage. 
 			_.each( this.players, function( player ){
-				var playerShape = player.view.render();
-				that.stage.addChild( playerShape );
+				that.addObject( player );
 			});
+		}
+		this.addObject = function( mapObject ){
+			var shape = mapObject.view.render();
+			this.mapObjects.push( mapObject );
+			this.stage.addChild( shape );
 		}
 		/**
 		 * advance the objects position based on x and y velocity
 		 */
 		this.nextObjectPositions = function(){
-			_.each( this.players, function( player ){
+			_.each( this.mapObjects, function( mapObject ){
 				/** based on velocity and position, move pointer to next position */
-				player.nextPosition();
-
+				mapObject.nextPosition();
 				/** adjust items that will be offscreen, and therefore have collided with the map edge. */				
-				that.respondToEdgeCollision( player ); 
+				that.respondToEdgeCollision( mapObject ); 
 				
 			});	
 		}
