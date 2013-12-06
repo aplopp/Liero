@@ -5,7 +5,7 @@ define([
 	'createjs',
 	'models/projectile',
 	'views/projectile',
-	'classes/mapObject',
+	'classes/MapObject',
 	'keys'
 ], function( settings, _, Backbone, createjs, ProjectileM, ProjectileV, MapObject, keys ){
 	var Projectile = MapObject.extend({

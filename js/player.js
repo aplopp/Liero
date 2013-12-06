@@ -5,7 +5,7 @@ define([
 	'createjs',
 	'models/player',
 	'views/player',
-	'classes/mapObject',
+	'classes/MapObject',
 	'keys'
 ], function( settings, _, Backbone, createjs, PlayerM, PlayerV, MapObject, keys ){
 	var Player = MapObject.extend({
