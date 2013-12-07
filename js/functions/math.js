@@ -9,6 +9,10 @@ define([], function(){
 			x: x, 
 			y: y
 		}
-	}
+	};
+	functions.getRandomNumberBetween = function(min, max) {
+	    return Math.random() * (max - min) + min;
+	};
+
 	return functions;
 });

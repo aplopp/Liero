@@ -14,7 +14,21 @@ define([
 			// personal properties
 			color: '#666',
 			height: 1,
-			width: 1
+			width: 1,
+			perShot: 1, // how many per shot
+			scatter: 0, // scatter, in degrees (max 90)
+			bounce: .8, // energy retained after bounce (.8 = 80%)
+			sticky: {
+				enabled: false,
+				duration: 10000
+			},  // sticks to objects when it collides with them? How long? Negates bounce.
+			// how long in ms until it explodes			
+			delayToExplosion: 2000, 
+			// the actual delay will be delayToExplosion +- a random number from 0 to explosionDelayVariability			
+			delayToExplosionVariability: 500,
+			explosion: {
+			}
+
 		},	
 	}); 
 	return ProjectileM;

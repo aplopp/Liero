@@ -7,7 +7,6 @@ define([ 'underscore', 'backbone', 'settings', 'keys' ], function( _, Backbone, 
 		this.id = id++;		
 		this.routeKeyPresses();
 		this.initialize( options );
-
 	}
 	var p = _.extend( MapObject.prototype, {
 		model: null, 

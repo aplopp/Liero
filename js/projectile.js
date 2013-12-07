@@ -6,8 +6,10 @@ define([
 	'models/projectile',
 	'views/projectile',
 	'classes/MapObject',
-	'keys'
-], function( settings, _, Backbone, createjs, ProjectileM, ProjectileV, MapObject, keys ){
+	'explosion',
+	'keys', 
+	'functions/math'
+], function( settings, _, Backbone, createjs, ProjectileM, ProjectileV, MapObject, Explosion, keys, MathFunctions ){
 	var Projectile = MapObject.extend({
 		/**
 		 * the eventBinding states which functions to call for which events
@@ -32,7 +34,29 @@ define([
 	        this.vY = spec.vY;
 			this.model = new ProjectileM( spec.model );
 			this.view = new ProjectileV({ model: this.model });
-		}		
+
+			// set time until explosion
+			var delayMax = this.model.get( 'delayToExplosion') + this.model.get( 'delayToExplosionVariability' );
+			var delayMin = this.model.get( 'delayToExplosion') - this.model.get( 'delayToExplosionVariability' );
+			setTimeout( function(){
+				that.explode();
+			}, MathFunctions.getRandomNumberBetween( delayMin, delayMax ) );
+		}, 
+		explode: function( ){
+			var that = this;
+			var explosionSpec = this.model.get( 'explosion' );
+			var explosion = new Explosion({ 
+				x: this.x, 
+				y: this.y, 
+				vX: this.vX, 
+				vY: this.vY,
+				model: explosionSpec 
+			});
+			app.removeObject( this.id );
+			app.addObject( explosion );
+
+		},
+
 	});
 
 	return Projectile;

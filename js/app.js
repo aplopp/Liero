@@ -84,6 +84,13 @@ define([
 			this.mapObjects.push( mapObject );
 			this.stage.addChild( shape );
 		}
+		this.removeObject = function( id ){
+			var object = _.findWhere( this.mapObjects, { id: id });
+			this.mapObjects = _.reject( this.mapObjects, function( mapObject ){ return mapObject.id === id });
+			this.stage.removeChild( object.view.render({}) );
+			
+			delete object;
+		}
 		/**
 		 * advance the objects position based on x and y velocity
 		 */
