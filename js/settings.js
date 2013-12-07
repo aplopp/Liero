@@ -34,7 +34,7 @@ define({
 				color: '#249',
 				height: 20,
 				width: 20,
-				weapons: [ 'grenadeLauncher', 'machineGun', 'gun' ]
+				weapons: [ 'machineGun', 'grenadeLauncher', 'gun' ]
 			}, 
 			keyBindings: {
 				left: 37, // l
