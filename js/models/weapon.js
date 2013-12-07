@@ -26,24 +26,21 @@ define([
 		},
 		launchProjectile: function(){
 			var player = app.players[ this.get( 'holdingPlayer' ) ] ;
-
 			var xDir = player.model.get( 'facing' ) === 'left' ? -1 : 1;
-			var yDir = player.model.get( 'aim' ) < 135 ? -1 : 1;
-			var barrelCoords = mathFunctions.getPointOnCircle( player.model.get( 'width' )/2, player.model.get( 'height' )/2, this.get('length'), xDir * player.model.get( 'aim' ) );
-
-			// TODO: accurate splitting of the speed into vX and vY
 			var aim = player.model.get( 'aim' );
-			console.log( aim%90/90 );
-			var percentvX = aim % 90/90 ;
-			var vX = xDir * this.get( 'speed' ) * percentvX;
-			var vY = yDir * this.get( 'speed' ) * ( 1 - percentvX );
+
+			// find end of barrel.
+			var barrelCoords = mathFunctions.getPointOnCircle( player.model.get( 'width' )/2, player.model.get( 'height' )/2, this.get('length'), xDir * aim );
+			// get the velocities by finding the point at the right aim on a circle of radius speed.
+			var velocities = mathFunctions.getPointOnCircle( 0, 0, this.get( 'speed' ), xDir * aim );
+
 			var projectile = new Projectile({
 				// e nd of barrel coordinates
 				x: player.x + barrelCoords.x, // TODO, end of barrel
 				y: player.y + barrelCoords.y, // TODO, end of barrel
 				// x/y components of speed, depending on angle of barrel
-				vX: vX + player.vX,
-				vY: vY + player.vY,
+				vX: velocities.x + player.vX,
+				vY: velocities.y + player.vY,
 				model: settings.projectiles[ this.get('projectile') ]
 			});
 			app.addObject( projectile );
