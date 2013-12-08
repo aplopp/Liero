@@ -23,13 +23,16 @@ define([
 				duration: 10000
 			},  // sticks to objects when it collides with them? How long? Negates bounce.
 			// how long in ms until it explodes			
-			delayToExplosion: 2000, 
+			delayToExplosion: 300, 
 			// the actual delay will be delayToExplosion +- a random number from 0 to explosionDelayVariability			
-			delayToExplosionVariability: 500,
+			delayToExplosionVariability: 200,
 			explosion: {
 			}
 
 		},	
+		initialize: function(){
+			
+		}
 	}); 
 	return ProjectileM;
 });

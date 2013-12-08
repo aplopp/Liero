@@ -99,7 +99,7 @@ define({
 			name: 'Grenade Launcher', 
 			reload: .5, // shots/s
 			recoil: 30, // pixels/s
-			speed: 1000, // pixels/s
+			speed: 800, // pixels/s
 			projectile: 'grenade',
 			auto: false,
 			color: '#0f0',
@@ -122,13 +122,23 @@ define({
 	projectiles: {
 		grenade: {
 			color: '#cc0000',
-			width: 4,
-			height: 4
+			width: 15,
+			height: 15,
+			delayToExplosion: 1000,
+			delayToExplosionVariability: 0,
+			explosion: {
+				duration: 500,
+				colors: [ '#00B1F7', '#F7D200', '#F73A00', '#E80000', '#750000'],
+				color: false,
+				radius: 50,
+				currentRadius: 0
+			}
 		},
 		bullet: {
 			color: '#000',
 			width: 3,
-			height: 3	
+			height: 3,
+			delayToExplosionVariability: 100
 		},
 		flame: {
 			color: 'orange',

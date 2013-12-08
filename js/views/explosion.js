@@ -4,8 +4,9 @@ define([
 	'backbone',
 	'createjs', 
 	'functions/math',
+	'functions/color',
 	'functions/animations'
-], function( _, $, Backbone, createjs, mathFunctions, animations ){
+], function( _, $, Backbone, createjs, mathFunctions, colorFunctions, animations ){
 	var ExplosionV = Backbone.View.extend({
 		shape: false,
 		initialize: function(){
@@ -32,7 +33,7 @@ define([
 			){				// draw body
 		 		this.shape.graphics
 		 			.clear()
-		 			.beginFill( this.model.get( 'color' ) )
+		 			.beginFill( colorFunctions.getRgbaString( this.model.get( 'color' )) )
 		 			.drawCircle(0, 0, this.model.get( 'currentRadius' ))
 		 			.endFill();
 		 	}
