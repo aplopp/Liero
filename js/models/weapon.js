@@ -24,7 +24,7 @@ define([
 			length: 10,
 			width: 2,
 			recoil: 100, // pixels/s
-			scatter: 0, // scatter of initial launch in degrees from tip of barrel
+			scatter: 0, // scatter of initial launch in degrees from tip of barrel, max 90
 		},
 		launchProjectile: function(){
 			var player = app.players[ this.get( 'holdingPlayer' ) ] ;
@@ -34,8 +34,14 @@ define([
 			// find end of barrel.
 			var barrelCoords = MathFunctions.getPointOnCircle( player.model.get( 'width' )/2, player.model.get( 'height' )/2, this.get('length'), xDir * aim );
 			// get the velocities by finding the point at the right aim on a circle of radius speed.
-			var velocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * aim );
 
+			var scatter = this.get( 'scatter' );
+			if ( scatter ){
+				var randScatter = MathFunctions.getRandomNumberBetween( - scatter/2, scatter/2 );
+				var velocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * ( aim + randScatter ) );
+			} else {
+				var velocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * aim );
+			}
 			var projectile = new Projectile({
 				// e nd of barrel coordinates
 				x: player.x + barrelCoords.x, // TODO, end of barrel
@@ -90,6 +96,15 @@ define([
 			var projectile = this.get( 'projectile' );
 			if ( _.isString( projectile )){
 				this.set( 'projectile', $.extend( {}, settings.projectiles[ projectile ] ) );
+			}
+			if ( this.get( 'scatter' ) > 90 ){
+				this.set( 'scatter', 90 );
+			}
+	
+		},
+		validate: function( attrs, options ){
+			if( attrs.scatter > 90 ){
+				return this.get( 'name' ) + ': Outside accepted limits for scatter.'; 
 			}
 		}		
 	}); 

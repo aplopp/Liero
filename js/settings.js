@@ -109,9 +109,10 @@ define({
 		},
 		machineGun: {
 			name: 'Machine Gun', 
-			reload: 100, // shots/s
+			reload: 20, // shots/s
 			recoil: 50, // pixels/s
 			speed: 1000, // pixels/s
+			scatter: 0, // max 90
 			projectile: 'bullet',
 			auto: true,
 			color: '#000', 
