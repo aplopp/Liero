@@ -44,6 +44,8 @@ define([
 				var randScatter = scatter ? MathFunctions.getRandomNumberBetween( - scatter/2, scatter/2 ) : 0;
 				var launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ) + randSpeedDiff, xDir * ( aim + randScatter ) );
 
+				var projectileSpec = this.get( 'projectile' );
+				
 				var projectile = new Projectile({
 					// e nd of barrel coordinates
 					x: player.x + barrelCoords.x, // TODO, end of barrel
@@ -51,7 +53,7 @@ define([
 					// x/y components of speed, depending on angle of barrel
 					vX: launchVelocities.x + player.vX,
 					vY: launchVelocities.y + player.vY,
-					model: this.get('projectile')
+					model: projectileSpec.onLaunch( this.get('projectile'), this )
 				});
 				app.addObject( projectile );
 			}

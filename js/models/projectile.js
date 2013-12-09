@@ -27,7 +27,11 @@ define([
 			delayToExplosion: 300, 
 			// the actual delay will be delayToExplosion +- a random number from 0 to explosionDelayVariability			
 			delayToExplosionVariability: 200,
-			explosion: 'small'
+			explosion: 'small',
+			// function to modify behaviour at launch time
+			onLaunch: function(projectile, weapon){
+				return projectile;
+			}
 		},	
 		initialize: function(){
 			var explosion = this.get( 'explosion');

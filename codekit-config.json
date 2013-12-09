@@ -35,15 +35,6 @@
       "outputAbbreviatedPath" : "\/js\/settings.min.js",
       "fileType" : 64
     },
-    "\/css\/main.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/css\/main.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
-    },
     "\/js\/models\/map-object.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -54,6 +45,15 @@
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/models\/map-object.min.js",
       "fileType" : 64
+    },
+    "\/css\/main.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/css\/main.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
     },
     "\/js\/models\/projectile.js" : {
       "ignoreWasSetByUser" : 1,

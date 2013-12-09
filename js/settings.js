@@ -129,7 +129,12 @@ define({
 			projectile: function( weapon ){
 				return {
 					modifies: 'bullet',
-					color: weapon.get('holdingPlayer').get('color')
+					color: weapon.get('holdingPlayer').get('color'),
+					onLaunch: function( projectile, weapon ){
+						projectile.width = Math.abs( weapon.getHoldingPlayer().vX ) / 100;
+						if (projectile.width < 1 ) projectile.width = 1;
+						return projectile;
+					}
 				};
 			},
 			// projectile: {
