@@ -16,14 +16,15 @@ define([
 		defaults: {
 			name: 'Weapon Name', 
 			reload: 1, // shots/s
-			recoil: 100, // pixels/s
 			speed: 500, // pixels/s
 			projectile: 'bullet',
 			auto: false,
 			holdingPlayer: false,
 			color: '#fff',
 			length: 10,
-			width: 2
+			width: 2,
+			recoil: 100, // pixels/s
+			scatter: 0, // scatter of initial launch in degrees from tip of barrel
 		},
 		launchProjectile: function(){
 			var player = app.players[ this.get( 'holdingPlayer' ) ] ;
@@ -33,7 +34,7 @@ define([
 			// find end of barrel.
 			var barrelCoords = MathFunctions.getPointOnCircle( player.model.get( 'width' )/2, player.model.get( 'height' )/2, this.get('length'), xDir * aim );
 			// get the velocities by finding the point at the right aim on a circle of radius speed.
-			var velocities = MathFunctions.getPointOnCircle( 0, 0, this.get( 'speed' ), xDir * aim );
+			var velocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * aim );
 
 			var projectile = new Projectile({
 				// e nd of barrel coordinates
@@ -44,6 +45,12 @@ define([
 				vY: velocities.y + player.vY,
 				model: this.get('projectile')
 			});
+			if ( recoil = this.get( 'recoil' )){
+				var recoilVelocities = MathFunctions.getVelocityComponents( recoil, xDir * ( aim - 180 ) );
+				console.log( recoil, recoilVelocities );
+				player.vX += recoilVelocities.x;
+				player.vY += recoilVelocities.y;
+			}
 			app.addObject( projectile );
 		},
 		_delay: false,

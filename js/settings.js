@@ -98,7 +98,7 @@ define({
 		grenadeLauncher: {
 			name: 'Grenade Launcher', 
 			reload: .5, // shots/s
-			recoil: 30, // pixels/s
+			recoil: 1000, // pixels/s
 			speed: 800, // pixels/s
 			projectile: 'grenade',
 			auto: false,
@@ -110,7 +110,7 @@ define({
 		machineGun: {
 			name: 'Machine Gun', 
 			reload: 100, // shots/s
-			recoil: 1, // pixels/s
+			recoil: 50, // pixels/s
 			speed: 1000, // pixels/s
 			projectile: 'bullet',
 			auto: true,
@@ -133,7 +133,7 @@ define({
 			color: '#000',
 			width: 2,
 			delayToExplosion: 1000,
-			delayToExplosionVariability: 100, 
+			delayToExplosionVariability: 0, 
 			explosion: 'small'
 		},
 		flame: {

@@ -10,6 +10,14 @@ define([], function(){
 			y: y
 		}
 	};
+	/**
+	 * splits speed into x and y velocities
+	 * @param speed
+	 * @param aim - degrees ( 0 is straight up, negative to the left )
+	 */
+	functions.getVelocityComponents = function( speed, aim ){
+		return functions.getPointOnCircle( 0, 0, speed, aim );
+	}
 	functions.getRandomNumberBetween = function(min, max) {
 	    return Math.random() * (max - min) + min;
 	};
