@@ -39,13 +39,14 @@ define([
 
 			var scatter = this.get( 'scatter' );
 			var speedVariability = this.get( 'speedVariability');
+			var projectileSpec = this.get( 'projectile' );
+			console.log( projectileSpec );
+
 			for( i = 0; i < this.get( 'perShot'); i++ ){
 				var randSpeedDiff = speedVariability ? MathFunctions.getRandomNumberBetween( - speedVariability/2, speedVariability/2 ) : 0;
 				var randScatter = scatter ? MathFunctions.getRandomNumberBetween( - scatter/2, scatter/2 ) : 0;
 				var launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ) + randSpeedDiff, xDir * ( aim + randScatter ) );
 
-				var projectileSpec = this.get( 'projectile' );
-				
 				var projectile = new Projectile({
 					// e nd of barrel coordinates
 					x: player.x + barrelCoords.x, // TODO, end of barrel
@@ -105,12 +106,13 @@ define([
 				projectile = projectile( this );
 			}
 
+			var requiredProps = { onLaunch: function( projectile ){ return projectile; } };
 			if ( _.isString( projectile )){
-				this.set( 'projectile', $.extend( {}, settings.projectiles[ projectile ] ) );
+				this.set( 'projectile', $.extend( {}, requiredProps, settings.projectiles[ projectile ] ) );
 			} else if ( _.isString( projectile.modifies ) ){
 				var baseProjectile = settings.projectiles[ projectile.modifies];
 				delete projectile.modifies;
-				this.set( 'projectile', $.extend({}, baseProjectile, projectile ) );
+				this.set( 'projectile', $.extend( {}, requiredProps, baseProjectile, projectile ) );
 			}
 			if ( this.get( 'scatter' ) > 90 ){
 				this.set( 'scatter', 90 );
