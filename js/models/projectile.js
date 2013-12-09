@@ -15,6 +15,7 @@ define([
 			// personal properties
 			color: '#666',
 			width: 1,
+			height: 1,
 			perShot: 1, // how many per shot
 			scatter: 0, // scatter, in degrees (max 90)
 			bounce: .8, // energy retained after bounce (.8 = 80%)
@@ -33,6 +34,8 @@ define([
 			if ( _.isString( explosion) ){
 				this.set( 'explosion', $.extend( {}, settings.explosions[ explosion ] ));
 			}
+			this.set( 'height', this.get( 'width' ) );
+			console.log( this.get( 'delayToExplosion'));
 		}
 	}); 
 	return ProjectileM;

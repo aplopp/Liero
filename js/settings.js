@@ -131,7 +131,8 @@ define({
 		bullet: {
 			name: 'Bullet',
 			color: '#000',
-			width: 3,
+			width: 2,
+			delayToExplosion: 1000,
 			delayToExplosionVariability: 100, 
 			explosion: 'small'
 		},

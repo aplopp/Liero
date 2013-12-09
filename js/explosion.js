@@ -40,7 +40,6 @@ define([
 			// console.log( msPerFrame, spec.model, this.model.attributes );
 			// percent of animation to do in each frame
 	        this.eachFramePercent = msPerFrame / this.model.get( 'duration' );
-
 		},
 		counter: 0,
 		// a temp array of colors on the way to the destination color
