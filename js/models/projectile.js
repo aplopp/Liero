@@ -35,7 +35,6 @@ define([
 				this.set( 'explosion', $.extend( {}, settings.explosions[ explosion ] ));
 			}
 			this.set( 'height', this.get( 'width' ) );
-			console.log( this.get( 'delayToExplosion'));
 		}
 	}); 
 	return ProjectileM;

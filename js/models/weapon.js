@@ -19,12 +19,13 @@ define([
 			speed: 500, // pixels/s
 			projectile: 'bullet',
 			auto: false,
+			recoil: 100, // pixels/s
+			scatter: 0, // scatter of initial launch in degrees from tip of barrel, max 90
 			holdingPlayer: false,
+			perShot: 1,
 			color: '#fff',
 			length: 10,
 			width: 2,
-			recoil: 100, // pixels/s
-			scatter: 0, // scatter of initial launch in degrees from tip of barrel, max 90
 		},
 		launchProjectile: function(){
 			var player = app.players[ this.get( 'holdingPlayer' ) ] ;
@@ -36,28 +37,28 @@ define([
 			// get the velocities by finding the point at the right aim on a circle of radius speed.
 
 			var scatter = this.get( 'scatter' );
-			if ( scatter ){
-				var randScatter = MathFunctions.getRandomNumberBetween( - scatter/2, scatter/2 );
-				var velocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * ( aim + randScatter ) );
-			} else {
-				var velocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * aim );
+			var launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * aim );
+			for( i = 0; i < this.get( 'perShot'); i++ ){
+				if ( scatter ){
+					var randScatter = MathFunctions.getRandomNumberBetween( - scatter/2, scatter/2 );
+					launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * ( aim + randScatter ) );
+				}
+				var projectile = new Projectile({
+					// e nd of barrel coordinates
+					x: player.x + barrelCoords.x, // TODO, end of barrel
+					y: player.y + barrelCoords.y, // TODO, end of barrel
+					// x/y components of speed, depending on angle of barrel
+					vX: launchVelocities.x + player.vX,
+					vY: launchVelocities.y + player.vY,
+					model: this.get('projectile')
+				});
+				app.addObject( projectile );
 			}
-			var projectile = new Projectile({
-				// e nd of barrel coordinates
-				x: player.x + barrelCoords.x, // TODO, end of barrel
-				y: player.y + barrelCoords.y, // TODO, end of barrel
-				// x/y components of speed, depending on angle of barrel
-				vX: velocities.x + player.vX,
-				vY: velocities.y + player.vY,
-				model: this.get('projectile')
-			});
 			if ( recoil = this.get( 'recoil' )){
 				var recoilVelocities = MathFunctions.getVelocityComponents( recoil, xDir * ( aim - 180 ) );
-				console.log( recoil, recoilVelocities );
 				player.vX += recoilVelocities.x;
 				player.vY += recoilVelocities.y;
 			}
-			app.addObject( projectile );
 		},
 		_delay: false,
 		fire: function(){
@@ -69,7 +70,7 @@ define([
 					that._delay = false;
 				}, 1000/this.get('reload') );
 
-				console.log( count++, this.get( 'name' ) + ': fired ' + this.get( 'projectile' ).name );
+				console.log( count++, this.get( 'name' ) + ': fired ' + this.get('perShot') +' '+ this.get( 'projectile' ).name );
 				this.launchProjectile();
 			} else {
 				console.log( this.get( 'name' ) + ': too soon to fire ')
@@ -105,6 +106,9 @@ define([
 		validate: function( attrs, options ){
 			if( attrs.scatter > 90 ){
 				return this.get( 'name' ) + ': Outside accepted limits for scatter.'; 
+			}
+			if ( attrs.perShot < 1 ){
+				return this.get( 'name' ) + ': perShot must be > 0.'; 
 			}
 		}		
 	}); 

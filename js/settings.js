@@ -34,7 +34,7 @@ define({
 				color: '#249',
 				height: 20,
 				width: 20,
-				weapons: [ 'grenadeLauncher', 'machineGun', 'gun' ]
+				weapons: [ 'shotgun', 'grenadeLauncher', 'machineGun', 'gun' ]
 			}, 
 			keyBindings: {
 				left: 37, // l
@@ -58,7 +58,7 @@ define({
 				color: '#350',
 				height: 30,
 				width: 30,
-				weapons: [ 'gun', 'grenadeLauncher', 'hugeGun']
+				weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
 			}, 
 			keyBindings: {
 				left: 65, //a
@@ -118,6 +118,19 @@ define({
 			color: '#000', 
 			length: 20, 
 			width: 3
+		},
+		shotgun: {
+			name: 'Shotgun',
+			reload: 500,
+			recoil: 200,
+			speed: 900,
+			scatter: 30,
+			projectile: 'bullet',
+			auto: false, 
+			perShot: 20,
+			color: '#efefef',
+			length: 10, 
+			width: 4
 		}
 	}, 
 	projectiles: {
