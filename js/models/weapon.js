@@ -98,6 +98,10 @@ define([
 			var projectile = this.get( 'projectile' );
 			if ( _.isString( projectile )){
 				this.set( 'projectile', $.extend( {}, settings.projectiles[ projectile ] ) );
+			} else if ( _.isString( projectile.modifies ) ){
+				var baseProjectile = settings.projectiles[ projectile.modifies];
+				delete projectile.modifies;
+				this.set( 'projectile', $.extend({}, baseProjectile, projectile ) );
 			}
 			if ( this.get( 'scatter' ) > 90 ){
 				this.set( 'scatter', 90 );

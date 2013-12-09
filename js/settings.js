@@ -126,7 +126,13 @@ define({
 			speed: 900,
 			speedVariability: 100,
 			scatter: 30,
-			projectile: 'bullet',
+			// projectile: function( player ){
+
+			// },
+			projectile: {
+				modifies: 'bullet',
+				color: 'yellow'
+			},
 			auto: false, 
 			perShot: 20,
 			color: '#efefef',
