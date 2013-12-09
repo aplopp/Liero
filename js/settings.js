@@ -126,13 +126,16 @@ define({
 			speed: 900,
 			speedVariability: 100,
 			scatter: 30,
-			// projectile: function( player ){
-
-			// },
-			projectile: {
-				modifies: 'bullet',
-				color: 'yellow'
+			projectile: function( weapon ){
+				return {
+					modifies: 'bullet',
+					color: weapon.get('holdingPlayer').get('color')
+				};
 			},
+			// projectile: {
+			// 	modifies: 'bullet',
+			// 	color: 'yellow'
+			// },
 			auto: false, 
 			perShot: 20,
 			color: '#efefef',

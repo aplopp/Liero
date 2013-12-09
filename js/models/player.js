@@ -30,7 +30,7 @@ define([
 			var weapons = [];	
 			_.each( weaponIDs, function(weaponID){
 				var weaponSpec = settings.weapons[ weaponID ];
-				weaponSpec.holdingPlayer = that.id;
+				weaponSpec.holdingPlayer = that;
 				weapons.push( new WeaponM( weaponSpec ) );
 			});
 			this.set( 'weapons', weapons );

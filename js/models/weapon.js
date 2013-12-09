@@ -29,7 +29,7 @@ define([
 			width: 2,
 		},
 		launchProjectile: function(){
-			var player = app.players[ this.get( 'holdingPlayer' ) ] ;
+			var player = this.getHoldingPlayer();
 			var xDir = player.model.get( 'facing' ) === 'left' ? -1 : 1;
 			var aim = player.model.get( 'aim' );
 
@@ -93,9 +93,16 @@ define([
 		stopShooting: function(){
 			clearInterval( this._shooting );
 		},
+		getHoldingPlayer: function(){
+			return app.players[ this.get( 'holdingPlayer' ) ];
+		},
 		initialize: function(){
 			// change explosion spec to right format
 			var projectile = this.get( 'projectile' );
+			if ( _.isFunction( projectile )){
+				projectile = projectile( this );
+			}
+
 			if ( _.isString( projectile )){
 				this.set( 'projectile', $.extend( {}, settings.projectiles[ projectile ] ) );
 			} else if ( _.isString( projectile.modifies ) ){
@@ -106,6 +113,7 @@ define([
 			if ( this.get( 'scatter' ) > 90 ){
 				this.set( 'scatter', 90 );
 			}
+			this.set( 'holdingPlayer', this.get( 'holdingPlayer' ).id ); // reduce to simple ID for reference
 	
 		},
 		validate: function( attrs, options ){
