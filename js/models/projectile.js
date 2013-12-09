@@ -14,7 +14,6 @@ define([
 		defaults: {
 			// personal properties
 			color: '#666',
-			height: 1,
 			width: 1,
 			perShot: 1, // how many per shot
 			scatter: 0, // scatter, in degrees (max 90)

@@ -33,7 +33,7 @@ define([
 		 		this.shape.graphics
 		 			.clear()
 		 			.beginFill( this.model.get( 'color' ) )
-		 			.drawRect(0, 0, this.model.get( 'width' ), this.model.get( 'height') )
+		 			.drawCircle(0, 0, this.model.get( 'width' ))
 		 			.endFill();
 		 	}
 			

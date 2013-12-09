@@ -124,7 +124,6 @@ define({
 			name: 'Grenade',
 			color: '#cc0000',
 			width: 15,
-			height: 15,
 			delayToExplosion: 1000,
 			delayToExplosionVariability: 0,
 			explosion: 'big'
@@ -133,7 +132,6 @@ define({
 			name: 'Bullet',
 			color: '#000',
 			width: 3,
-			height: 3,
 			delayToExplosionVariability: 100, 
 			explosion: 'small'
 		},
@@ -141,7 +139,6 @@ define({
 			name: 'Flame',
 			color: 'orange',
 			width: 10,
-			height: 10,
 			delayToExplosionVariability: 100, 
 			explosion: 'special'			
 		}

@@ -47,8 +47,8 @@ define([
 			var that = this;
 			var explosionSpec = this.model.get( 'explosion' );
 			var explosion = new Explosion({ 
-				x: this.x + this.model.get( 'width' ) /2, // center x
-				y: this.y + this.model.get( 'height' ) /2, // center y
+				x: this.x , // center x
+				y: this.y, // center y
 				vX: this.vX, 
 				vY: this.vY,
 				model: explosionSpec 

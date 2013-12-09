@@ -18,6 +18,7 @@ define([
 	                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
 	            }); 			
 	        }
+	        // spec x and y are center of projectile
 	        this.x = spec.x;
 	        // this.vX = spec.vX;	        
 	        this.y = spec.y;
@@ -58,72 +59,10 @@ define([
 			var colors = animation.colors;
 			var color = MathFunctions.getGradiatedPropertyAtProgress( colors, progress );
 			this.model.set( '_color', color );
+			// handle radius animation
 			var radius = MathFunctions.getGradiatedPropertyAtProgress( animation.radius, progress );
 			this.model.set( '_radius', radius );
-
-
-			// var fromColorObj = false; 
-			// var toColorObj = false; 
-			// var color = false;
-			// _.each( colors, function( obj, index ){
-			// 	if ( color ) return; // if color found, done
-
-			// 	if ( progress === obj.position ){ // if on the head, obviously use that color
-			// 		color = obj.color;
-			// 	} else if ( progress > obj.position ){ // if you passed a colors position, set to and from
-			// 		fromColorObj = colors[ index ]; 					
-			// 		toColorObj = index <= colors.length-1 ? colors[ index + 1 ] : false;
-			// 	}
-			// });
-			// if ( ! color ){
-			// 	// check if one is set and not the other
-			// 	if ( toColorObj && !fromColorObj ){
-			// 		color = toColorObj.color;
-			// 	} else if ( fromColorObj && !toColorObj ){
-			// 		color = fromColorObj.color;
-			// 	}
-			// }
-			// // find the color between the two
-			// if ( ! color ){
-			// 	var colorProg = ( progress - fromColorObj.position )/(toColorObj.position - fromColorObj.position);
-			// 	color = [ 0, 0, 0, 0 ];
-			// 	color = _.map( color, function(num, index ){
-			// 		var from = fromColorObj.color[ index ];
-			// 		var to = toColorObj.color[ index ];
-			// 		return Math.round( from + ( to - from ) * colorProg );
-			// 	});
-			// }
-
-			// // handle radius
-			// var radiuses = animation.radius;
-			// _.each( radiuses, function( obj, index ){
-			// 	if ( radius ) return; // if color found, done
-
-			// 	if ( progress === obj.position ){ // if on the head, obviously use that color
-			// 		radius = obj.radius;
-			// 	} else if ( progress > obj.position ){ // if you passed a colors position, set to and from
-			// 		fromRadiusObj = radiuses[ index ]; 					
-			// 		toRadiusObj = index <= radiuses.length-1 ? radiuses[ index + 1 ] : false;
-			// 	}
-			// });
-			// if ( ! color ){
-			// 	// check if one is set and not the other
-			// 	if ( toColorObj && !fromColorObj ){
-			// 		color = toColorObj.color;
-			// 	} else if ( fromColorObj && !toColorObj ){
-			// 		color = fromColorObj.color;
-			// 	}
-			// }
-			// // find the color between the two
-			// if ( ! color ){
-			// 	var colorProg = ( progress - fromColorObj.position )/(toColorObj.position - fromColorObj.position);
-			// 	color = [ 0, 0, 0, 0 ];
-			// 	color = _.map( color, function(num, index ){
-			// 		var from = fromColorObj.color[ index ];
-			// 		var to = toColorObj.color[ index ];
-			// 		return Math.round( from + ( to - from ) * colorProg );
-			// 	});
-			// }			
+			
 			this.counter++;			
 		}
  	});		
