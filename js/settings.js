@@ -124,6 +124,7 @@ define({
 			reload: 500,
 			recoil: 200,
 			speed: 900,
+			speedVariability: 100,
 			scatter: 30,
 			projectile: 'bullet',
 			auto: false, 

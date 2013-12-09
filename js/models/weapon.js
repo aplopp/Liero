@@ -17,6 +17,7 @@ define([
 			name: 'Weapon Name', 
 			reload: 1, // shots/s
 			speed: 500, // pixels/s
+			speedVariability: 0,
 			projectile: 'bullet',
 			auto: false,
 			recoil: 100, // pixels/s
@@ -37,12 +38,12 @@ define([
 			// get the velocities by finding the point at the right aim on a circle of radius speed.
 
 			var scatter = this.get( 'scatter' );
-			var launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * aim );
+			var speedVariability = this.get( 'speedVariability');
 			for( i = 0; i < this.get( 'perShot'); i++ ){
-				if ( scatter ){
-					var randScatter = MathFunctions.getRandomNumberBetween( - scatter/2, scatter/2 );
-					launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ), xDir * ( aim + randScatter ) );
-				}
+				var randSpeedDiff = speedVariability ? MathFunctions.getRandomNumberBetween( - speedVariability/2, speedVariability/2 ) : 0;
+				var randScatter = scatter ? MathFunctions.getRandomNumberBetween( - scatter/2, scatter/2 ) : 0;
+				var launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ) + randSpeedDiff, xDir * ( aim + randScatter ) );
+
 				var projectile = new Projectile({
 					// e nd of barrel coordinates
 					x: player.x + barrelCoords.x, // TODO, end of barrel

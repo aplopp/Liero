@@ -13,20 +13,9 @@
       "outputAbbreviatedPath" : "\/js\/views\/player.min.js",
       "fileType" : 64
     },
-    "\/js\/models\/weapon.min.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/models\/weapon.min.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/models\/weapon.min.min.js",
-      "fileType" : 64
-    },
     "\/js\/models\/explosion.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/models\/explosion.js",
@@ -67,8 +56,8 @@
       "fileType" : 16
     },
     "\/js\/models\/projectile.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/models\/projectile.js",
@@ -87,8 +76,8 @@
       "fileType" : 16
     },
     "\/js\/models\/weapon.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/models\/weapon.js",
@@ -120,8 +109,8 @@
       "fileType" : 64
     },
     "\/js\/views\/object.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/views\/object.js",
@@ -131,8 +120,8 @@
       "fileType" : 64
     },
     "\/js\/projectile.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/projectile.js",
@@ -142,8 +131,8 @@
       "fileType" : 64
     },
     "\/js\/explosion.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/explosion.js",
@@ -185,9 +174,20 @@
       "outputAbbreviatedPath" : "\/js\/models\/player.min.js",
       "fileType" : 64
     },
-    "\/js\/functions\/color.js" : {
+    "\/js\/models\/projectile.min.js" : {
       "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/models\/projectile.min.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/models\/projectile.min.min.js",
+      "fileType" : 64
+    },
+    "\/js\/functions\/color.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/functions\/color.js",
@@ -208,8 +208,8 @@
       "fileType" : 64
     },
     "\/js\/views\/projectile.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/views\/projectile.js",
@@ -241,8 +241,8 @@
       "fileType" : 64
     },
     "\/js\/views\/explosion.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/views\/explosion.js",
@@ -296,8 +296,8 @@
       "fileType" : 8192
     },
     "\/js\/classes\/MapObject.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
       "inputAbbreviatedPath" : "\/js\/classes\/MapObject.js",
