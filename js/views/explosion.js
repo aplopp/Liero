@@ -3,10 +3,8 @@ define([
 	'jquery',	
 	'backbone',
 	'createjs', 
-	'functions/math',
-	'functions/color',
-	'functions/animations'
-], function( _, $, Backbone, createjs, mathFunctions, colorFunctions, animations ){
+	'functions/color'
+], function( _, $, Backbone, createjs, ColorFunctions ){
 	var ExplosionV = Backbone.View.extend({
 		shape: false,
 		initialize: function(){
@@ -27,14 +25,14 @@ define([
 			}
 			// set up the shape
 			if ( 
-				_.has( changed, 'color' ) 
-				|| _.has( changed, 'height' ) 
-				|| _.has( changed, 'currentRadius' )
-			){				// draw body
+				_.has( changed, '_color' ) 
+				|| _.has( changed, '_radius' )
+			){			
+				// draw
 		 		this.shape.graphics
 		 			.clear()
-		 			.beginFill( colorFunctions.getRgbaString( this.model.get( 'color' )) )
-		 			.drawCircle(0, 0, this.model.get( 'currentRadius' ))
+		 			.beginFill( ColorFunctions.getRgbaString( this.model.get( '_color' ) ) )
+		 			.drawCircle(0, 0, this.model.get( '_radius' ))
 		 			.endFill();
 		 	}
 	

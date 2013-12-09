@@ -3,8 +3,9 @@ define([
 	'backbone',
 	'createjs', 
 	'models/weapon',
-	'settings'
-], function( _, Backbone, createjs, WeaponM, settings ){
+	'settings', 
+	'functions/color'
+], function( _, Backbone, createjs, WeaponM, settings, ColorFunctions ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -26,12 +27,13 @@ define([
 			delayToExplosion: 300, 
 			// the actual delay will be delayToExplosion +- a random number from 0 to explosionDelayVariability			
 			delayToExplosionVariability: 200,
-			explosion: {
-			}
-
+			explosion: 'small'
 		},	
 		initialize: function(){
-			
+			var explosion = this.get( 'explosion');
+			if ( _.isString( explosion) ){
+				this.set( 'explosion', $.extend( {}, settings.explosions[ explosion ] ));
+			}
 		}
 	}); 
 	return ProjectileM;

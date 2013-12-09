@@ -5,8 +5,9 @@ define([
 	'createjs', 
 	'models/explosion',
 	'views/explosion', 
-	'classes/MapObject'
-], function( settings, _, Backbone, createjs, ExplosionM, ExplosionV, MapObject ){
+	'classes/MapObject',
+	'functions/math'
+], function( settings, _, Backbone, createjs, ExplosionM, ExplosionV, MapObject, MathFunctions ){
 	var Explosion = MapObject.extend({
 		initialize: function( spec ){
 			var that = this;
@@ -25,6 +26,7 @@ define([
 	        // explosions are stationary
 	        this.vX = 0;
 	        this.vY = 0; 
+
 			this.model = new ExplosionM( spec.model );
 			this.view = new ExplosionV({ model: this.model });
 	        
@@ -37,6 +39,7 @@ define([
 			// console.log( msPerFrame, spec.model, this.model.attributes );
 			// percent of animation to do in each frame
 	        this.eachFramePercent = msPerFrame / this.model.get( 'duration' );
+
 		},
 		counter: 0,
 		// a temp array of colors on the way to the destination color
@@ -49,29 +52,78 @@ define([
 				return;
 			}
 
+			// handle animation 
+			var animation = this.model.get( 'animation' );
+			// handle color animation 
+			var colors = animation.colors;
+			var color = MathFunctions.getGradiatedPropertyAtProgress( colors, progress );
+			this.model.set( '_color', color );
+			var radius = MathFunctions.getGradiatedPropertyAtProgress( animation.radius, progress );
+			this.model.set( '_radius', radius );
 
-			// handle colors 
-			
-			var colors = this.model.get( 'colors' );
-			var colorProg = progress * ( colors.length - 1 );
-			var colorIndex = Math.floor( colorProg );
-			var colorPos = colorProg % 1;
-			var fromColor = colors[ colorIndex ];
-			var toColor = colors[ colorIndex + 1 ];	
-			var color = [0,0,0,0];
-			if ( colorIndex === colors.length - 1 ){
-				color = colors[ colors.length - 1 ];
-			} else {
-				color = _.map( color, function(num, index ){
-					var from = fromColor[ index ];
-					var to = toColor[ index ];
-					return Math.round( from + ( to - from ) * colorPos );
-				});
-			}
-			this.model.set( 'color', color );
 
-			// handle radius
-			this.model.set( 'currentRadius', this.model.get( 'radius') * ( 1 - Math.abs( progress * 2 - 1) ));
+			// var fromColorObj = false; 
+			// var toColorObj = false; 
+			// var color = false;
+			// _.each( colors, function( obj, index ){
+			// 	if ( color ) return; // if color found, done
+
+			// 	if ( progress === obj.position ){ // if on the head, obviously use that color
+			// 		color = obj.color;
+			// 	} else if ( progress > obj.position ){ // if you passed a colors position, set to and from
+			// 		fromColorObj = colors[ index ]; 					
+			// 		toColorObj = index <= colors.length-1 ? colors[ index + 1 ] : false;
+			// 	}
+			// });
+			// if ( ! color ){
+			// 	// check if one is set and not the other
+			// 	if ( toColorObj && !fromColorObj ){
+			// 		color = toColorObj.color;
+			// 	} else if ( fromColorObj && !toColorObj ){
+			// 		color = fromColorObj.color;
+			// 	}
+			// }
+			// // find the color between the two
+			// if ( ! color ){
+			// 	var colorProg = ( progress - fromColorObj.position )/(toColorObj.position - fromColorObj.position);
+			// 	color = [ 0, 0, 0, 0 ];
+			// 	color = _.map( color, function(num, index ){
+			// 		var from = fromColorObj.color[ index ];
+			// 		var to = toColorObj.color[ index ];
+			// 		return Math.round( from + ( to - from ) * colorProg );
+			// 	});
+			// }
+
+			// // handle radius
+			// var radiuses = animation.radius;
+			// _.each( radiuses, function( obj, index ){
+			// 	if ( radius ) return; // if color found, done
+
+			// 	if ( progress === obj.position ){ // if on the head, obviously use that color
+			// 		radius = obj.radius;
+			// 	} else if ( progress > obj.position ){ // if you passed a colors position, set to and from
+			// 		fromRadiusObj = radiuses[ index ]; 					
+			// 		toRadiusObj = index <= radiuses.length-1 ? radiuses[ index + 1 ] : false;
+			// 	}
+			// });
+			// if ( ! color ){
+			// 	// check if one is set and not the other
+			// 	if ( toColorObj && !fromColorObj ){
+			// 		color = toColorObj.color;
+			// 	} else if ( fromColorObj && !toColorObj ){
+			// 		color = fromColorObj.color;
+			// 	}
+			// }
+			// // find the color between the two
+			// if ( ! color ){
+			// 	var colorProg = ( progress - fromColorObj.position )/(toColorObj.position - fromColorObj.position);
+			// 	color = [ 0, 0, 0, 0 ];
+			// 	color = _.map( color, function(num, index ){
+			// 		var from = fromColorObj.color[ index ];
+			// 		var to = toColorObj.color[ index ];
+			// 		return Math.round( from + ( to - from ) * colorProg );
+			// 	});
+			// }			
 			this.counter++;			
 		}
  	});		

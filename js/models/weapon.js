@@ -5,7 +5,8 @@ define([
 	'settings',
 	'projectile', 
 	'functions/math',
-], function( _, Backbone, createjs, settings, Projectile, mathFunctions ){
+	'functions/color'
+], function( _, Backbone, createjs, settings, Projectile, MathFunctions, ColorFunctions ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -30,9 +31,9 @@ define([
 			var aim = player.model.get( 'aim' );
 
 			// find end of barrel.
-			var barrelCoords = mathFunctions.getPointOnCircle( player.model.get( 'width' )/2, player.model.get( 'height' )/2, this.get('length'), xDir * aim );
+			var barrelCoords = MathFunctions.getPointOnCircle( player.model.get( 'width' )/2, player.model.get( 'height' )/2, this.get('length'), xDir * aim );
 			// get the velocities by finding the point at the right aim on a circle of radius speed.
-			var velocities = mathFunctions.getPointOnCircle( 0, 0, this.get( 'speed' ), xDir * aim );
+			var velocities = MathFunctions.getPointOnCircle( 0, 0, this.get( 'speed' ), xDir * aim );
 
 			var projectile = new Projectile({
 				// e nd of barrel coordinates
@@ -41,7 +42,7 @@ define([
 				// x/y components of speed, depending on angle of barrel
 				vX: velocities.x + player.vX,
 				vY: velocities.y + player.vY,
-				model: settings.projectiles[ this.get('projectile') ]
+				model: this.get('projectile')
 			});
 			app.addObject( projectile );
 		},
@@ -55,7 +56,7 @@ define([
 					that._delay = false;
 				}, 1000/this.get('reload') );
 
-				console.log( count++, this.get( 'name' ) + ': fired ' + this.get( 'projectile' ) );
+				console.log( count++, this.get( 'name' ) + ': fired ' + this.get( 'projectile' ).name );
 				this.launchProjectile();
 			} else {
 				console.log( this.get( 'name' ) + ': too soon to fire ')
@@ -78,6 +79,11 @@ define([
 			clearInterval( this._shooting );
 		},
 		initialize: function(){
+			// change explosion spec to right format
+			var projectile = this.get( 'projectile' );
+			if ( _.isString( projectile )){
+				this.set( 'projectile', $.extend( {}, settings.projectiles[ projectile ] ) );
+			}
 		}		
 	}); 
 	return WeaponM;

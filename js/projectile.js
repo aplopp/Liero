@@ -8,7 +8,7 @@ define([
 	'classes/MapObject',
 	'explosion',
 	'keys', 
-	'functions/math'
+	'functions/math',
 ], function( settings, _, Backbone, createjs, ProjectileM, ProjectileV, MapObject, Explosion, keys, MathFunctions ){
 	var Projectile = MapObject.extend({
 		/**
@@ -41,13 +41,14 @@ define([
 			setTimeout( function(){
 				that.explode();
 			}, MathFunctions.getRandomNumberBetween( delayMin, delayMax ) );
+
 		}, 
 		explode: function( ){
 			var that = this;
 			var explosionSpec = this.model.get( 'explosion' );
 			var explosion = new Explosion({ 
-				x: this.x, 
-				y: this.y, 
+				x: this.x + this.model.get( 'width' ) /2, // center x
+				y: this.y + this.model.get( 'height' ) /2, // center y
 				vX: this.vX, 
 				vY: this.vY,
 				model: explosionSpec 

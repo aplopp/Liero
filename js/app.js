@@ -5,8 +5,9 @@ define([
 	'createjs',
 	'map', 
 	'player', 
-	'keys'
-], function( _, Backbone, $, createjs, Map, Player, keys ){
+	'keys', 
+	'functions/color'
+], function( _, Backbone, $, createjs, Map, Player, keys, ColorFunctions ){
 	Backbone.$ = $;
 	var noop = function(){}
 
@@ -30,7 +31,9 @@ define([
 		 * After setting up map, sets up players, other objects, and kicks it off.
 		 */
 		this.init = function( settings ){
-			this.settings = settings;
+			// make a copy of original settings for reference
+			this._origSettings = $.extend( {}, settings );
+			this.settings = that.initSettings( settings );
 			this.keys = keys;
 
 			this.getMap( function( map ){
@@ -41,6 +44,26 @@ define([
 				that.addInitialObjectsToStage();
 				that.start();
 			});
+		}
+		/**
+		 * Goes through settings and converts values like colors
+		 * or other things that would have to be done over and over
+		 * @param  {[type]} settings [description]
+		 * @return {[type]}          [description]
+		 */
+		this.initSettings = function( settings ){
+			_.each( settings.explosions, function( explosionSpec, key ){
+				// change colors to rgba array
+				settings.explosions[key].animation.colors = _.map( explosionSpec.animation.colors, function( obj ){
+					if ( _.isArray( obj ) ) return;
+					return _.extend( obj, { value: ColorFunctions.getColorRgba( obj.value ) });
+				});
+				// sort by position
+				settings.explosions[key].animation.colors = _.sortBy( explosionSpec.animation.colors, function(obj){
+					return obj.position;
+				});
+			});
+			return settings;
 		}
 		/**
 		 * Grab the map file specified in the settings, and based on that, create a new Map(). 
