@@ -40,7 +40,6 @@ define([
 			var scatter = this.get( 'scatter' );
 			var speedVariability = this.get( 'speedVariability');
 			var projectileSpec = this.get( 'projectile' );
-			console.log( projectileSpec );
 
 			for( i = 0; i < this.get( 'perShot'); i++ ){
 				var randSpeedDiff = speedVariability ? MathFunctions.getRandomNumberBetween( - speedVariability/2, speedVariability/2 ) : 0;
@@ -117,6 +116,11 @@ define([
 			if ( this.get( 'scatter' ) > 90 ){
 				this.set( 'scatter', 90 );
 			}
+			if ( this.get( 'perShot' ) > 50 ) {
+				this.set( 'perShot', 50 );				
+			} else if ( this.get( 'perShot' ) < 1 ){
+				this.set('perShot', 1 );
+			}		
 			this.set( 'holdingPlayer', this.get( 'holdingPlayer' ).id ); // reduce to simple ID for reference
 	
 		},
@@ -124,9 +128,9 @@ define([
 			if( attrs.scatter > 90 ){
 				return this.get( 'name' ) + ': Outside accepted limits for scatter.'; 
 			}
-			if ( attrs.perShot < 1 ){
-				return this.get( 'name' ) + ': perShot must be > 0.'; 
-			}
+			if( attrs.perShot > 50 || attrs.perShot < 1 ){
+				return this.get( 'name' )+ ': PerShot must be between 1 and 50'; 
+			}			
 		}		
 	}); 
 	return WeaponM;

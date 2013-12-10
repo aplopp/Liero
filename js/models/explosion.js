@@ -27,16 +27,7 @@ define([
 				]
 			},
 			_color: false,
-			_radius: false,
-			particles: {
-				amount: 0,
-				type: 'particleType'
-			},
-			projectiles: {
-				amount: 0,
-				directional: true,
-				scatter: 30
-			}
+			_radius: false
 		}, 
 		initialize: function(){
 			// set initial color
@@ -44,6 +35,7 @@ define([
 
 			// set initial radius
 			this.set( '_radius', this.get( 'animation' ).radius[ 0 ].value );
+
 		}
 	}); 
 	return ExplosionM;

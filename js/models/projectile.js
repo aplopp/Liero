@@ -35,9 +35,12 @@ define([
 		},	
 		initialize: function(){
 			var explosion = this.get( 'explosion');
-			if ( _.isString( explosion) ){
-				this.set( 'explosion', $.extend( {}, settings.explosions[ explosion ] ));
+			if ( _.isString( explosion ) ){
+				var type = explosion;
+				var explosion = settings.explosions[ explosion ];
+				this.set( 'explosion', $.extend({ _type: type }, explosion ) );
 			}
+
 			this.set( 'height', this.get( 'width' ) );
 		}
 	}); 

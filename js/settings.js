@@ -109,7 +109,7 @@ define({
 		},
 		machineGun: {
 			name: 'Machine Gun', 
-			reload: 20, // shots/s
+			reload: 40, // shots/s
 			recoil: 50, // pixels/s
 			speed: 1000, // pixels/s
 			scatter: 0, // max 90
@@ -125,7 +125,7 @@ define({
 			recoil: 200,
 			speed: 900,
 			speedVariability: 100,
-			scatter: 30,
+			scatter: 20,
 			projectile: function( weapon ){
 				return {
 					modifies: 'bullet',
@@ -142,7 +142,7 @@ define({
 			// 	color: 'yellow'
 			// },
 			auto: false, 
-			perShot: 20,
+			perShot: 1000,
 			color: '#efefef',
 			length: 10, 
 			width: 4

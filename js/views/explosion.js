@@ -31,7 +31,7 @@ define([
 				// draw
 		 		this.shape.graphics
 		 			.clear()
-		 			.beginFill( ColorFunctions.getRgbaString( this.model.get( '_color' ) ) )
+		 			.beginFill( this.model.get( '_color' ) )
 		 			.drawCircle(0, 0, this.model.get( '_radius' ))
 		 			.endFill();
 		 	}
