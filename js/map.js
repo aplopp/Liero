@@ -2,7 +2,8 @@ define([
 	'underscore', 
 	'backbone',
 	'createjs',
-], function( _, Backbone, createjs ){
+	'settings'
+], function( _, Backbone, createjs, settings ){
 	var defaults = {
 		width: 1000, 
 		height: 500,
@@ -99,5 +100,104 @@ define([
 		return false; 
 	};
 
+	/**
+	 * 1) check whether the item is off the map
+	 * 2) If it is, handle the wall collision
+	 */
+	Map.prototype.checkWallCollision = function( mapObject ){
+		var offscreen = this.isMapObjectOffMap( mapObject );
+		var hadCollision = offscreen.x || offscreen.y;
+		while( offscreen.x || offscreen.y ) {
+			if ( offscreen.x ){
+				var collisionX = offscreen.x < 0 ? 0 : this.canvas.width ; 
+				if ( offscreen.x < 0 ){
+					var collisionX = 0;
+					// cancel velocity entirely if doing itty bitty bounces
+					if ( mapObject.vX < 0 && mapObject.vX > -20 ){
+						mapObject.vX = 0;		
+					}
+				} else {
+					var collisionX = this.canvas.width - mapObject.model.attributes.width;
+					// cancel velocity entirely if doing itty bitty bounces						
+					if ( mapObject.vX > 0 && mapObject.vX < 20 ){
+						mapObject.vX = 0;	
+					}
+				}					
+				var results = this.resolveWallCollisionX( collisionX, mapObject );
+				mapObject.x = results.point; 
+				mapObject.vX = results.velocity;	
+				mapObject.vY *= ( 1 - settings.physics.surfaceFriction );
+			}
+			if ( offscreen.y ){
+				if ( offscreen.y < 0 ){
+					var collisionY = 0;
+					// cancel velocity entirely if doing itty bitty bounces						
+					if ( mapObject.vY < 0 && mapObject.vY > -25 ){
+						mapObject.vY = 0;	
+					}	
+				} else {
+					var collisionY = this.canvas.height - mapObject.model.attributes.height;
+					// cancel velocity entirely if doing itty bitty bounces						
+					if ( mapObject.vY > 0 && mapObject.vY < 25 ){
+						mapObject.vY = 0;	
+					}						
+				}
+				var results = this.resolveWallCollisionY( collisionY, mapObject );
+				mapObject.y = results.point; 
+				mapObject.vY = results.velocity;
+				mapObject.vX *= ( 1 - settings.physics.surfaceFriction );
+			}
+			offscreen = this.isMapObjectOffMap( mapObject );			
+		} ;
+	}
+	/**
+	 * returns the end coord and the endV after a bounce; 
+	 * @param {collisionX} - where the collision happened
+	 * @param {endX} - where the object would have ended up
+	 * @param {vX} - how fast the object would have been traveling
+	 * @returns {object} - the bounced position and velocity
+	 */
+	Map.prototype.resolveWallCollisionX = function( collisionPoint, mapObject, acceleration ){
+		var prevPoint = mapObject.lastPos.x;
+		var acceleration = mapObject.physics.acceleration.x;
+		return {
+			point: collisionPoint - ( mapObject.x - collisionPoint ),
+			velocity: -1 * mapObject.physics.bounce * mapObject.vX
+		}
+	}
+	/**
+	 * returns the end coord and the endV after a bounce; 
+	 * @param {collisionX} - where the collision happened
+	 * @param {endX} - where the object would have ended up
+	 * @param {vX} - how fast the object would have been traveling
+	 * @returns {object} - the bounced position and velocity
+	 */
+	Map.prototype.resolveWallCollisionY = function( collisionPoint, mapObject, acceleration ){
+		var prevPoint = mapObject.lastPos.y;
+		var prevV = mapObject.lastPos.vY;
+		// includes gravity
+		var acceleration = settings.physics.gravity * mapObject.physics.gravity + mapObject.physics.acceleration.y;
+		// var y = ax*x + bx + c;
+		// var collisionPoint = acceleration * t2 + prevV*t + prevPoint;
+		// y = collisionPoint
+		// a = acceleration
+		// x = t
+		// b = prevV
+		// c = prevPoint
+		// // solve for t
+		// t = ( -prevV - Math.sqrt( prevV * prevV - 4 * acceleration * prevPoint ) ) / 2 * acceleration;
+		// console.log( 'PREV Velocity: ' + prevV, 'acceleration: ' + acceleration, 'prevPoint: ' + prevPoint, t );
+
+		return {
+			point: collisionPoint - ( mapObject.y - collisionPoint ),
+			velocity: -1 * mapObject.physics.bounce * mapObject.vY
+		}
+	}	
+	Map.prototype.isObjectInOccupiedSpace = function( mapObject ){
+		return {
+			x: this.checkOffX( mapObject.x, mapObject.model.get( 'width' ) ),
+			y: this.checkOffY( mapObject.y, mapObject.model.get( 'height' ) )
+		}
+	}
 	return Map; 
 });

@@ -10,7 +10,7 @@ define({
 		/** acceleration from gravity, in px/s */		
 		gravity: 1000, 
 		/** deceleration from groundFriction, in decimal lost per frame */
-		surfaceFriction: .01,
+		surfaceFriction: .05,
 		/** deceleration from airFriction, in px/s */
 		airFriction: 0
 	},
@@ -206,7 +206,7 @@ define({
 			},
 			physics: {
 				gravity: 1,
-				bounce: 1.1
+				bounce: .8
 			}
 		},
 		flame: {
