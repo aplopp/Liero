@@ -43,6 +43,7 @@ define([
 				var acceleration = false;
 			}
 			this.model.set( 'acceleration', acceleration );
+			
 			// set time until explosion
 			var delayMax = this.model.get( 'delayToExplosion') + this.model.get( 'delayToExplosionVariability' );
 			var delayMin = this.model.get( 'delayToExplosion') - this.model.get( 'delayToExplosionVariability' );

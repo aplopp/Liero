@@ -183,6 +183,7 @@ define({
 		bullet: {
 			name: 'Bullet',
 			color: '#000',
+			friction: 3, // fraction of energy lost each second
 			width: 2,
 			delayToExplosion: 1000,
 			delayToExplosionVariability: 0, 

@@ -24,6 +24,10 @@ define([ 'underscore', 'backbone', 'settings', 'keys' ], function( _, Backbone, 
 				this.vX += acceleration.x;
 				this.vY += acceleration.y;
 			}
+			if ( friction = this.model.get('friction')){
+				this.vX *= ( 1 - friction/settings.FPS );
+				this.vY *= ( 1 - friction/settings.FPS );
+			}
 			this.x += this.vX/settings.FPS;
 			this.y += this.vY/settings.FPS;		
 

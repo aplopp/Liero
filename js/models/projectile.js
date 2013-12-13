@@ -20,6 +20,7 @@ define([
 			scatter: 0, // scatter, in degrees (max 90)
 			bounce: .8, // energy retained after bounce (.8 = 80%)
 			acceleration: 0, // px/s/s
+			friction: 0,
 			aim: 0,
 			sticky: {
 				enabled: false,
