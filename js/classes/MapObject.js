@@ -1,4 +1,4 @@
-define([ 'underscore', 'backbone', 'settings', 'keys' ], function( _, Backbone, settings, keys ){
+define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], function( _, Backbone, settings, keys, MathFunctions ){
 	var id = 0;
 	function prefixEventName( event ){
 		return 'mo-'+id+'-' + event ;
@@ -6,7 +6,29 @@ define([ 'underscore', 'backbone', 'settings', 'keys' ], function( _, Backbone, 
 	var MapObject = function( options ){
 		this.id = id++;		
 		this.routeKeyPresses();
-		this.initialize( options );
+
+		this.x = _.has(options, 'x') ? options.x : 0;
+		this.y = _.has(options, 'y') ? options.y : 0;
+		this.vX = _.has(options, 'vX') ? options.vX : 0;
+		this.vY = _.has(options, 'vY') ? options.vY : 0;
+
+		var defaultPhysics = { 
+			friction: 0, 
+			gravity: 1, 
+			bounce: .8,
+			acceleration: false
+		};
+		if ( _.has( options, 'physics' )){
+			this.physics = _.extend( defaultPhysics, options.physics );
+		} else {
+			this.physics = defaultPhysics;
+		}
+		if ( this.physics.acceleration ){
+			// set up acceleration to accelerate in direction of initial launch
+			this.physics.acceleration = MathFunctions.getVelocityComponents( this.physics.acceleration, MathFunctions.getAngleFromVelocities( this.vX, this.vY ) ) ;
+		}
+
+		this.initialize( _.omit( options, [ 'x', 'y', 'vX', 'vY', 'physics' ] ) );
 	}
 	var p = _.extend( MapObject.prototype, {
 		model: null, 
@@ -15,38 +37,38 @@ define([ 'underscore', 'backbone', 'settings', 'keys' ], function( _, Backbone, 
 		vY: 1000,
 		x: 0, 
 		y: 0,
+		gravity: 1,
+		friction: 0,
+		bounce: .8,
+		acceleration: 0,
+		// sticky: 0,
 		id: 0,
 		initialize: function( options ){
 			// implemented by children
 		},
 		nextPosition:  function(){
-			if ( acceleration = this.model.get('acceleration')){
-				this.vX += acceleration.x;
-				this.vY += acceleration.y;
-			}
-			if ( friction = this.model.get('friction')){
-				this.vX *= ( 1 - friction/settings.FPS );
-				this.vY *= ( 1 - friction/settings.FPS );
-			}
+			/* ---- advance position based on velocity -------------------------------------- */
 			this.x += this.vX/settings.FPS;
-			this.y += this.vY/settings.FPS;		
-
+			this.y += this.vY/settings.FPS;	
+	
 			this.view.setPos({
 				x: this.x, 
 				y: this.y
 			});
 
+			/* ---- update velocities for next frame -------------------------------------- */
+			// universal gravity * special gravity
+			this.vY += this.physics.gravity * settings.physics.gravity/settings.FPS; 
 
-			if ( ! this.isSupported ){
-				this.vY += settings.physics.gravity/settings.FPS; 
-			} else if ( this.vX ){
-				if ( this.vX < 1 ){
-					this.vX = 0; 				
-				}
-				this.vX *= ( 1 - settings.physics.groundFriction/settings.FPS );			
+			// special acceleration 	
+			if( this.physics.acceleration ){
+				this.vX += this.physics.acceleration.x;
+				this.vY += this.physics.acceleration.y;
 			}
-			this.vY *= ( 1 - settings.physics.airFriction/settings.FPS );
-			this.vX *= ( 1 - settings.physics.airFriction/settings.FPS );
+			
+			// universal friction * special friction
+			this.vY *= ( 1 - this.physics.friction * settings.physics.airFriction/settings.FPS );
+			this.vX *= ( 1 - this.physics.friction * settings.physics.airFriction/settings.FPS );
 		}, 
 		prefixEventName: function( eventName ){
 			return 'mo-'+id+'-' + eventName ;

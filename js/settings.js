@@ -15,20 +15,26 @@ define({
 		airFriction: 0
 	},
 	player: {
-		bounce: .7, // energy maintained after bounce
 		height: 30, // in px
 		width: 30, // in px
 		/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
 		moveSpeed: 10, 
 		/** change in vY from player.jump() px/s */
-		jumpPower: 500
+		jumpPower: 500,
+		physics: {
+			acceleration: 0,
+			bounce: .7,
+			friction: 0,
+			gravity: 1
+		}	
 	},
 	players: [
 		{ 
-			x: 0,
-			y: 0,
+			x: 100,
+			y: 490,
 			vX: 0,
-			vY: 1000,
+			vY: 0,	
+
 			model: {
 				name: 'Joe', 
 				color: '#249',
@@ -163,38 +169,54 @@ define({
 	}, 
 	projectiles: {
 		grenade: {
-			name: 'Grenade',
-			color: '#cc0000',
-			width: 15,
-			delayToExplosion: 1000,
-			delayToExplosionVariability: 0,
-			explosion: 'big'
+			model: {
+				name: 'Grenade',
+				color: '#cc0000',
+				width: 15,
+				delayToExplosion: 1000,
+				delayToExplosionVariability: 0,
+				explosion: 'big'
+			}
 		},
 		rocket: {
-			name: 'Rocket',
-			color: '#00cc00',
-			acceleration: 50,			
-			width: 15,
-			height: 30,
-			delayToExplosion: 1000,
-			delayToExplosionVariability: 0,
-			explosion: 'big'
-		},
+			model: {
+				name: 'Rocket',
+				color: '#00cc00',
+				width: 15,
+				height: 30,
+				delayToExplosion: 1000,
+				delayToExplosionVariability: 0,
+				explosion: 'big',
+			},
+			physics: {
+				acceleration: 50,
+				bounce: .4,
+				friction: 0,
+				gravity: 0
+			}
+ 		},
 		bullet: {
-			name: 'Bullet',
-			color: '#000',
-			friction: 3, // fraction of energy lost each second
-			width: 2,
-			delayToExplosion: 1000,
-			delayToExplosionVariability: 0, 
-			explosion: 'small'
+			model: {
+				name: 'Bullet',
+				color: '#000',
+				width: 2,
+				delayToExplosion: 1000,
+				delayToExplosionVariability: 0, 
+				explosion: 'small'
+			},
+			physics: {
+				gravity: 1,
+				bounce: 1.1
+			}
 		},
 		flame: {
-			name: 'Flame',
-			color: 'orange',
-			width: 10,
-			delayToExplosionVariability: 100, 
-			explosion: 'special'			
+			model: {
+				name: 'Flame',
+				color: 'orange',
+				width: 10,
+				delayToExplosionVariability: 100, 
+				explosion: 'special',
+			}
 		}
 	},
 	explosions: {

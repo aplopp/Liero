@@ -44,15 +44,15 @@
       "outputAbbreviatedPath" : "\/js\/libs\/backbone-min.min.js",
       "fileType" : 64
     },
-    "\/js\/models\/map-object.js" : {
+    "\/js\/keys.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/models\/map-object.js",
+      "inputAbbreviatedPath" : "\/js\/keys.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/models\/map-object.min.js",
+      "outputAbbreviatedPath" : "\/js\/keys.min.js",
       "fileType" : 64
     },
     "\/css\/main.css" : {
@@ -73,17 +73,6 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/settings.min.js",
-      "fileType" : 64
-    },
-    "\/js\/keys.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/keys.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/keys.min.js",
       "fileType" : 64
     },
     "\/js\/models\/projectile.js" : {
@@ -108,17 +97,6 @@
       "outputAbbreviatedPath" : "\/js\/libs\/underscore-min.min.js",
       "fileType" : 64
     },
-    "\/images\/stage-bg.png" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/images\/stage-bg.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/images\/stage-bg.png",
-      "initialSize" : 232,
-      "fileType" : 8192
-    },
     "\/js\/player.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -130,16 +108,16 @@
       "outputAbbreviatedPath" : "\/js\/player.min.js",
       "fileType" : 64
     },
-    "\/js\/models\/weapon.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
+    "\/images\/stage-bg.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/models\/weapon.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/models\/weapon.min.js",
-      "fileType" : 64
+      "inputAbbreviatedPath" : "\/images\/stage-bg.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/images\/stage-bg.png",
+      "initialSize" : 232,
+      "fileType" : 8192
     },
     "\/js\/functions\/math.js" : {
       "ignoreWasSetByUser" : 1,
@@ -150,6 +128,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/functions\/math.min.js",
+      "fileType" : 64
+    },
+    "\/js\/models\/weapon.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/models\/weapon.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/models\/weapon.min.js",
       "fileType" : 64
     },
     "\/js\/models\/player.js" : {
@@ -183,17 +172,6 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 16
     },
-    "\/js\/functions\/color.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/functions\/color.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/functions\/color.min.js",
-      "fileType" : 64
-    },
     "\/js\/views\/object.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -214,6 +192,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/views\/explosion.min.js",
+      "fileType" : 64
+    },
+    "\/js\/functions\/color.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/functions\/color.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/functions\/color.min.js",
       "fileType" : 64
     },
     "\/js\/models\/explosion.js" : {

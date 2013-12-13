@@ -59,11 +59,6 @@ define([
 	                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
 	            }); 			
 	        }
-	        // spec x and y are center of projectile
-	        this.x = spec.x;
-	        // this.vX = spec.vX;	        
-	        this.y = spec.y;
-	        // this.vY = spec.vY;
 	        
 	        // explosions are stationary
 	        this.vX = 0;

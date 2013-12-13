@@ -40,10 +40,6 @@ define([
             });
             // pass the id to the model
             spec.model.id = this.id;
-	        this.x = spec.x;
-	        this.vX = spec.vX;	        
-	        this.y = spec.y;
-	        this.vY = spec.vY;            
 			this.model = new PlayerM( spec.model );
 			this.view = new PlayerV({ model: this.model });
 		},

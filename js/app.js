@@ -80,6 +80,7 @@ define([
 		 */
 		this.createPlayers = function(){
 			var players = [];
+
 			_.each( this.settings.players, function( playerSpec ){	
 				players.push( new Player( playerSpec )); 
 			});
@@ -128,17 +129,16 @@ define([
 		/**
 		 * check whether the item is off the map
 		 */
-		this.respondToEdgeCollision = function( player ){
+		this.respondToEdgeCollision = function( mapObject ){
 			var hadCollision = false; 				
-			var x = player.x;
-			var vX = player.vX; 
-			var y = player.y; 				
-			var vY = player.vY; 
-
-			var offX = offY = false; 
+			var x = mapObject.x;
+			var vX = mapObject.vX; 
+			var y = mapObject.y; 				
+			var vY = mapObject.vY; 
+ 			var offX = offY = false; 
 			do {
-				offX = that.checkOffX( x, player.model.attributes.width );
-				offY = that.checkOffY( y, player.model.attributes.height );
+				offX = that.checkOffX( x, mapObject.model.attributes.width );
+				offY = that.checkOffY( y, mapObject.model.attributes.height );
 
 				if ( offX ){
 					hadCollision = true; 
@@ -146,9 +146,9 @@ define([
 					if ( offX < 0 ){
 						var collisionX = 0;
 					} else {
-						var collisionX = that.map.canvas.width - player.model.attributes.width;
+						var collisionX = that.map.canvas.width - mapObject.model.attributes.width;
 					}					
-					var results = that.resolveBounceX( collisionX, x, vX, that.settings.player.bounce );
+					var results = that.resolveBounceX( collisionX, x, vX, mapObject.physics.bounce );
 					x = results.x; 
 					vX = results.vX;	
 				}
@@ -157,19 +157,19 @@ define([
 					if ( offY < 0 ){
 						var collisionY = 0;
 					} else {
-						var collisionY = that.map.canvas.height - player.model.attributes.height;
+						var collisionY = that.map.canvas.height - mapObject.model.attributes.height;
 					}
-					var results = that.resolveBounceY( collisionY, y, vY, that.settings.player.bounce );
+					var results = that.resolveBounceY( collisionY, y, vY, mapObject.physics.bounce );
 					y = results.y; 
 					vY = results.vY;
 				}
 			} while( offX || offY );
 
 			if ( hadCollision ){
-				player.vY = vY; 
-				player.vX = vX; 
-				player.x = x;
-				player.y = y;
+				mapObject.vY = vY; 
+				mapObject.vX = vX; 
+				mapObject.x = x;
+				mapObject.y = y;
 			}			
 		}
 		/**

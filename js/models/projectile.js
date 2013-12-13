@@ -13,14 +13,12 @@ define([
 	var ProjectileM = Backbone.Model.extend({
 		defaults: {
 			// personal properties
+			name: 'Default Projectile Name',
 			color: '#666',
 			width: 1,
 			height: 1,
 			perShot: 1, // how many per shot
 			scatter: 0, // scatter, in degrees (max 90)
-			bounce: .8, // energy retained after bounce (.8 = 80%)
-			acceleration: 0, // px/s/s
-			friction: 0,
 			aim: 0,
 			sticky: {
 				enabled: false,

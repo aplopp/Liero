@@ -28,29 +28,15 @@ define([
 	            }); 			
 	        }
 
-	        this.x = spec.x;
-	        this.vX = spec.vX;	        
-	        this.y = spec.y;
-	        this.vY = spec.vY;
-
 			this.model = new ProjectileM( spec.model );
 			this.view = new ProjectileV({ model: this.model });
 
-	        // set up acceleration to accelerate in direction of initial launch
-			if ( spec.model.acceleration ){
-				var acceleration = MathFunctions.getVelocityComponents( spec.model.acceleration, spec.model.aim );
-			} else {
-				var acceleration = false;
-			}
-			this.model.set( 'acceleration', acceleration );
-			
 			// set time until explosion
 			var delayMax = this.model.get( 'delayToExplosion') + this.model.get( 'delayToExplosionVariability' );
 			var delayMin = this.model.get( 'delayToExplosion') - this.model.get( 'delayToExplosionVariability' );
 			setTimeout( function(){
 				that.explode();
 			}, MathFunctions.getRandomNumberBetween( delayMin, delayMax ) );
-
 		}, 
 		explode: function( ){
 			var that = this;

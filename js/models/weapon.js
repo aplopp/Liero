@@ -55,10 +55,15 @@ define([
 					x: player.x + barrelCoords.x, // TODO, end of barrel
 					y: player.y + barrelCoords.y, // TODO, end of barrel
 					// x/y components of speed, depending on angle of barrel
-					vX: launchVelocities.x + player.vX,
-					vY: launchVelocities.y + player.vY,
-					model: projectileSpec.onLaunch( projectileSpec, this )
+					vX: launchVelocities.x,
+					vY: launchVelocities.y,
+					physics: projectileSpec.physics, 
+					model: projectileSpec.onLaunch( projectileSpec.model, this )
 				});
+				// if affected by player motion
+				projectile.vX += player.vX;
+				projectile.vY += player.vY;
+				
 				app.addObject( projectile );
 			}
 			if ( recoil = this.get( 'recoil' )){
@@ -77,7 +82,7 @@ define([
 					that._delay = false;
 				}, 1000/this.get('reload') );
 
-				console.log( count++, this.get( 'name' ) + ': fired ' + this.get('perShot') +' '+ this.get( 'projectile' ).name );
+				console.log( count++, this.get( 'name' ) + ': fired ' + this.get('perShot') +' '+ this.get( 'projectile' ).model.name );
 				this.launchProjectile();
 			} else {
 				console.log( this.get( 'name' ) + ': too soon to fire ')

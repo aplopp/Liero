@@ -7,8 +7,8 @@ define([], function(){
 		var y = originY + radius * Math.sin( angle );
 
 		return {
-			x: x, 
-			y: y
+			x: Math.round( x * 1000 ) / 1000, // rounded to 3 decimals 
+			y: Math.round( y * 1000 ) / 1000 // rounded to 3 decimals
 		}
 	};
 	/**
