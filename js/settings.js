@@ -34,7 +34,7 @@ define({
 				color: '#249',
 				height: 20,
 				width: 20,
-				weapons: [ 'shotgun', 'grenadeLauncher', 'machineGun', 'gun' ]
+				weapons: [ 'rocketLauncher', 'shotgun', 'grenadeLauncher', 'machineGun', 'gun' ]
 			}, 
 			keyBindings: {
 				left: 37, // l
@@ -104,7 +104,7 @@ define({
 			auto: false,
 			color: '#0f0',
 			length: 10, 
-			width: 4		
+			width: 4	
 
 		},
 		machineGun: {
@@ -116,6 +116,19 @@ define({
 			projectile: 'bullet',
 			auto: true,
 			color: '#000', 
+			length: 20, 
+			width: 3
+		},
+		rocketLauncher: {
+			name: 'Rocket Launcher',
+			reload: 2,
+			recoil: 100,
+			speed: 50,
+			scatter: 0,
+			projectile: 'rocket',
+			auto: false,
+			color: '#339',
+			perShot: 1,
 			length: 20, 
 			width: 3
 		},
@@ -153,6 +166,16 @@ define({
 			name: 'Grenade',
 			color: '#cc0000',
 			width: 15,
+			delayToExplosion: 1000,
+			delayToExplosionVariability: 0,
+			explosion: 'big'
+		},
+		rocket: {
+			name: 'Rocket',
+			color: '#00cc00',
+			acceleration: 50,			
+			width: 15,
+			height: 30,
 			delayToExplosion: 1000,
 			delayToExplosionVariability: 0,
 			explosion: 'big'

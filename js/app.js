@@ -96,7 +96,6 @@ define([
 		}
 		this.mapObjects = [];
 		this.addInitialObjectsToStage = function(){
-			var that = this;
 			// add players to stage. 
 			_.each( this.players, function( player ){
 				that.addObject( player );

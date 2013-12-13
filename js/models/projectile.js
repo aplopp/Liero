@@ -19,6 +19,8 @@ define([
 			perShot: 1, // how many per shot
 			scatter: 0, // scatter, in degrees (max 90)
 			bounce: .8, // energy retained after bounce (.8 = 80%)
+			acceleration: 0, // px/s/s
+			aim: 0,
 			sticky: {
 				enabled: false,
 				duration: 10000
@@ -39,7 +41,7 @@ define([
 				var type = explosion;
 				var explosion = settings.explosions[ explosion ];
 				this.set( 'explosion', $.extend({ _type: type }, explosion ) );
-			}
+			}		
 
 			this.set( 'height', this.get( 'width' ) );
 		}

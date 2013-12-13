@@ -5,6 +5,7 @@ define([], function(){
 		var angle = ( angleDegree - 90 )/180 * Math.PI; 
 		var x = originX + radius * Math.cos( angle );
 		var y = originY + radius * Math.sin( angle );
+
 		return {
 			x: x, 
 			y: y
@@ -17,6 +18,14 @@ define([], function(){
 	 */
 	functions.getVelocityComponents = function( speed, aim ){
 		return functions.getPointOnCircle( 0, 0, speed, aim );
+	}
+	functions.getAngleFromPoints = function( x1, y1, x2, y2 ){
+		var dX = x2-x1;
+		var dY = y2-y1;
+		return Math.atan2( dY, dX ) * 180 / Math.PI + 90;
+	}
+	functions.getAngleFromVelocities = function( vX, vY ){
+		return functions.getAngleFromPoints( 0, 0, vX, vY );
 	}
 	functions.getRandomNumberBetween = function(min, max) {
 	    return Math.random() * (max - min) + min;

@@ -20,8 +20,12 @@ define([ 'underscore', 'backbone', 'settings', 'keys' ], function( _, Backbone, 
 			// implemented by children
 		},
 		nextPosition:  function(){
+			if ( acceleration = this.model.get('acceleration')){
+				this.vX += acceleration.x;
+				this.vY += acceleration.y;
+			}
 			this.x += this.vX/settings.FPS;
-			this.y += this.vY/settings.FPS;
+			this.y += this.vY/settings.FPS;		
 
 			this.view.setPos({
 				x: this.x, 
