@@ -26,6 +26,8 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 		if ( this.physics.acceleration ){
 			// set up acceleration to accelerate in direction of initial launch
 			this.physics.acceleration = MathFunctions.getVelocityComponents( this.physics.acceleration, MathFunctions.getAngleFromVelocities( this.vX, this.vY ) ) ;
+		} else {
+			this.physics.acceleration = { x: 0, y: 0 };
 		}
 
 		this.initialize( _.omit( options, [ 'x', 'y', 'vX', 'vY', 'physics' ] ) );
@@ -50,16 +52,10 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 			// record current position for easy reference in collisions
 			this.lastPos = {
 				x: this.x,
-				y: this.y
+				y: this.y,
+				vX: this.vX,
+				vY: this.vY
 			};
-			/* ---- advance position based on velocity -------------------------------------- */
-			this.x += this.vX/settings.FPS;
-			this.y += this.vY/settings.FPS;	
-	
-			this.view.setPos({
-				x: this.x, 
-				y: this.y
-			});
 
 			/* ---- update velocities for next frame -------------------------------------- */
 			// universal gravity * special gravity
@@ -74,6 +70,15 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 			// universal friction * special friction
 			this.vY *= ( 1 - this.physics.friction * settings.physics.airFriction/settings.FPS );
 			this.vX *= ( 1 - this.physics.friction * settings.physics.airFriction/settings.FPS );
+
+			/* ---- advance position based on velocity -------------------------------------- */
+			this.x += this.vX/settings.FPS;
+			this.y += this.vY/settings.FPS;	
+	
+			this.view.setPos({
+				x: this.x, 
+				y: this.y
+			});			
 		}, 
 		prefixEventName: function( eventName ){
 			return 'mo-'+id+'-' + eventName ;

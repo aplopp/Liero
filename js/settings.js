@@ -9,8 +9,8 @@ define({
 	physics: {
 		/** acceleration from gravity, in px/s */		
 		gravity: 1000, 
-		/** deceleration from groundFriction, in px/s */
-		groundFriction: 0,
+		/** deceleration from groundFriction, in decimal lost per frame */
+		surfaceFriction: .01,
 		/** deceleration from airFriction, in px/s */
 		airFriction: 0
 	},
