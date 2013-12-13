@@ -1,1 +1,41 @@
 affectedByPlayerMotion
+airFriction
+
+collisionDetection
+	resolveCollision
+	explodeOnImpact
+	explodeOnPlayerHit
+	destroyMapOnExplosion
+	explosionParticles
+	explosionSubProjectiles
+		directional v allDirections
+			scatter
+	sitOnSurface
+	playerStats
+		playerHealth
+		playerDeath
+		playerRespawn
+		playerScore
+		playerWeapon
+	pickUpWeapons
+	ninjaRope
+	weapons
+		laser sight
+		laser weapon
+		steerable weapons
+
+sprites
+
+startScreen
+	players
+		name
+		weapons
+		color
+		healthPercent
+		numberOfLives
+	weapons
+		available weapons
+	map
+		mapLayout
+splitMap w minimap
+levelEditor

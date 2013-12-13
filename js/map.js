@@ -64,6 +64,40 @@ define([
 		});		
 		simpleGrid.push( impassableCol ); 
 		return simpleGrid; 
+	};
+	/**
+	 * Compares a mapObject to the map to see if its offscreen.
+	 * @param  {object} mapObject
+	 * @return {object} x, y - true, or a number (if offscreen)
+	 */
+	Map.prototype.isMapObjectOffMap = function( mapObject ){
+		return {
+			x: this.checkOffX( mapObject.x, mapObject.model.get( 'width' ) ),
+			y: this.checkOffY( mapObject.y, mapObject.model.get( 'height' ) )
+		}
 	}
+	/**
+	 * check if object is offscreen on the X axis
+	 */
+	Map.prototype.checkOffX = function(x, w){
+		if ( x + w > this.canvas.width ){
+			return x + w - this.canvas.width; 
+		} else if ( x < 0){
+			return x;
+		}	
+		return false; 		
+	};
+	/**
+	 * check if object is offscreen on the Y axis
+	 */	
+	Map.prototype.checkOffY = function(y, h){
+		if ( ( y + h ) > this.canvas.height ){
+			return y + h - this.canvas.height; 
+		} else if ( y < 0){
+			return y;
+		}
+		return false; 
+	};
+
 	return Map; 
 });

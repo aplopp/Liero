@@ -6,8 +6,9 @@ define([
 	'map', 
 	'player', 
 	'keys', 
-	'functions/color'
-], function( _, Backbone, $, createjs, Map, Player, keys, ColorFunctions ){
+	'functions/color', 
+	'settings'
+], function( _, Backbone, $, createjs, Map, Player, keys, ColorFunctions, settings ){
 	Backbone.$ = $;
 	var noop = function(){}
 
@@ -130,99 +131,69 @@ define([
 		 * check whether the item is off the map
 		 */
 		this.respondToEdgeCollision = function( mapObject ){
-			var hadCollision = false; 				
-			var x = mapObject.x;
-			var vX = mapObject.vX; 
-			var y = mapObject.y; 				
-			var vY = mapObject.vY; 
- 			var offX = offY = false; 
+ 			var offscreen = { x: false, y: false};
 			do {
-				offX = that.checkOffX( x, mapObject.model.attributes.width );
-				offY = that.checkOffY( y, mapObject.model.attributes.height );
-
-				if ( offX ){
-					hadCollision = true; 
-					var collisionX = offX < 0 ? 0 : that.map.canvas.width ; 
-					if ( offX < 0 ){
+				offscreen = this.map.isMapObjectOffMap( mapObject );
+				if ( offscreen.x ){
+					var collisionX = offscreen.x < 0 ? 0 : that.map.canvas.width ; 
+					if ( offscreen.x < 0 ){
 						var collisionX = 0;
 					} else {
 						var collisionX = that.map.canvas.width - mapObject.model.attributes.width;
 					}					
-					var results = that.resolveBounceX( collisionX, x, vX, mapObject.physics.bounce );
-					x = results.x; 
-					vX = results.vX;	
+					var results = that.resolveWallBounceX( collisionX, mapObject );
+					mapObject.x = results.point; 
+					mapObject.vX = results.velocity;	
 				}
-				if ( offY ){
-					hadCollision = true; 
-					if ( offY < 0 ){
+				if ( offscreen.y ){
+					if ( offscreen.y < 0 ){
 						var collisionY = 0;
 					} else {
 						var collisionY = that.map.canvas.height - mapObject.model.attributes.height;
 					}
-					var results = that.resolveBounceY( collisionY, y, vY, mapObject.physics.bounce );
-					y = results.y; 
-					vY = results.vY;
+					var results = that.resolveWallBounceY( collisionY, mapObject, { 
+						// acceleration
+						y: mapObject.physics.acceleration.y, 
+						x: mapObject.physics.acceleration.x
+					});
+					mapObject.y = results.point; 
+					mapObject.vY = results.velocity;	
 				}
-			} while( offX || offY );
-
-			if ( hadCollision ){
-				mapObject.vY = vY; 
-				mapObject.vX = vX; 
-				mapObject.x = x;
-				mapObject.y = y;
-			}			
+			} while( offscreen.x || offscreen.y );	
 		}
 		/**
-		 * check if object is offscreen on the X axis
-		 */
-		this.checkOffX = function( x, w ){
-			if ( x + w > that.map.canvas.width ){
-				return x + w - that.map.canvas.width; 
-			} else if ( x < 0){
-				return x;
-			}	
-			return false; 
-		}
-		/**
-		 * check if object is offscreen on the Y axis
-		 */
-		this.checkOffY = function( y, h ){
-			if ( ( y + h ) > that.map.canvas.height ){
-				return y + h - that.map.canvas.height; 
-			} else if ( y < 0){
-				return y;
-			}
-			return false; 
-		}
-		/**
-		 * returns the endX and the endV after a bounce; 
+		 * returns the end coord and the endV after a bounce; 
 		 * @param {collisionX} - where the collision happened
 		 * @param {endX} - where the object would have ended up
 		 * @param {vX} - how fast the object would have been traveling
-		 * @returns {object} - the bounced x pos and velocity 
+		 * @returns {object} - the bounced position and velocity
 		 */
-		this.resolveBounceX = function( collisionX, endX, vX, bounciness ){
-			var friction = this.settings.physics.groundFriction; 
+		this.resolveWallBounceX = function( collisionPoint, mapObject, acceleration ){
+			var prevPoint = mapObject.lastPos.x;
+			var acceleration = mapObject.physics.acceleration.x;
 			return {
-				x: collisionX - ( endX - collisionX ),
-				vX: -1 * bounciness * vX
+				point: collisionPoint - ( mapObject.x - collisionPoint ),
+				velocity: -1 * mapObject.physics.bounce * mapObject.vX
 			}
 		}
 		/**
-		 * returns the endY and the endY after a bounce; 
-		 * @param {collisionY} - where the collision happened
-		 * @param {endY} - where the object would have ended up
-		 * @param {vY} - how fast the object would have been traveling
-		 * @returns {object} - the bounced y pos and velocity 
+		 * returns the end coord and the endV after a bounce; 
+		 * @param {collisionX} - where the collision happened
+		 * @param {endX} - where the object would have ended up
+		 * @param {vX} - how fast the object would have been traveling
+		 * @returns {object} - the bounced position and velocity
 		 */
-		this.resolveBounceY = function( collisionY, endY, vY, bounciness ){
-			var gravity = this.settings.physics.gravity; 
-			var friction = this.settings.physics.groundFriction; 
+		this.resolveWallBounceY = function( collisionPoint, mapObject, acceleration ){
+			var prevPoint = mapObject.lastPos.y;
+			// includes gravity
+			var acceleration = settings.physics.gravity * mapObject.physics.gravity + mapObject.acceleration.y;
 			return {
-				y: collisionY - ( endY - collisionY ),
-				vY: -1 * bounciness * vY
+				point: collisionPoint - ( mapObject.y - collisionPoint ),
+				velocity: -1 * mapObject.physics.bounce * mapObject.vY
 			}
 		}
+
+
 
 		this.start = function(){
 			this.ticker = createjs.Ticker;

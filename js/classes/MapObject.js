@@ -47,6 +47,11 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 			// implemented by children
 		},
 		nextPosition:  function(){
+			// record current position for easy reference in collisions
+			this.lastPos = {
+				x: this.x,
+				y: this.y
+			};
 			/* ---- advance position based on velocity -------------------------------------- */
 			this.x += this.vX/settings.FPS;
 			this.y += this.vY/settings.FPS;	
