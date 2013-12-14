@@ -99,7 +99,7 @@ define([
 	};
 
 	Map.prototype.adjustForAnyCollision = function( mapObject ){
-		this.handleWallCollision( mapObject );
+		// this.handleWallCollision( mapObject );
 		this.handleMapCollision( mapObject );
 	}
 	/**
@@ -220,8 +220,8 @@ define([
 		if ( x2 >= x1 ){
 			if ( y2 >= y1 ){
 				// both positive (down + right)
-				for( x = x1; x < x2; x++){
-					for ( y = y1; y < y2; y++){
+				for( x = x1; x <= x2; x++){
+					for ( y = y1; y <= y2; y++){
 						var leadingRightEdge = [];
 						var leadingBottomEdge = [];
 						for( var i = 0; i < h; i++){
@@ -230,25 +230,24 @@ define([
 						for( var i = 0; i < w; i++){
 							leadingBottomEdge.push({ x: x+ i, y: y + h + 1  });
 						}
-						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge );
-						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge );
+						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge, true );
+						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge, false );
 						if ( occupiedRight || occupiedBelow ){
-							var percentThroughPath = ( (x - x2)*(y - y2) ) / ((x2 - x1 ) * ( y2 - y1 ));
+							var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x2 - x1 ) * ( y2 - y1 ));
 
 							if ( occupiedRight ){
-								this.handleRightEdgeCollision( mapObject, percentThroughPath );
+								this.handleLeftRightCollision( mapObject, x );
 							}
 							if ( occupiedBelow ){
-								this.handleBottomEdgeCollision( mapObject, percentThroughPath );
+								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
 						}
-						count++;						
 					}
 				}				
 			} else {
 				// x pos, y neg (up + right)
-				for( x = x1; x < x2; x++){
+				for( x = x1; x <= x2; x++){
 					for ( y = y1; --y>=y2;){
 						var leadingTopEdge = [];
 						var leadingRightEdge = [];
@@ -258,15 +257,15 @@ define([
 						for( var i = 0; i < w; i++){
 							leadingTopEdge.push({ x: x+ i, y: y - 1  });
 						}
-						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge );
-						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge );
+						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge, true );
+						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge, false );
 						if ( occupiedRight || occupiedAbove ){
-							var percentThroughPath = ( (x - x2)*(y - y1) ) / ((x2 - x1 ) * ( y1 - y2 ));
+							var percentThroughPath = ( (x - x1)*(y - y2) ) / ((x2 - x1 ) * ( y1 - y2 ));
 							if ( occupiedRight ){
-								this.handleRightEdgeCollision( mapObject, percentThroughPath );
+								this.handleLeftRightCollision( mapObject, x );
 							}
 							if ( occupiedAbove ){
-								this.handleTopEdgeCollision( mapObject, percentThroughPath );
+								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
 						}
@@ -274,10 +273,10 @@ define([
 				}	
 			}
 		} else {
-			if ( y2 > y1 ){
+			if ( y2 >= y1 ){
 				// x neg, y pos (down + left)
 				for( x = x1; --x>=x2; ){
-					for ( y = y1; y < y2; y++){
+					for ( y = y1; y <= y2; y++){
 						var leadingBottomEdge = [];
 						var leadingLeftEdge = [];
 						for( var i = 0; i < h; i++){
@@ -286,15 +285,15 @@ define([
 						for( var i = 0; i < w; i++){
 							leadingBottomEdge.push({ x: x+ i, y: y + h + 1  });
 						}
-						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge );
-						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge );
+						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge, true );
+						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge, false );
 						if ( occupiedLeft || occupiedBelow ){
-							var percentThroughPath = ( (x - x1)*(y - y2) ) / ((x1 - x2 ) * ( y2 - y1 ));
+							var percentThroughPath = ( (x - x2)*(y - y1) ) / ((x1 - x2 ) * ( y2 - y1 ));
 							if ( occupiedLeft ){
-								this.handleLeftEdgeCollision( mapObject, percentThroughPath );
+								this.handleLeftRightCollision( mapObject, x );
 							}
 							if ( occupiedBelow ){
-								this.handleBottomEdgeCollision( mapObject, percentThroughPath );
+								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
 						}
@@ -312,15 +311,15 @@ define([
 						for( var i = 0; i < w; i++){
 							leadingTopEdge.push({ x: x+ i, y: y - 1  });
 						}
-						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge );
-						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge );
+						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge, true );
+						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge, false );
 						if ( occupiedLeft || occupiedAbove ){
-							var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x1 - x2 ) * ( y1 - y2 ));
+							var percentThroughPath = ( (x - x2)*(y - y2) ) / ((x1 - x2 ) * ( y1 - y2 ));
 							if ( occupiedLeft ){
-								this.handleLeftEdgeCollision( mapObject, percentThroughPath );
+								this.handleLeftRightCollision( mapObject, x );
 							}
 							if ( occupiedAbove ){
-								this.handleTopEdgeCollision( mapObject, percentThroughPath );
+								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
 						}
@@ -332,28 +331,53 @@ define([
 	};
 	/**
 	 * Simply compares an array of pixel coordinates to the simple grid to detect if they are occupied
+	 * @param pixels {array} - an array of x y coordinates to check
+	 * @param lr {bool} - true if this is a rl wall (a column)
 	 * @returns {bool} - true if any of the pixels are occupied
 	 */
-	Map.prototype.checkForImpassablePixels = function( pixels ){
+	Map.prototype.checkForImpassablePixels = function( pixels, lr ){
 		for( i in pixels ){
+			if ( lr ){
+				if ( pixels[i].x < 0 || pixels[i].x > this.simpleGrid[0].length - 1){
+					return true;
+				}
+			} else {
+				if ( pixels[i].y < 0 || pixels[i].y > this.simpleGrid.length - 1 ){
+					return true;
+				}
+			}
 			if ( this.simpleGrid[ pixels[i].y ][ pixels[i].x ] ){
 				return true; 
 			}
 		}
 		return false;
 	}
-	Map.prototype.handleRightEdgeCollision = function( mapObject, percentThroughPath ){
-		console.log( 'Right collision: ', percentThroughPath)		
+	Map.prototype.handleLeftRightCollision = function( mapObject, x ){
+		// 1) flip destination coordinate to be ( current coordinate - remaining distance) * bounce
+		var x2 = mapObject.x;
+		var newX2 = x - ( x2 - x ) * mapObject.physics.bounce; 
+		mapObject.x = newX2;		
+		mapObject.vX *= -1 * mapObject.physics.bounce;
+		// 2) add friction to crossing direction
+		mapObject.vY *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
+		mapObject.view.setPos({
+			x: mapObject.x, 
+			y: mapObject.y
+		});	
 	}
-	Map.prototype.handleLeftEdgeCollision = function( mapObject, percentThroughPath ){
-		console.log( 'Left collision: ', percentThroughPath)		
-	}
-	Map.prototype.handleBottomEdgeCollision = function( mapObject, percentThroughPath ){
-		console.log( 'Bottom collision: ', percentThroughPath)		
-	}
-	Map.prototype.handleTopEdgeCollision = function( mapObject, percentThroughPath ){
-		console.log( 'Top collision: ', percentThroughPath)		
-		
+	Map.prototype.handleTopBottomCollision = function( mapObject, y ){
+		// 1) flip destination coordinate to be ( current coordinate - remaining distance) * bounce
+		var y2 = mapObject.y;
+		var newY2 = y - ( y2 - y ) * mapObject.physics.bounce; 
+		mapObject.y = newY2;		
+		mapObject.vY *= -1 * mapObject.physics.bounce;
+		// 2) add friction to crossing direction
+		console.log( settings.physics.surfaceFriction, mapObject.physics.friction );
+		mapObject.vX *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
+		mapObject.view.setPos({
+			x: mapObject.x, 
+			y: mapObject.y
+		});			
 	}
 	return Map; 
 });

@@ -82,8 +82,9 @@ define([
 		this.createPlayers = function(){
 			var players = [];
 
-			_.each( this.settings.players, function( playerSpec ){	
-				players.push( new Player( playerSpec )); 
+			_.each( this.settings.players, function( playerSpec ){
+
+				players.push( new Player( _.extend( playerSpec, settings.player ) )); 
 			});
 			return players;			
 		}		

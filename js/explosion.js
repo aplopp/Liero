@@ -66,6 +66,12 @@ define([
 			this.model = new ExplosionM( spec.model );
 			this.view = new ExplosionV({ model: this.model });
 	        
+	        this.lastPos = {
+	        	x: this.x, 
+	        	y: this.y,
+	        	vY: this.vY,
+	        	vX: this.vX
+	        };
 	        this.view.setPos({
 	        	x: this.x,
 	        	y: this.y
@@ -86,7 +92,6 @@ define([
 		frameCount: 0,	
 		nextPosition: function(){
 			// explosions don't change positions, no sir
-			// 
 			if( this.frameCount > this._animationFrames.length - 1 ){
 				app.removeObject( this.id );
 				return;

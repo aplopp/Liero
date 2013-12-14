@@ -17,66 +17,68 @@ define({
 	player: {
 		height: 30, // in px
 		width: 30, // in px
-		/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
-		moveSpeed: 10, 
-		/** change in vY from player.jump() px/s */
-		jumpPower: 500,
+		abilities: {
+			/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
+			moveSpeed: 10, 
+			/** change in vY from player.jump() px/s */
+			jumpPower: 500,
+		},
 		physics: {
 			acceleration: 0,
 			bounce: .7,
-			friction: 0,
+			friction: .2,
 			gravity: 1
 		}	
 	},
 	players: [
-		{ 
-			x: 300,
-			y: 200,
-			vX: -900,
-			vY: -600,	
-
-			model: {
-				name: 'Joe', 
-				color: '#249',
-				height: 20,
-				width: 20,
-				weapons: [ 'rocketLauncher', 'shotgun', 'grenadeLauncher', 'machineGun', 'gun' ]
-			}, 
-			keyBindings: {
-				left: 37, // l
-				up: 38, // u
-				right: 39, // r
-				down: 40, // d
-				jump: [ 'command-r' ],
-				shoot: [ 32 ], // space		
-				prevWeapon: [ 37, 'shift-r' ],
-				nextWeapon: [ 39, 'shift-r' ]
-			}
-
-		},
 		// { 
-		// 	x: 550,
-		// 	y: 300,
-		// 	vX: 300,
-		// 	vY: 1000,			
+		// 	x: 300,
+		// 	y: 200,
+		// 	vX: -900,
+		// 	vY: -600,	
+
 		// 	model: {
-		// 		name: 'Sarah',
-		// 		color: '#350',
-		// 		height: 30,
-		// 		width: 30,
-		// 		weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
+		// 		name: 'Joe', 
+		// 		color: '#249',
+		// 		height: 20,
+		// 		width: 20,
+		// 		weapons: [ 'rocketLauncher', 'shotgun', 'grenadeLauncher', 'machineGun', 'gun' ]
 		// 	}, 
 		// 	keyBindings: {
-		// 		left: 65, //a
-		// 		up: 87, // w
-		// 		right: 68, //d
-		// 		down: 83,// s 
-		// 		jump: [ 'control-l' ],
-		// 		shoot: 9, // tab-l
-		// 		prevWeapon: [ 65, 'shift-l' ],
-		// 		nextWeapon: [ 68, 'shift-l' ]				
+		// 		left: 37, // l
+		// 		up: 38, // u
+		// 		right: 39, // r
+		// 		down: 40, // d
+		// 		jump: [ 'command-r' ],
+		// 		shoot: [ 32 ], // space		
+		// 		prevWeapon: [ 37, 'shift-r' ],
+		// 		nextWeapon: [ 39, 'shift-r' ]
 		// 	}
-		// }		
+
+		// },
+		{ 
+			x: 550,
+			y: 300,
+			vX: 300,
+			vY: 1000,			
+			model: {
+				name: 'Sarah',
+				color: '#350',
+				height: 30,
+				width: 30,
+				weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
+			}, 
+			keyBindings: {
+				left: 65, //a
+				up: 87, // w
+				right: 68, //d
+				down: 83,// s 
+				jump: [ 'control-l' ],
+				shoot: 9, // tab-l
+				prevWeapon: [ 65, 'shift-l' ],
+				nextWeapon: [ 68, 'shift-l' ]				
+			}
+		}		
 	],
 	weapons: {
 		gun: {

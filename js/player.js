@@ -46,11 +46,11 @@ define([
 		// actions
 		moveLeft: function(){
 			this.model.set( 'facing', 'left' );
-			this.vX -= settings.player.moveSpeed; 
+			this.vX -= this.abilities.moveSpeed; 
 		},
 		moveRight: function(){
 			this.model.set( 'facing', 'right' );		
-			this.vX += settings.player.moveSpeed; 
+			this.vX += this.abilities.moveSpeed; 
 		},
 		aimUp: function(){
 			this.model.set({ 'aim': this.model.get( 'aim' ) - 3 }, { validate: true });
@@ -59,7 +59,7 @@ define([
 			this.model.set({ 'aim': this.model.get( 'aim' ) + 3 }, { validate: true });
 		},
 		jump: function(){
-			this.vY -= settings.player.jumpPower; 
+			this.vY -= this.abilities.jumpPower; 
 		},
 		prevWeapon: function(){
 			this.switchWeapon( false );

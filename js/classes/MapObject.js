@@ -6,7 +6,6 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 	var MapObject = function( options ){
 		this.id = id++;		
 		this.routeKeyPresses();
-
 		this.x = _.has(options, 'x') ? options.x : 0;
 		this.y = _.has(options, 'y') ? options.y : 0;
 		this.vX = _.has(options, 'vX') ? options.vX : 0;
@@ -31,6 +30,8 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 		}
 
 		this.initialize( _.omit( options, [ 'x', 'y', 'vX', 'vY', 'physics' ] ) );
+
+		this.nextPosition();
 	}
 	var p = _.extend( MapObject.prototype, {
 		model: null, 
