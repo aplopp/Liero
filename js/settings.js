@@ -30,10 +30,10 @@ define({
 	},
 	players: [
 		{ 
-			x: 100,
-			y: 490,
-			vX: 0,
-			vY: 0,	
+			x: 300,
+			y: 200,
+			vX: -900,
+			vY: -600,	
 
 			model: {
 				name: 'Joe', 
@@ -54,29 +54,29 @@ define({
 			}
 
 		},
-		{ 
-			x: 0,
-			y: 0,
-			vX: 0,
-			vY: 1000,			
-			model: {
-				name: 'Sarah',
-				color: '#350',
-				height: 30,
-				width: 30,
-				weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
-			}, 
-			keyBindings: {
-				left: 65, //a
-				up: 87, // w
-				right: 68, //d
-				down: 83,// s 
-				jump: [ 'control-l' ],
-				shoot: 9, // tab-l
-				prevWeapon: [ 65, 'shift-l' ],
-				nextWeapon: [ 68, 'shift-l' ]				
-			}
-		}		
+		// { 
+		// 	x: 550,
+		// 	y: 300,
+		// 	vX: 300,
+		// 	vY: 1000,			
+		// 	model: {
+		// 		name: 'Sarah',
+		// 		color: '#350',
+		// 		height: 30,
+		// 		width: 30,
+		// 		weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
+		// 	}, 
+		// 	keyBindings: {
+		// 		left: 65, //a
+		// 		up: 87, // w
+		// 		right: 68, //d
+		// 		down: 83,// s 
+		// 		jump: [ 'control-l' ],
+		// 		shoot: 9, // tab-l
+		// 		prevWeapon: [ 65, 'shift-l' ],
+		// 		nextWeapon: [ 68, 'shift-l' ]				
+		// 	}
+		// }		
 	],
 	weapons: {
 		gun: {

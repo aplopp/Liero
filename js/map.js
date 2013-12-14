@@ -18,10 +18,8 @@ define([
 		this.canvas.height = this.settings.height;
 
 		this.simpleGrid = this.getSimpleGrid(); 
-
 		// create map, add generated pixels to canvas 
 		this.generateMap();
-
 	}
 	/**
 	 * generates canvas based on the map data
@@ -49,21 +47,21 @@ define([
 	 */
 	Map.prototype.getSimpleGrid = function(){
 		var simpleGrid = [];
-		var impassableCol = [];
-		for( var i = 0; i < this.canvas.width; i++ ){
-			impassableCol.push( 1 ); // unpassable left; 
-		}
-		simpleGrid.push( impassableCol ); 
+		// var impassableCol = [];
+		// for( var i = 0; i < this.canvas.width; i++ ){
+		// 	impassableCol.push( 1 ); // unpassable left; 
+		// }
+		// simpleGrid.push( impassableCol ); 
 		_.each( this.grid, function( col ){
 			simpleCol = []; 
-			simpleCol.push( 1 ); // unpassable top
+			// simpleCol.push( 1 ); // unpassable top
 			_.each( col, function( row ){
 				simpleCol.push( row.type );
 			});
-			simpleCol.push( 1 ); // unpassable bottom
+			// simpleCol.push( 1 ); // unpassable bottom
 			simpleGrid.push( simpleCol );
 		});		
-		simpleGrid.push( impassableCol ); 
+		// simpleGrid.push( impassableCol ); 
 		return simpleGrid; 
 	};
 	/**
@@ -100,11 +98,15 @@ define([
 		return false; 
 	};
 
+	Map.prototype.adjustForAnyCollision = function( mapObject ){
+		this.handleWallCollision( mapObject );
+		this.handleMapCollision( mapObject );
+	}
 	/**
 	 * 1) check whether the item is off the map
 	 * 2) If it is, handle the wall collision
 	 */
-	Map.prototype.checkWallCollision = function( mapObject ){
+	Map.prototype.handleWallCollision = function( mapObject ){
 		var offscreen = this.isMapObjectOffMap( mapObject );
 		var hadCollision = offscreen.x || offscreen.y;
 		while( offscreen.x || offscreen.y ) {
@@ -198,6 +200,160 @@ define([
 			x: this.checkOffX( mapObject.x, mapObject.model.get( 'width' ) ),
 			y: this.checkOffY( mapObject.y, mapObject.model.get( 'height' ) )
 		}
+	}
+	/**
+	 * 1) Checks to see if the path of the item intersects any map particles, 
+	 * 2) resolves resulting path position and velocity accordingly
+	 */
+	Map.prototype.handleMapCollision = function( mapObject ){
+		var x1 = Math.floor( mapObject.lastPos.x );
+		var x2 = Math.floor( mapObject.x );
+		var y1 = Math.floor( mapObject.lastPos.y );
+		var y2 = Math.floor( mapObject.y );
+		var w = mapObject.model.get( 'width' );
+		var h = mapObject.model.get( 'height' );
+
+		// counter vars
+		var y;
+		var x;
+		// this massive loop checks the leading edges for the 4 directions the mapObject could go.
+		if ( x2 >= x1 ){
+			if ( y2 >= y1 ){
+				// both positive (down + right)
+				for( x = x1; x < x2; x++){
+					for ( y = y1; y < y2; y++){
+						var leadingRightEdge = [];
+						var leadingBottomEdge = [];
+						for( var i = 0; i < h; i++){
+							leadingRightEdge.push({ x: x + w + 1, y: y + i });
+						}
+						for( var i = 0; i < w; i++){
+							leadingBottomEdge.push({ x: x+ i, y: y + h + 1  });
+						}
+						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge );
+						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge );
+						if ( occupiedRight || occupiedBelow ){
+							var percentThroughPath = ( (x - x2)*(y - y2) ) / ((x2 - x1 ) * ( y2 - y1 ));
+
+							if ( occupiedRight ){
+								this.handleRightEdgeCollision( mapObject, percentThroughPath );
+							}
+							if ( occupiedBelow ){
+								this.handleBottomEdgeCollision( mapObject, percentThroughPath );
+							}
+							return;
+						}
+						count++;						
+					}
+				}				
+			} else {
+				// x pos, y neg (up + right)
+				for( x = x1; x < x2; x++){
+					for ( y = y1; --y>=y2;){
+						var leadingTopEdge = [];
+						var leadingRightEdge = [];
+						for( var i = 0; i < h; i++){
+							leadingRightEdge.push({ x: x + w + 1, y: y + i });
+						}
+						for( var i = 0; i < w; i++){
+							leadingTopEdge.push({ x: x+ i, y: y - 1  });
+						}
+						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge );
+						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge );
+						if ( occupiedRight || occupiedAbove ){
+							var percentThroughPath = ( (x - x2)*(y - y1) ) / ((x2 - x1 ) * ( y1 - y2 ));
+							if ( occupiedRight ){
+								this.handleRightEdgeCollision( mapObject, percentThroughPath );
+							}
+							if ( occupiedAbove ){
+								this.handleTopEdgeCollision( mapObject, percentThroughPath );
+							}
+							return;
+						}
+					}
+				}	
+			}
+		} else {
+			if ( y2 > y1 ){
+				// x neg, y pos (down + left)
+				for( x = x1; --x>=x2; ){
+					for ( y = y1; y < y2; y++){
+						var leadingBottomEdge = [];
+						var leadingLeftEdge = [];
+						for( var i = 0; i < h; i++){
+							leadingLeftEdge.push({ x: x - 1, y: y + i });
+						}
+						for( var i = 0; i < w; i++){
+							leadingBottomEdge.push({ x: x+ i, y: y + h + 1  });
+						}
+						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge );
+						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge );
+						if ( occupiedLeft || occupiedBelow ){
+							var percentThroughPath = ( (x - x1)*(y - y2) ) / ((x1 - x2 ) * ( y2 - y1 ));
+							if ( occupiedLeft ){
+								this.handleLeftEdgeCollision( mapObject, percentThroughPath );
+							}
+							if ( occupiedBelow ){
+								this.handleBottomEdgeCollision( mapObject, percentThroughPath );
+							}
+							return;
+						}
+					}
+				}					
+			} else {
+				// x neg, y neg ( up + left )
+				for( x = x1; --x>=x2; ){
+					for ( y = y1; --y>=y2;){
+						var leadingTopEdge = [];
+						var leadingLeftEdge = [];
+						for( var i = 0; i < h; i++){
+							leadingLeftEdge.push({ x: x - 1, y: y + i });
+						}
+						for( var i = 0; i < w; i++){
+							leadingTopEdge.push({ x: x+ i, y: y - 1  });
+						}
+						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge );
+						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge );
+						if ( occupiedLeft || occupiedAbove ){
+							var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x1 - x2 ) * ( y1 - y2 ));
+							if ( occupiedLeft ){
+								this.handleLeftEdgeCollision( mapObject, percentThroughPath );
+							}
+							if ( occupiedAbove ){
+								this.handleTopEdgeCollision( mapObject, percentThroughPath );
+							}
+							return;
+						}
+					}
+				}					
+			}
+		}
+		
+	};
+	/**
+	 * Simply compares an array of pixel coordinates to the simple grid to detect if they are occupied
+	 * @returns {bool} - true if any of the pixels are occupied
+	 */
+	Map.prototype.checkForImpassablePixels = function( pixels ){
+		for( i in pixels ){
+			if ( this.simpleGrid[ pixels[i].y ][ pixels[i].x ] ){
+				return true; 
+			}
+		}
+		return false;
+	}
+	Map.prototype.handleRightEdgeCollision = function( mapObject, percentThroughPath ){
+		console.log( 'Right collision: ', percentThroughPath)		
+	}
+	Map.prototype.handleLeftEdgeCollision = function( mapObject, percentThroughPath ){
+		console.log( 'Left collision: ', percentThroughPath)		
+	}
+	Map.prototype.handleBottomEdgeCollision = function( mapObject, percentThroughPath ){
+		console.log( 'Bottom collision: ', percentThroughPath)		
+	}
+	Map.prototype.handleTopEdgeCollision = function( mapObject, percentThroughPath ){
+		console.log( 'Top collision: ', percentThroughPath)		
+		
 	}
 	return Map; 
 });

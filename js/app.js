@@ -123,7 +123,7 @@ define([
 				/** based on velocity and position, move pointer to next position */
 				mapObject.nextPosition();
 				/** adjust items that will be offscreen, and therefore have collided with the map edge. */				
-				that.map.checkWallCollision( mapObject ); 
+				that.map.adjustForAnyCollision( mapObject ); 
 				
 			});	
 		}
