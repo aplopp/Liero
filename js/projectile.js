@@ -31,7 +31,6 @@ define([
 
             spec.model.width = this.w;
             spec.model.height = this.h;
-            console.log( this );
 			this.model = new ProjectileM( spec.model );
 			this.view = new ProjectileV({ model: this.model });
 

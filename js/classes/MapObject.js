@@ -31,8 +31,9 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 		}
 
 		this.initialize( _.omit( options, [ 'x', 'y', 'vX', 'vY', 'physics', 'width', 'height' ] ) );
-
+	
 		this.nextPosition();
+
 	}
 	var p = _.extend( MapObject.prototype, {
 		model: null, 

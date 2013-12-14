@@ -202,8 +202,8 @@ define([
 		var x2 = Math.floor( mapObject.x );
 		var y1 = Math.floor( mapObject.lastPos.y );
 		var y2 = Math.floor( mapObject.y );
-		var w = mapObject.w;
-		var h = mapObject.h;
+		var w = Math.floor( mapObject.w );
+		var h = Math.floor( mapObject.h );
 
 		// counter vars
 		var y;
@@ -328,17 +328,23 @@ define([
 	 * @returns {bool} - true if any of the pixels are occupied
 	 */
 	Map.prototype.checkForImpassablePixels = function( pixels, lr ){
+
 		for( i in pixels ){
+			var x = parseInt( pixels[i].x);
+			var y = parseInt( pixels[i].y);
+
 			if ( lr ){
-				if ( pixels[i].x < 1 || pixels[i].x > this.simpleGrid[0].length - 1){
+				if ( x < 0 || x > ( this.simpleGrid[0].length - 1 ) ){
 					return true;
 				}
 			} else {
-				if ( pixels[i].y < 1 || pixels[i].y > this.simpleGrid.length - 1 ){
+				if ( y < 0 || y > ( this.simpleGrid.length - 1 ) ){
 					return true;
 				}
 			}
-			if ( this.simpleGrid[ pixels[i].y ][ pixels[i].x ] ){
+			if ( ! this.simpleGrid[y] ){
+				return true;
+			} else if ( this.simpleGrid[ y ][ x ] ){
 				return true; 
 			}
 		}

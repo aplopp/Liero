@@ -52,8 +52,8 @@ define([
 
 				var projectile = new Projectile({
 					// e nd of barrel coordinates
-					x: player.x + barrelCoords.x - projectileSpec.width/2, // TODO, end of barrel
-					y: player.y + barrelCoords.y - projectileSpec.width/2, // TODO, end of barrel
+					x: player.x + barrelCoords.x - projectileSpec.width/2, 
+					y: player.y + barrelCoords.y - projectileSpec.width/2, 
 					// x/y components of speed, depending on angle of barrel
 					vX: launchVelocities.x,
 					vY: launchVelocities.y,
@@ -72,7 +72,7 @@ define([
 				var recoilVelocities = MathFunctions.getVelocityComponents( recoil, xDir * ( aim - 180 ) );
 				player.vX += recoilVelocities.x;
 				player.vY += recoilVelocities.y;
-			}
+			}		
 		},
 		_delay: false,
 		fire: function(){

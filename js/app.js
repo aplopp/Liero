@@ -105,6 +105,11 @@ define([
 			});
 		}
 		this.addObject = function( mapObject ){
+			var offMapCoords = this.map.isMapObjectOffMap( this );
+			if ( offMapCoords.x || offMapCoords.y ){
+				delete mapObject;
+				return;
+			}				
 			var shape = mapObject.view.render();
 			this.mapObjects.push( mapObject );
 			this.stage.addChild( shape );
@@ -113,7 +118,6 @@ define([
 			var object = _.findWhere( this.mapObjects, { id: id });
 			this.mapObjects = _.reject( this.mapObjects, function( mapObject ){ return mapObject.id === id });
 			this.stage.removeChild( object.view.render({}) );
-			
 			delete object;
 		}
 		/**
