@@ -58,12 +58,12 @@ define({
 			x: 550,
 			y: 300,
 			vX: 300,
-			vY: 1000,			
+			vY: 1000,	
+			height: 30,
+			width: 30,
 			model: {
 				name: 'Sarah',
 				color: '#350',
-				height: 30,
-				width: 30,
 				weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
 			}, 
 			keyBindings: {
@@ -110,7 +110,7 @@ define({
 			auto: false,
 			color: '#0f0',
 			length: 10, 
-			width: 4	
+			width: 3	
 
 		},
 		machineGun: {
@@ -169,21 +169,20 @@ define({
 	}, 
 	projectiles: {
 		grenade: {
+			width: 40,
 			model: {
 				name: 'Grenade',
 				color: '#cc0000',
-				width: 15,
 				delayToExplosion: 1000,
 				delayToExplosionVariability: 0,
 				explosion: 'big'
 			}
 		},
-		rocket: {
+		rocket: {		
+			width: 20, 
 			model: {
 				name: 'Rocket',
 				color: '#00cc00',
-				width: 15,
-				height: 30,
 				delayToExplosion: 1000,
 				delayToExplosionVariability: 0,
 				explosion: 'big',
@@ -196,10 +195,10 @@ define({
 			}
  		},
 		bullet: {
+			width: 2,
 			model: {
 				name: 'Bullet',
 				color: '#000',
-				width: 2,
 				delayToExplosion: 1000,
 				delayToExplosionVariability: 0, 
 				explosion: 'small'
@@ -210,10 +209,10 @@ define({
 			}
 		},
 		flame: {
+			width: 10,
 			model: {
 				name: 'Flame',
 				color: 'orange',
-				width: 10,
 				delayToExplosionVariability: 100, 
 				explosion: 'special',
 			}
@@ -253,7 +252,7 @@ define({
 					{ position: 1, value: '#750000' }
 				],
 				radius: [
-					{ position: 0, value: 15 },
+					{ position: 0, value: 40 },
 					{ position: .5, value: 20 },
 					{ position: .8, value: 15 },
 					{ position: 1, value: 1 }

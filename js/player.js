@@ -40,6 +40,8 @@ define([
             });
             // pass the id to the model
             spec.model.id = this.id;
+            spec.model.width = this.w;
+            spec.model.height = this.h;
 			this.model = new PlayerM( spec.model );
 			this.view = new PlayerV({ model: this.model });
 			

@@ -10,7 +10,8 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 		this.y = _.has(options, 'y') ? options.y : 0;
 		this.vX = _.has(options, 'vX') ? options.vX : 0;
 		this.vY = _.has(options, 'vY') ? options.vY : 0;
-
+		this.w = _.has(options, 'width') ? options.width : 2;
+		this.h = _.has(options, 'height') ? options.height : 2;
 		var defaultPhysics = { 
 			friction: 0, 
 			gravity: 1, 
@@ -29,7 +30,7 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 			this.physics.acceleration = { x: 0, y: 0 };
 		}
 
-		this.initialize( _.omit( options, [ 'x', 'y', 'vX', 'vY', 'physics' ] ) );
+		this.initialize( _.omit( options, [ 'x', 'y', 'vX', 'vY', 'physics', 'width', 'height' ] ) );
 
 		this.nextPosition();
 	}
@@ -40,10 +41,14 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 		vY: 1000,
 		x: 0, 
 		y: 0,
-		gravity: 1,
-		friction: 0,
-		bounce: .8,
-		acceleration: 0,
+		w: 2,
+		h: 2,
+		physics: {
+			gravity: 1,
+			friction: 0,
+			bounce: .8,
+			acceleration: 0
+		},
 		// sticky: 0,
 		id: 0,
 		initialize: function( options ){

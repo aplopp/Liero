@@ -27,7 +27,11 @@ define([
 	                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
 	            }); 			
 	        }
+	        this.w = this.w;
 
+            spec.model.width = this.w;
+            spec.model.height = this.h;
+            console.log( this );
 			this.model = new ProjectileM( spec.model );
 			this.view = new ProjectileV({ model: this.model });
 
@@ -42,8 +46,8 @@ define([
 			var that = this;
 			var explosionSpec = this.model.get( 'explosion' );
 			var explosion = new Explosion({ 
-				x: this.x , // center x
-				y: this.y, // center y
+				x: this.x + this.w / 2 , // center x
+				y: this.y + this.h / 2, // center y
 				vX: this.vX, 
 				vY: this.vY,
 				model: explosionSpec

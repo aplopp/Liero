@@ -52,11 +52,13 @@ define([
 
 				var projectile = new Projectile({
 					// e nd of barrel coordinates
-					x: player.x + barrelCoords.x, // TODO, end of barrel
-					y: player.y + barrelCoords.y, // TODO, end of barrel
+					x: player.x + barrelCoords.x - projectileSpec.width/2, // TODO, end of barrel
+					y: player.y + barrelCoords.y - projectileSpec.width/2, // TODO, end of barrel
 					// x/y components of speed, depending on angle of barrel
 					vX: launchVelocities.x,
 					vY: launchVelocities.y,
+					width: projectileSpec.width,
+					height: projectileSpec.width,
 					physics: projectileSpec.physics, 
 					model: projectileSpec.onLaunch( projectileSpec.model, this )
 				});

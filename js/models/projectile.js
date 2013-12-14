@@ -41,8 +41,6 @@ define([
 				var explosion = settings.explosions[ explosion ];
 				this.set( 'explosion', $.extend({ _type: type }, explosion ) );
 			}		
-
-			this.set( 'height', this.get( 'width' ) );
 		}
 	}); 
 	return ProjectileM;

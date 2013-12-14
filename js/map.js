@@ -11,13 +11,13 @@ define([
 	}
 	function Map( mapSpec ){
 		this.settings = _.extend( defaults, mapSpec );
-
 		this.grid = this.settings.layout;
 		this.canvas = document.getElementById( 'stage-bg' ); 
 		this.canvas.width = this.settings.width;
 		this.canvas.height = this.settings.height;
 
 		this.simpleGrid = this.getSimpleGrid(); 
+
 		// create map, add generated pixels to canvas 
 		this.generateMap();
 	}
@@ -47,21 +47,13 @@ define([
 	 */
 	Map.prototype.getSimpleGrid = function(){
 		var simpleGrid = [];
-		// var impassableCol = [];
-		// for( var i = 0; i < this.canvas.width; i++ ){
-		// 	impassableCol.push( 1 ); // unpassable left; 
-		// }
-		// simpleGrid.push( impassableCol ); 
 		_.each( this.grid, function( col ){
 			simpleCol = []; 
-			// simpleCol.push( 1 ); // unpassable top
 			_.each( col, function( row ){
 				simpleCol.push( row.type );
 			});
-			// simpleCol.push( 1 ); // unpassable bottom
 			simpleGrid.push( simpleCol );
 		});		
-		// simpleGrid.push( impassableCol ); 
 		return simpleGrid; 
 	};
 	/**
@@ -71,8 +63,8 @@ define([
 	 */
 	Map.prototype.isMapObjectOffMap = function( mapObject ){
 		return {
-			x: this.checkOffX( mapObject.x, mapObject.model.get( 'width' ) ),
-			y: this.checkOffY( mapObject.y, mapObject.model.get( 'height' ) )
+			x: this.checkOffX( mapObject.x, mapObject.w ),
+			y: this.checkOffY( mapObject.y, mapObject.h )
 		}
 	}
 	/**
@@ -119,7 +111,7 @@ define([
 						mapObject.vX = 0;		
 					}
 				} else {
-					var collisionX = this.canvas.width - mapObject.model.attributes.width;
+					var collisionX = this.canvas.width - mapObject.w;
 					// cancel velocity entirely if doing itty bitty bounces						
 					if ( mapObject.vX > 0 && mapObject.vX < 20 ){
 						mapObject.vX = 0;	
@@ -138,7 +130,7 @@ define([
 						mapObject.vY = 0;	
 					}	
 				} else {
-					var collisionY = this.canvas.height - mapObject.model.attributes.height;
+					var collisionY = this.canvas.height - mapObject.h;
 					// cancel velocity entirely if doing itty bitty bounces						
 					if ( mapObject.vY > 0 && mapObject.vY < 25 ){
 						mapObject.vY = 0;	
@@ -197,8 +189,8 @@ define([
 	}	
 	Map.prototype.isObjectInOccupiedSpace = function( mapObject ){
 		return {
-			x: this.checkOffX( mapObject.x, mapObject.model.get( 'width' ) ),
-			y: this.checkOffY( mapObject.y, mapObject.model.get( 'height' ) )
+			x: this.checkOffX( mapObject.x, mapObject.w ),
+			y: this.checkOffY( mapObject.y, mapObject.h )
 		}
 	}
 	/**
@@ -210,8 +202,8 @@ define([
 		var x2 = Math.floor( mapObject.x );
 		var y1 = Math.floor( mapObject.lastPos.y );
 		var y2 = Math.floor( mapObject.y );
-		var w = mapObject.model.get( 'width' );
-		var h = mapObject.model.get( 'height' );
+		var w = mapObject.w;
+		var h = mapObject.h;
 
 		// counter vars
 		var y;
@@ -338,11 +330,11 @@ define([
 	Map.prototype.checkForImpassablePixels = function( pixels, lr ){
 		for( i in pixels ){
 			if ( lr ){
-				if ( pixels[i].x < 0 || pixels[i].x > this.simpleGrid[0].length - 1){
+				if ( pixels[i].x < 1 || pixels[i].x > this.simpleGrid[0].length - 1){
 					return true;
 				}
 			} else {
-				if ( pixels[i].y < 0 || pixels[i].y > this.simpleGrid.length - 1 ){
+				if ( pixels[i].y < 1 || pixels[i].y > this.simpleGrid.length - 1 ){
 					return true;
 				}
 			}

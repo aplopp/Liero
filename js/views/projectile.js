@@ -27,14 +27,17 @@ define([
 			// set up the shape
 			if ( 
 				_.has( changed, 'color' ) 
-				|| _.has( changed, 'height' ) 
 				|| _.has( changed, 'width' )  
+				|| _.has( changed, 'height' )  
 			){				// draw body
 		 		this.shape.graphics
 		 			.clear()
+		 			// .beginFill( '#000' )
+		 			// .drawRect( 0, 0, this.model.get( 'width'), this.model.get( 'height') )
+		 			// .endFill()
 		 			.beginFill( this.model.get( 'color' ) )
-		 			.drawCircle(0, 0, this.model.get( 'width' ))
-		 			.endFill();
+		 			.drawCircle(this.model.get( 'width')/2, this.model.get( 'width' )/2, this.model.get( 'width')/2 )
+		 			.endFill()
 		 	}
 			
 		 	return this.shape; 
