@@ -372,7 +372,6 @@ define([
 		mapObject.y = newY2;		
 		mapObject.vY *= -1 * mapObject.physics.bounce;
 		// 2) add friction to crossing direction
-		console.log( settings.physics.surfaceFriction, mapObject.physics.friction );
 		mapObject.vX *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
 		mapObject.view.setPos({
 			x: mapObject.x, 

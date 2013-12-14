@@ -42,15 +42,18 @@ define([
             spec.model.id = this.id;
 			this.model = new PlayerM( spec.model );
 			this.view = new PlayerV({ model: this.model });
+			
+			this.moveSpeed = spec.moveSpeed;
+			this.jumpPower = spec.jumpPower;
 		},
 		// actions
 		moveLeft: function(){
 			this.model.set( 'facing', 'left' );
-			this.vX -= this.abilities.moveSpeed; 
+			this.vX -= this.moveSpeed; 
 		},
 		moveRight: function(){
 			this.model.set( 'facing', 'right' );		
-			this.vX += this.abilities.moveSpeed; 
+			this.vX += this.moveSpeed; 
 		},
 		aimUp: function(){
 			this.model.set({ 'aim': this.model.get( 'aim' ) - 3 }, { validate: true });
@@ -59,7 +62,7 @@ define([
 			this.model.set({ 'aim': this.model.get( 'aim' ) + 3 }, { validate: true });
 		},
 		jump: function(){
-			this.vY -= this.abilities.jumpPower; 
+			this.vY -= this.jumpPower; 
 		},
 		prevWeapon: function(){
 			this.switchWeapon( false );

@@ -17,12 +17,10 @@ define({
 	player: {
 		height: 30, // in px
 		width: 30, // in px
-		abilities: {
-			/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
-			moveSpeed: 10, 
-			/** change in vY from player.jump() px/s */
-			jumpPower: 500,
-		},
+		/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
+		moveSpeed: 10, 
+		/** change in vY from player.jump() px/s */
+		jumpPower: 500,
 		physics: {
 			acceleration: 0,
 			bounce: .7,
