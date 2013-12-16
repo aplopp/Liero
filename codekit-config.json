@@ -163,14 +163,16 @@
       "outputAbbreviatedPath" : "\/js\/views\/projectile.min.js",
       "fileType" : 64
     },
-    "\/css\/base.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+    "\/js\/views\/object.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/css\/base.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
+      "inputAbbreviatedPath" : "\/js\/views\/object.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/views\/object.min.js",
+      "fileType" : 64
     },
     "\/js\/functions\/color.js" : {
       "ignoreWasSetByUser" : 1,
@@ -183,17 +185,6 @@
       "outputAbbreviatedPath" : "\/js\/functions\/color.min.js",
       "fileType" : 64
     },
-    "\/js\/views\/object.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/views\/object.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/views\/object.min.js",
-      "fileType" : 64
-    },
     "\/js\/views\/explosion.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -204,6 +195,15 @@
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/views\/explosion.min.js",
       "fileType" : 64
+    },
+    "\/css\/base.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/css\/base.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
     },
     "\/js\/models\/explosion.js" : {
       "ignoreWasSetByUser" : 1,
@@ -258,17 +258,6 @@
       "outputAbbreviatedPath" : "\/js\/functions\/animations.min.js",
       "fileType" : 64
     },
-    "\/js\/app.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/app.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/app.min.js",
-      "fileType" : 64
-    },
     "\/js\/map.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -278,6 +267,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/map.min.js",
+      "fileType" : 64
+    },
+    "\/js\/app.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/app.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/app.min.js",
       "fileType" : 64
     },
     "\/js\/explosion.js" : {

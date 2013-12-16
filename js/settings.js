@@ -29,31 +29,30 @@ define({
 		}	
 	},
 	players: [
-		// { 
-		// 	x: 300,
-		// 	y: 200,
-		// 	vX: -900,
-		// 	vY: -600,	
+		{ 
+			x: 300,
+			y: 200,
+			vX: -900,
+			vY: -600,	
+			height: 20,
+			width: 20,
+			model: {
+				name: 'Joe', 
+				color: '#249',
+				weapons: [ 'rocketLauncher', 'shotgun', 'grenadeLauncher', 'machineGun', 'gun' ]
+			}, 
+			keyBindings: {
+				left: 37, // l
+				up: 38, // u
+				right: 39, // r
+				down: 40, // d
+				jump: [ 'command-r' ],
+				shoot: [ 32 ], // space		
+				prevWeapon: [ 37, 'shift-r' ],
+				nextWeapon: [ 39, 'shift-r' ]
+			}
 
-		// 	model: {
-		// 		name: 'Joe', 
-		// 		color: '#249',
-		// 		height: 20,
-		// 		width: 20,
-		// 		weapons: [ 'rocketLauncher', 'shotgun', 'grenadeLauncher', 'machineGun', 'gun' ]
-		// 	}, 
-		// 	keyBindings: {
-		// 		left: 37, // l
-		// 		up: 38, // u
-		// 		right: 39, // r
-		// 		down: 40, // d
-		// 		jump: [ 'command-r' ],
-		// 		shoot: [ 32 ], // space		
-		// 		prevWeapon: [ 37, 'shift-r' ],
-		// 		nextWeapon: [ 39, 'shift-r' ]
-		// 	}
-
-		// },
+		},
 		{ 
 			x: 550,
 			y: 300,

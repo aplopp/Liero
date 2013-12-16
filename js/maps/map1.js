@@ -11,6 +11,12 @@ define( function(){
 					color: [ 255,255,255, 255],
 					type: 1
 				});
+			} else if ( x > 200 && x < 800 && y > 250 && y < 252 ){
+				col.push({
+					location: x + ', '+ y,
+					color: [ 255,255,255, 255],
+					type: 1
+				});
 			} else if ( x < 200 && y < 100 ){
 				col.push({
 					location: x + ', '+ y,
