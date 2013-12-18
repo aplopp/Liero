@@ -16,8 +16,7 @@ define([
 		this.canvas.width = this.settings.width;
 		this.canvas.height = this.settings.height;
 
-		this.simpleGrid = this.getSimpleGrid(); 
-
+		this.impassibleGrid = this.getImpassibleGrid(); 
 		// create map, add generated pixels to canvas 
 		this.generateMap();
 	}
@@ -42,20 +41,41 @@ define([
 		});
 		ctx.putImageData( imageData, 0, 0 );		
 	}
+	// internal index variables to maybe speed things up
+	Map.prototype.i = 0;
+	Map.prototype.x = 0;
+	Map.prototype.y = 0;
 	/**
 	 * simplifies the grid to a single 'type' number...whether the player (or objects) can pass through, or no. 
 	 */
-	Map.prototype.getSimpleGrid = function(){
-		var simpleGrid = [];
-		_.each( this.grid, function( col ){
-			simpleCol = []; 
-			_.each( col, function( row ){
-				simpleCol.push( row.type );
-			});
-			simpleGrid.push( simpleCol );
-		});		
-		return simpleGrid; 
+	var impassibleGrid = [];	
+	Map.prototype.getImpassibleGrid = function(){
+		for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
+			impassibleGrid[ y ] = [];
+			for( var x = 0, lenX = this.grid[0].length; x < lenX; x++ ){
+				impassibleGrid[ y ].push( this.grid[y][x].type );
+			}
+		}
+		return impassibleGrid; 
 	};
+	// creates an empty grid of -1,
+	// same width and height as map,
+	// on which to record object motion
+	var cachedGrid = [];
+	Map.prototype.getEmptyGrid = function(){
+		if ( cachedGrid.length === 0 ){
+			for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
+				cachedGrid[ y ] = [];
+				for( var x = 0, lenX = this.grid[0].length; x < lenX; x++ ){
+					cachedGrid[ y ].push( -1 );
+				}
+			}
+		}
+		var emptyGrid = [];
+		for (var i = 0, len = cachedGrid.length; i < len; i++)
+		    emptyGrid[i] = cachedGrid[i].slice();	
+		return emptyGrid;
+	}
 	/**
 	 * Compares a mapObject to the map to see if its offscreen.
 	 * @param  {object} mapObject
@@ -89,104 +109,23 @@ define([
 		}
 		return false; 
 	};
-
-	Map.prototype.adjustForAnyCollision = function( mapObject ){
-		// this.handleWallCollision( mapObject );
+	Map.prototype.adjustForMapCollision = function( mapObject ){
+		// handle collisions with static map
 		this.handleMapCollision( mapObject );
 	}
-	/**
-	 * 1) check whether the item is off the map
-	 * 2) If it is, handle the wall collision
-	 */
-	Map.prototype.handleWallCollision = function( mapObject ){
-		var offscreen = this.isMapObjectOffMap( mapObject );
-		var hadCollision = offscreen.x || offscreen.y;
-		while( offscreen.x || offscreen.y ) {
-			if ( offscreen.x ){
-				var collisionX = offscreen.x < 0 ? 0 : this.canvas.width ; 
-				if ( offscreen.x < 0 ){
-					var collisionX = 0;
-					// cancel velocity entirely if doing itty bitty bounces
-					if ( mapObject.vX < 0 && mapObject.vX > -20 ){
-						mapObject.vX = 0;		
-					}
-				} else {
-					var collisionX = this.canvas.width - mapObject.w;
-					// cancel velocity entirely if doing itty bitty bounces						
-					if ( mapObject.vX > 0 && mapObject.vX < 20 ){
-						mapObject.vX = 0;	
-					}
-				}					
-				var results = this.resolveWallCollisionX( collisionX, mapObject );
-				mapObject.x = results.point; 
-				mapObject.vX = results.velocity;	
-				mapObject.vY *= ( 1 - settings.physics.surfaceFriction );
-			}
-			if ( offscreen.y ){
-				if ( offscreen.y < 0 ){
-					var collisionY = 0;
-					// cancel velocity entirely if doing itty bitty bounces						
-					if ( mapObject.vY < 0 && mapObject.vY > -25 ){
-						mapObject.vY = 0;	
-					}	
-				} else {
-					var collisionY = this.canvas.height - mapObject.h;
-					// cancel velocity entirely if doing itty bitty bounces						
-					if ( mapObject.vY > 0 && mapObject.vY < 25 ){
-						mapObject.vY = 0;	
-					}						
+	Map.prototype.isEmpty = function( array ){
+		for( var y = 0, lenY = array.length; y < lenY; y++ ){
+			for( var x = 0, lenX = array[0].length; x < lenX; x++ ){
+				if ( array[y][x] !== -1 ){
+					return false;
 				}
-				var results = this.resolveWallCollisionY( collisionY, mapObject );
-				mapObject.y = results.point; 
-				mapObject.vY = results.velocity;
-				mapObject.vX *= ( 1 - settings.physics.surfaceFriction );
 			}
-			offscreen = this.isMapObjectOffMap( mapObject );			
-		} ;
-	}
-	/**
-	 * returns the end coord and the endV after a bounce; 
-	 * @param {collisionX} - where the collision happened
-	 * @param {endX} - where the object would have ended up
-	 * @param {vX} - how fast the object would have been traveling
-	 * @returns {object} - the bounced position and velocity
-	 */
-	Map.prototype.resolveWallCollisionX = function( collisionPoint, mapObject, acceleration ){
-		var prevPoint = mapObject.lastPos.x;
-		var acceleration = mapObject.physics.acceleration.x;
-		return {
-			point: collisionPoint - ( mapObject.x - collisionPoint ),
-			velocity: -1 * mapObject.physics.bounce * mapObject.vX
 		}
+		return true;
 	}
-	/**
-	 * returns the end coord and the endV after a bounce; 
-	 * @param {collisionX} - where the collision happened
-	 * @param {endX} - where the object would have ended up
-	 * @param {vX} - how fast the object would have been traveling
-	 * @returns {object} - the bounced position and velocity
-	 */
-	Map.prototype.resolveWallCollisionY = function( collisionPoint, mapObject, acceleration ){
-		var prevPoint = mapObject.lastPos.y;
-		var prevV = mapObject.lastPos.vY;
-		// includes gravity
-		var acceleration = settings.physics.gravity * mapObject.physics.gravity + mapObject.physics.acceleration.y;
-		// var y = ax*x + bx + c;
-		// var collisionPoint = acceleration * t2 + prevV*t + prevPoint;
-		// y = collisionPoint
-		// a = acceleration
-		// x = t
-		// b = prevV
-		// c = prevPoint
-		// // solve for t
-		// t = ( -prevV - Math.sqrt( prevV * prevV - 4 * acceleration * prevPoint ) ) / 2 * acceleration;
-		// console.log( 'PREV Velocity: ' + prevV, 'acceleration: ' + acceleration, 'prevPoint: ' + prevPoint, t );
-
-		return {
-			point: collisionPoint - ( mapObject.y - collisionPoint ),
-			velocity: -1 * mapObject.physics.bounce * mapObject.vY
-		}
-	}	
+	Map.prototype.clearFrame = function(){
+		this.frameGrid = this.getEmptyGrid();
+	}
 	Map.prototype.isObjectInOccupiedSpace = function( mapObject ){
 		return {
 			x: this.checkOffX( mapObject.x, mapObject.w ),
@@ -202,35 +141,43 @@ define([
 		var x2 = Math.floor( mapObject.x );
 		var y1 = Math.floor( mapObject.lastPos.y );
 		var y2 = Math.floor( mapObject.y );
-		var w = Math.floor( mapObject.w );
-		var h = Math.floor( mapObject.h );
+		var w = mapObject.w;
+		var h = mapObject.h;
 
 		// counter vars
 		var y;
 		var x;
+		var i;
+		var edgeR, edgeL, edgeT, edgeB, occupiedR, occupiedL, occupiedT, occupiedB;
 		// this massive loop checks the leading edges for the 4 directions the mapObject could go.
 		if ( x2 >= x1 ){
 			if ( y2 >= y1 ){
 				// both positive (down + right)
 				for( x = x1; x <= x2; x++){
 					for ( y = y1; y <= y2; y++){
-						var leadingRightEdge = [];
-						var leadingBottomEdge = [];
-						for( var i = 0; i < h; i++){
-							leadingRightEdge.push({ x: x + w + 1, y: y + i });
+						edgeR = [];
+						edgeB = [];
+						for( i = 0; i < h; i++){
+							if ( ( y + i ) < ( this.canvas.height - 1 ) ){
+								this.recordMotion( x + w, y + i, mapObject );
+								edgeR.push({ x: x + w + 1, y: y + i });
+							}
 						}
-						for( var i = 0; i < w; i++){
-							leadingBottomEdge.push({ x: x+ i, y: y + h + 1  });
+						for( i = 0; i < w; i++){
+							if ( ( x + i ) < ( this.canvas.width - 1 )){							
+								this.recordMotion( x + i, y + h, mapObject );
+								edgeB.push({ x: x+ i, y: y + h + 1  });
+							}
 						}
-						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge, true );
-						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge, false );
-						if ( occupiedRight || occupiedBelow ){
-							var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x2 - x1 ) * ( y2 - y1 ));
+						occupiedR = this.checkForImpassablePixels( mapObject, edgeR, true );
+						occupiedB = this.checkForImpassablePixels( mapObject, edgeB, false );
+						if ( occupiedR || occupiedB ){
+							// var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x2 - x1 ) * ( y2 - y1 ));
 
-							if ( occupiedRight ){
+							if ( occupiedR ){
 								this.handleLeftRightCollision( mapObject, x );
 							}
-							if ( occupiedBelow ){
+							if ( occupiedB ){
 								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
@@ -241,22 +188,24 @@ define([
 				// x pos, y neg (up + right)
 				for( x = x1; x <= x2; x++){
 					for ( y = y1; --y>=y2;){
-						var leadingTopEdge = [];
-						var leadingRightEdge = [];
-						for( var i = 0; i < h; i++){
-							leadingRightEdge.push({ x: x + w + 1, y: y + i });
+						edgeT = [];
+						edgeR = [];
+						for( i = 0; i < h; i++){
+							this.recordMotion( x + w, y + i, mapObject );
+							edgeR.push({ x: x + w + 1, y: y + i });
 						}
-						for( var i = 0; i < w; i++){
-							leadingTopEdge.push({ x: x+ i, y: y - 1  });
+						for( i = 0; i < w; i++){
+							this.recordMotion( x + i, y, mapObject );
+							edgeT.push({ x: x+ i, y: y - 2  });
 						}
-						var occupiedRight = this.checkForImpassablePixels( leadingRightEdge, true );
-						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge, false );
-						if ( occupiedRight || occupiedAbove ){
-							var percentThroughPath = ( (x - x1)*(y - y2) ) / ((x2 - x1 ) * ( y1 - y2 ));
-							if ( occupiedRight ){
+						occupiedR = this.checkForImpassablePixels( mapObject, edgeR, true );
+						occupiedT = this.checkForImpassablePixels( mapObject, edgeT, false );
+						if ( occupiedR || occupiedT ){
+							// var percentThroughPath = ( (x - x1)*(y - y2) ) / ((x2 - x1 ) * ( y1 - y2 ));
+							if ( occupiedR ){
 								this.handleLeftRightCollision( mapObject, x );
 							}
-							if ( occupiedAbove ){
+							if ( occupiedT ){
 								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
@@ -269,22 +218,24 @@ define([
 				// x neg, y pos (down + left)
 				for( x = x1; --x>=x2; ){
 					for ( y = y1; y <= y2; y++){
-						var leadingBottomEdge = [];
-						var leadingLeftEdge = [];
-						for( var i = 0; i < h; i++){
-							leadingLeftEdge.push({ x: x - 1, y: y + i });
+						edgeB = [];
+						edgeL = [];
+						for( i = 0; i < h; i++){
+							this.recordMotion( x, y + i, mapObject );
+							edgeL.push({ x: x - 1, y: y + i });
 						}
-						for( var i = 0; i < w; i++){
-							leadingBottomEdge.push({ x: x+ i, y: y + h + 1  });
+						for( i = 0; i < w; i++){
+							this.recordMotion( x + i, y + h, mapObject );
+							edgeB.push({ x: x+ i, y: y + h + 1  });
 						}
-						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge, true );
-						var occupiedBelow = this.checkForImpassablePixels( leadingBottomEdge, false );
-						if ( occupiedLeft || occupiedBelow ){
-							var percentThroughPath = ( (x - x2)*(y - y1) ) / ((x1 - x2 ) * ( y2 - y1 ));
-							if ( occupiedLeft ){
+						occupiedL = this.checkForImpassablePixels( mapObject, edgeL, true );
+						occupiedB = this.checkForImpassablePixels( mapObject, edgeB, false );
+						if ( occupiedL || occupiedB ){
+							// var percentThroughPath = ( (x - x2)*(y - y1) ) / ((x1 - x2 ) * ( y2 - y1 ));
+							if ( occupiedL ){
 								this.handleLeftRightCollision( mapObject, x );
 							}
-							if ( occupiedBelow ){
+							if ( occupiedB ){
 								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
@@ -295,22 +246,24 @@ define([
 				// x neg, y neg ( up + left )
 				for( x = x1; --x>=x2; ){
 					for ( y = y1; --y>=y2;){
-						var leadingTopEdge = [];
-						var leadingLeftEdge = [];
-						for( var i = 0; i < h; i++){
-							leadingLeftEdge.push({ x: x - 1, y: y + i });
+						edgeT = [];
+						edgeL = [];
+						for( i = 0; i < h; i++){
+							this.recordMotion( x, y + i, mapObject.id );
+							edgeL.push({ x: x - 1, y: y + i });
 						}
-						for( var i = 0; i < w; i++){
-							leadingTopEdge.push({ x: x+ i, y: y - 1  });
+						for( i = 0; i < w; i++){
+							this.recordMotion( x + i, y, mapObject.id );
+							edgeT.push({ x: x+ i, y: y - 2  });
 						}
-						var occupiedLeft = this.checkForImpassablePixels( leadingLeftEdge, true );
-						var occupiedAbove = this.checkForImpassablePixels( leadingTopEdge, false );
-						if ( occupiedLeft || occupiedAbove ){
-							var percentThroughPath = ( (x - x2)*(y - y2) ) / ((x1 - x2 ) * ( y1 - y2 ));
-							if ( occupiedLeft ){
+						occupiedL = this.checkForImpassablePixels( mapObject, edgeL, true );
+						occupiedT = this.checkForImpassablePixels( mapObject, edgeT, false );
+						if ( occupiedL || occupiedT ){
+							// var percentThroughPath = ( (x - x2)*(y - y2) ) / ((x1 - x2 ) * ( y1 - y2 ));
+							if ( occupiedL ){
 								this.handleLeftRightCollision( mapObject, x );
 							}
-							if ( occupiedAbove ){
+							if ( occupiedT ){
 								this.handleTopBottomCollision( mapObject, y );
 							}
 							return;
@@ -321,30 +274,29 @@ define([
 		}
 		
 	};
+
 	/**
 	 * Simply compares an array of pixel coordinates to the simple grid to detect if they are occupied
 	 * @param pixels {array} - an array of x y coordinates to check
 	 * @param lr {bool} - true if this is a rl wall (a column)
 	 * @returns {bool} - true if any of the pixels are occupied
 	 */
-	Map.prototype.checkForImpassablePixels = function( pixels, lr ){
+	Map.prototype.checkForImpassablePixels = function( mapObject, pixels, lr ){
 
-		for( i in pixels ){
-			var x = parseInt( pixels[i].x);
-			var y = parseInt( pixels[i].y);
+		for( var i =0, len = pixels.length; i<len;i++ ){
 
 			if ( lr ){
-				if ( x < 0 || x > ( this.simpleGrid[0].length - 1 ) ){
+				if ( pixels[i].x < 0 || pixels[i].x > ( this.impassibleGrid[0].length - 1 ) ){
 					return true;
 				}
 			} else {
-				if ( y < 0 || y > ( this.simpleGrid.length - 1 ) ){
+				if ( pixels[i].y < 0 || pixels[i].y > ( this.impassibleGrid.length - 1 ) ){
 					return true;
 				}
 			}
-			if ( ! this.simpleGrid[y] ){
+			if ( ! this.impassibleGrid[ pixels[i].y ] ){
 				return true;
-			} else if ( this.simpleGrid[ y ][ x ] ){
+			} else if ( this.impassibleGrid[ pixels[i].y ][ pixels[i].x ] === 1 ){
 				return true; 
 			}
 		}
@@ -352,9 +304,8 @@ define([
 	}
 	Map.prototype.handleLeftRightCollision = function( mapObject, x ){
 		// 1) flip destination coordinate to be ( current coordinate - remaining distance) * bounce
-		var x2 = mapObject.x;
-		var newX2 = x - ( x2 - x ) * mapObject.physics.bounce; 
-		mapObject.x = newX2;		
+		mapObject.x = x - ( mapObject.x - x ) * mapObject.physics.bounce;	
+		mapObject.lastPos.x = x;	
 		mapObject.vX *= -1 * mapObject.physics.bounce;
 		// 2) add friction to crossing direction
 		mapObject.vY *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
@@ -365,9 +316,8 @@ define([
 	}
 	Map.prototype.handleTopBottomCollision = function( mapObject, y ){
 		// 1) flip destination coordinate to be ( current coordinate - remaining distance) * bounce
-		var y2 = mapObject.y;
-		var newY2 = y - ( y2 - y ) * mapObject.physics.bounce; 
-		mapObject.y = newY2;		
+		mapObject.y = y - ( mapObject.y - y ) * mapObject.physics.bounce;
+		mapObject.lastPos.y = y;
 		mapObject.vY *= -1 * mapObject.physics.bounce;
 		// 2) add friction to crossing direction
 		mapObject.vX *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
@@ -375,6 +325,50 @@ define([
 			x: mapObject.x, 
 			y: mapObject.y
 		});			
+	}
+	Map.prototype.recordMotion = function( x, y, mapObject ){
+		if ( mapObject.type === 'player' || mapObject.hitsPlayer ){
+			if ( this.frameGrid[ y ] ){
+				var val = this.frameGrid[y][x];
+				if ( val === -1 ){
+					this.frameGrid[y][x] = mapObject.id;
+				} else if ( _.isNumber( val ) && val !== mapObject.id  ){
+					this.frameGrid[y][x]  = [ this.frameGrid[y][x], mapObject.id ];
+				}
+			}
+		}
+	}	
+	Map.prototype.handleObjectCollisions = function( ){
+		var objectsWCollisions = [];
+		for( var y = 0; y< this.frameGrid.length; y++ ){
+			for( var x = 0; x< this.frameGrid[0].length; x++ ){
+				if ( _.isArray( this.frameGrid[y][x] ) ){
+					// if neither object is in any collisions so far.
+					if ( _.difference( this.frameGrid[y][x], objectsWCollisions ).length == 2 ){
+						this.executeObjectCollision( x, y, this.frameGrid[y][x][0], this.frameGrid[y][x][1]);
+						// record to stop further collisions on these objects.
+						objectsWCollisions = _.union( objectsWCollisions, this.frameGrid[y][x] );
+					}
+				}
+			}
+		}
+	}
+	Map.prototype.executeObjectCollision = function( x, y, mapObject1_id, mapObject2_id ){
+		var mapObject1 = app.getObject( mapObject1_id );
+		var mapObject2 = app.getObject( mapObject2_id );		
+		if ( mapObject1.type === 'player' ){
+			var player = mapObject1;
+			var object = mapObject2;
+		} else {
+			var player = mapObject2;
+			var object = mapObject1;
+		}
+		if ( object.hitsPlayer ){
+			player.trigger( 'collision', object );
+			object.trigger( 'collision', player )
+		} else {
+			console.log( 'no collision' );
+		}
 	}
 	return Map; 
 });

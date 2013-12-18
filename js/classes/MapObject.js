@@ -12,6 +12,9 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 		this.vY = _.has(options, 'vY') ? options.vY : 0;
 		this.w = _.has(options, 'width') ? options.width : 2;
 		this.h = _.has(options, 'height') ? options.height : 2;
+		this.weight = _.has( options, 'weight' ) ? options.weight: 10;
+		this.type = _.has(options, 'type') ? options.type : false;
+		this.hitsPlayer = _.has(options, 'hitsPlayer') ? !! options.hitsPlayer : false;
 		var defaultPhysics = { 
 			friction: 0, 
 			gravity: 1, 
@@ -30,7 +33,7 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 			this.physics.acceleration = { x: 0, y: 0 };
 		}
 
-		this.initialize( _.omit( options, [ 'x', 'y', 'vX', 'vY', 'physics', 'width', 'height' ] ) );
+		this.initialize( _.omit( options, [ 'weight', 'type', 'hitsPlayer', 'x', 'y', 'vX', 'vY', 'physics', 'width', 'height' ] ) );
 	
 		this.nextPosition();
 
@@ -99,6 +102,7 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 			});
 		}
 	});
+	_.extend(MapObject.prototype, Backbone.Events);
 	MapObject.extend = Backbone.Model.extend; // just borrow the extend function
 	return MapObject; 
 });

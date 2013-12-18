@@ -17,10 +17,13 @@ define({
 	player: {
 		height: 30, // in px
 		width: 30, // in px
+		weight: 50,
 		/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
 		moveSpeed: 10, 
 		/** change in vY from player.jump() px/s */
 		jumpPower: 500,
+		objectCollision: true,
+		hitsPlayer: true,
 		physics: {
 			acceleration: 0,
 			bounce: .7,
@@ -30,10 +33,10 @@ define({
 	},
 	players: [
 		{ 
-			x: 300,
-			y: 200,
-			vX: -900,
-			vY: -600,	
+			x: 20,
+			y: 300,
+			vX: -350,
+			vY: -500,	
 			height: 20,
 			width: 20,
 			model: {
@@ -168,7 +171,9 @@ define({
 	}, 
 	projectiles: {
 		grenade: {
+			weight: 20,
 			width: 40,
+			hitsPlayer: true,			
 			model: {
 				name: 'Grenade',
 				color: '#cc0000',
@@ -177,7 +182,8 @@ define({
 				explosion: 'big'
 			}
 		},
-		rocket: {		
+		rocket: {
+			weight: 25,
 			width: 20, 
 			model: {
 				name: 'Rocket',
@@ -194,6 +200,7 @@ define({
 			}
  		},
 		bullet: {
+			weight: 50,
 			width: 2,
 			model: {
 				name: 'Bullet',
@@ -208,6 +215,7 @@ define({
 			}
 		},
 		flame: {
+			weight: 1,
 			width: 10,
 			model: {
 				name: 'Flame',

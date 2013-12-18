@@ -7,7 +7,8 @@ define([
 	'player', 
 	'keys', 
 	'functions/color', 
-	'settings'
+	'settings',
+	'functions/lang'
 ], function( _, Backbone, $, createjs, Map, Player, keys, ColorFunctions, settings ){
 	Backbone.$ = $;
 	var noop = function(){}
@@ -83,7 +84,7 @@ define([
 			var players = [];
 
 			_.each( this.settings.players, function( playerSpec ){
-
+				settings.player.type = 'player';
 				players.push( new Player( _.extend( playerSpec, settings.player ) )); 
 			});
 			return players;			
@@ -114,6 +115,10 @@ define([
 			this.mapObjects.push( mapObject );
 			this.stage.addChild( shape );
 		}
+		this.getObject = function( id ){
+			var object = _.findWhere( this.mapObjects, { id: id });
+			return object;
+		}
 		this.removeObject = function( id ){
 			var object = _.findWhere( this.mapObjects, { id: id });
 			this.mapObjects = _.reject( this.mapObjects, function( mapObject ){ return mapObject.id === id });
@@ -124,13 +129,16 @@ define([
 		 * advance the objects position based on x and y velocity
 		 */
 		this.nextObjectPositions = function(){
+			this.map.clearFrame();
 			_.each( this.mapObjects, function( mapObject ){
 				/** based on velocity and position, move pointer to next position */
 				mapObject.nextPosition();
 				/** adjust items that will be offscreen, and therefore have collided with the map edge. */				
-				that.map.adjustForAnyCollision( mapObject ); 
-				
+				that.map.adjustForMapCollision( mapObject ); 
+
 			});	
+			this.map.handleObjectCollisions();
+
 		}
 
 
