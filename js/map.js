@@ -110,7 +110,8 @@ define([
 		return false; 
 	};
 	Map.prototype.adjustForMapCollision = function( mapObject ){
-		// handle collisions with static map
+
+		// handle collisions with static map, record object motion
 		this.handleMapCollision( mapObject );
 	}
 	Map.prototype.isEmpty = function( array ){
@@ -143,6 +144,19 @@ define([
 		var y2 = Math.floor( mapObject.y );
 		var w = mapObject.w;
 		var h = mapObject.h;
+
+		for( var cx = x1, lenX = x1 + w; cx<lenX; cx++ ){
+			// above top edge 
+			this.recordMotion( cx, y1 - 1, mapObject );
+			// below bottom edge 
+			this.recordMotion( cx, y1 + h + 1, mapObject );
+		}
+		for( var cy = y1, lenY = y1 + h; cy<lenY; cy++ ){
+			// left of left edge
+			this.recordMotion( x1 - 1, cy, mapObject )
+			// right of right edge 
+			this.recordMotion( x1 + w + 1, cy, mapObject )
+		}
 
 		// counter vars
 		var y;
@@ -327,7 +341,7 @@ define([
 		});			
 	}
 	Map.prototype.recordMotion = function( x, y, mapObject ){
-		if ( mapObject.type === 'player' || mapObject.hitsPlayer ){
+		if ( mapObject.type === 'player' || mapObject.hitsPlayer ){			
 			if ( this.frameGrid[ y ] ){
 				var val = this.frameGrid[y][x];
 				if ( val === -1 ){
@@ -338,16 +352,15 @@ define([
 			}
 		}
 	}	
+	Map.prototype.frameCollisions = [];
 	Map.prototype.handleObjectCollisions = function( ){
 		var objectsWCollisions = [];
 		for( var y = 0; y< this.frameGrid.length; y++ ){
 			for( var x = 0; x< this.frameGrid[0].length; x++ ){
 				if ( _.isArray( this.frameGrid[y][x] ) ){
 					// if neither object is in any collisions so far.
-					if ( _.difference( this.frameGrid[y][x], objectsWCollisions ).length == 2 ){
+					if ( _.difference( this.frameGrid[y][x], this.frameCollisions ).length == 2 ){
 						this.executeObjectCollision( x, y, this.frameGrid[y][x][0], this.frameGrid[y][x][1]);
-						// record to stop further collisions on these objects.
-						objectsWCollisions = _.union( objectsWCollisions, this.frameGrid[y][x] );
 					}
 				}
 			}
@@ -355,7 +368,8 @@ define([
 	}
 	Map.prototype.executeObjectCollision = function( x, y, mapObject1_id, mapObject2_id ){
 		var mapObject1 = app.getObject( mapObject1_id );
-		var mapObject2 = app.getObject( mapObject2_id );		
+		var mapObject2 = app.getObject( mapObject2_id );
+		if ( ! ( mapObject1 && mapObject2 ) )	return;
 		if ( mapObject1.type === 'player' ){
 			var player = mapObject1;
 			var object = mapObject2;
@@ -364,8 +378,33 @@ define([
 			var object = mapObject1;
 		}
 		if ( object.hitsPlayer ){
-			player.trigger( 'collision', object );
-			object.trigger( 'collision', player )
+			this.frameCollisions.push( player, object );
+
+			if ( object.type === 'player' ){
+				var vXPlayer = player.vX;
+				var vYPlayer = player.vY;
+				var vXObject = object.vX;
+				var vYObject = object.vY;			
+				if ( vXPlayer > vXObject ){
+					player.x = x - player.w;
+					object.x = x + 1;
+
+				} else {
+					player.x = x + 1; 
+					object.x = x - object.w;
+				}
+				player.vX += 2*object.physics.bounce*(object.weight/player.weight ) * vXObject;
+				object.vX += 2*player.physics.bounce*(player.weight/object.weight ) * vXPlayer;			
+				player.vY += 2*object.physics.bounce*(object.weight/player.weight ) * vYPlayer;
+				object.vY += 2*player.physics.bounce*(player.weight/object.weight ) * vYObject;
+
+				// player.vY += (object.weight/player.weight ) * object.vY;
+				// object.vY += (player.weight/object.weight ) * player.vY;	
+			} else {
+
+			}
+			player.trigger( 'collision', object );			
+			object.trigger( 'collision', player, x, y );
 		} else {
 			console.log( 'no collision' );
 		}

@@ -50,10 +50,9 @@ define([
 
 			this.on( 'collision', this.handleCollision );
 		},
-		handleCollision: function( object ){
+		handleCollision: function( object, x, y, vX, vY ){
 			this.vX += (object.weight/this.weight ) * object.vX;
-			this.vY += (object.weight/this.weight ) * object.vY;
-			console.log( this.model.get( 'name' ) + ' collided with ', object.model.get( 'name' ) );
+			this.vY += (object.weight/this.weight ) * object.vX;
 		},
 		// actions
 		moveLeft: function(){

@@ -60,6 +60,7 @@ define([
 					width: projectileSpec.width,
 					height: projectileSpec.width,
 					physics: projectileSpec.physics, 
+					hitsPlayer: projectileSpec.hitsPlayer,
 					model: projectileSpec.onLaunch( projectileSpec.model, this )
 				});
 				// if affected by player motion

@@ -22,8 +22,7 @@ define({
 		moveSpeed: 10, 
 		/** change in vY from player.jump() px/s */
 		jumpPower: 500,
-		objectCollision: true,
-		hitsPlayer: true,
+		hitsPlayer: false,
 		physics: {
 			acceleration: 0,
 			bounce: .7,
@@ -34,9 +33,9 @@ define({
 	players: [
 		{ 
 			x: 20,
-			y: 300,
-			vX: -350,
-			vY: -500,	
+			y: 460,
+			vX: 0,
+			vY: 0,	
 			height: 20,
 			width: 20,
 			model: {
@@ -57,10 +56,10 @@ define({
 
 		},
 		{ 
-			x: 550,
-			y: 300,
-			vX: 300,
-			vY: 1000,	
+			x: 300,
+			y: 460,
+			vX: 0,
+			vY: 0,	
 			height: 30,
 			width: 30,
 			model: {
@@ -202,6 +201,7 @@ define({
 		bullet: {
 			weight: 50,
 			width: 2,
+			hitsPlayer: true,						
 			model: {
 				name: 'Bullet',
 				color: '#000',

@@ -28,7 +28,7 @@ define([
 	            }); 			
 	        }
 	        this.w = this.w;
-
+	        this.type = 'projectile';
             spec.model.width = this.w;
             spec.model.height = this.h;
 			this.model = new ProjectileM( spec.model );
@@ -37,12 +37,22 @@ define([
 			// set time until explosion
 			var delayMax = this.model.get( 'delayToExplosion') + this.model.get( 'delayToExplosionVariability' );
 			var delayMin = this.model.get( 'delayToExplosion') - this.model.get( 'delayToExplosionVariability' );
-			setTimeout( function(){
+			this._timedExplosion = setTimeout( function(){
 				that.explode();
 			}, MathFunctions.getRandomNumberBetween( delayMin, delayMax ) );
+
+			this.on( 'collision', function( mapObject, x, y ){
+				clearTimeout( that._timedExplosion );
+				that.explode( mapObject, x, y );
+			});			
 		}, 
-		explode: function( ){
+		_timedExplosion: false,
+		explode: function( mapObject, x, y ){
 			var that = this;
+			this.vX = 0;
+			this.vY = 0;
+			this.x = x;
+			this.y = y;		
 			var explosionSpec = this.model.get( 'explosion' );
 			var explosion = new Explosion({ 
 				x: this.x + this.w / 2 , // center x
