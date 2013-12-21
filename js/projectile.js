@@ -29,6 +29,7 @@ define([
 	        }
 	        this.w = this.w;
 	        this.type = 'projectile';
+	        this.fromPlayer = spec.fromPlayer;
             spec.model.width = this.w;
             spec.model.height = this.h;
 			this.model = new ProjectileM( spec.model );
@@ -43,16 +44,20 @@ define([
 
 			this.on( 'collision', function( mapObject, x, y ){
 				clearTimeout( that._timedExplosion );
-				that.explode( mapObject, x, y );
+				this.vX = 0;
+				this.vY = 0;
+				this.x = x;
+				this.y = y;	
+				// disable friendly fire
+				if ( this.fromPlayer !== mapObject.id ){
+					that.explode();
+				}
 			});			
 		}, 
 		_timedExplosion: false,
-		explode: function( mapObject, x, y ){
+		explode: function(){
 			var that = this;
-			this.vX = 0;
-			this.vY = 0;
-			this.x = x;
-			this.y = y;		
+	
 			var explosionSpec = this.model.get( 'explosion' );
 			var explosion = new Explosion({ 
 				x: this.x + this.w / 2 , // center x

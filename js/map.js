@@ -62,6 +62,7 @@ define([
 	// same width and height as map,
 	// on which to record object motion
 	var cachedGrid = [];
+	var emptyGrid = [];
 	Map.prototype.getEmptyGrid = function(){
 		if ( cachedGrid.length === 0 ){
 			for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
@@ -71,7 +72,7 @@ define([
 				}
 			}
 		}
-		var emptyGrid = [];
+		emptyGrid = [];
 		for (var i = 0, len = cachedGrid.length; i < len; i++)
 		    emptyGrid[i] = cachedGrid[i].slice();	
 		return emptyGrid;
@@ -110,7 +111,6 @@ define([
 		return false; 
 	};
 	Map.prototype.adjustForMapCollision = function( mapObject ){
-
 		// handle collisions with static map, record object motion
 		this.handleMapCollision( mapObject );
 	}
@@ -366,48 +366,39 @@ define([
 			}
 		}
 	}
+	// tracker variables
+	Map.prototype._mo1 = false;
+	Map.prototype._mo2 = false;
+	Map.prototype._p = false;
+	Map.prototype._o = false;
 	Map.prototype.executeObjectCollision = function( x, y, mapObject1_id, mapObject2_id ){
-		var mapObject1 = app.getObject( mapObject1_id );
-		var mapObject2 = app.getObject( mapObject2_id );
-		if ( ! ( mapObject1 && mapObject2 ) )	return;
-		if ( mapObject1.type === 'player' ){
-			var player = mapObject1;
-			var object = mapObject2;
+		this._mo1 = app.getObject( mapObject1_id );
+		this._mo2 = app.getObject( mapObject2_id );
+		if ( ! ( this._mo1 && this._mo2 ) )	return;
+		// both players
+		if ( this._mo1.type === 'player' && this._mo2.type === 'player'){
+			return; // disable collisions
+		// both non-players
+		} else if (this._mo1.type !== 'player' && this._mo2.type !== 'player' ){
+			return; // disable collisions
+		} 
+
+		if ( this._mo1.type === 'player' ){
+			this._p = this._mo1; 
+			this._o = this._mo2;
 		} else {
-			var player = mapObject2;
-			var object = mapObject1;
+			this._o = this._mo1; 
+			this._p = this._mo2;
 		}
-		if ( object.hitsPlayer ){
-			this.frameCollisions.push( player, object );
 
-			if ( object.type === 'player' ){
-				var vXPlayer = player.vX;
-				var vYPlayer = player.vY;
-				var vXObject = object.vX;
-				var vYObject = object.vY;			
-				if ( vXPlayer > vXObject ){
-					player.x = x - player.w;
-					object.x = x + 1;
-
-				} else {
-					player.x = x + 1; 
-					object.x = x - object.w;
-				}
-				player.vX += 2*object.physics.bounce*(object.weight/player.weight ) * vXObject;
-				object.vX += 2*player.physics.bounce*(player.weight/object.weight ) * vXPlayer;			
-				player.vY += 2*object.physics.bounce*(object.weight/player.weight ) * vYPlayer;
-				object.vY += 2*player.physics.bounce*(player.weight/object.weight ) * vYObject;
-
-				// player.vY += (object.weight/player.weight ) * object.vY;
-				// object.vY += (player.weight/object.weight ) * player.vY;	
-			} else {
-
-			}
-			player.trigger( 'collision', object );			
-			object.trigger( 'collision', player, x, y );
-		} else {
-			console.log( 'no collision' );
+		// handle player intersecting object
+		if ( ! this._o.hitsPlayer ){
+			return false; // no collision if object doesn't hit player
 		}
+		
+		this.frameCollisions.push( this._p, this._o );
+		this._p.trigger( 'collision', this._o, x, y );			
+		this._o.trigger( 'collision', this._o, x, y );
 	}
 	return Map; 
 });

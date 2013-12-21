@@ -15,8 +15,6 @@ define({
 		airFriction: 0
 	},
 	player: {
-		height: 30, // in px
-		width: 30, // in px
 		weight: 50,
 		/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
 		moveSpeed: 10, 
@@ -199,7 +197,7 @@ define({
 			}
  		},
 		bullet: {
-			weight: 50,
+			weight: 5,
 			width: 2,
 			hitsPlayer: true,						
 			model: {
