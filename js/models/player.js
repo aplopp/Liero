@@ -20,6 +20,7 @@ define([
 			activeWeapon: 0,
 		},
 		getActiveWeapon: function(){
+			this.get( 'weapons')[ this.get('activeWeapon') ];
 			return this.get( 'weapons')[ this.get('activeWeapon') ];
 		},
 		initialize: function( atts, id ){

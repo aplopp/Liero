@@ -16,8 +16,12 @@ define([
 			}); 
 		}, 
 		setPos: function( pos ){
-		 	this.shape.x =  pos.x;
-		 	this.shape.y = pos.y; 
+			if ( _.has( pos, 'x' )){
+		 		this.shape.x =  pos.x;
+		 	}
+		 	if ( _.has( pos, 'y' )){
+		 		this.shape.y =  pos.y;
+		 	}
 		},
 		/** render the model to the canvas as a shape */
 		render: function( changed ){

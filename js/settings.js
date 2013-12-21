@@ -8,7 +8,7 @@ define({
 	},
 	physics: {
 		/** acceleration from gravity, in px/s */		
-		gravity: 1000, 
+		gravity: 0, 
 		/** deceleration from groundFriction, in decimal lost per frame */
 		surfaceFriction: .05,
 		/** deceleration from airFriction, in px/s */
@@ -30,8 +30,8 @@ define({
 	},
 	players: [
 		{ 
-			x: 20,
-			y: 460,
+			x: 0,
+			y: 475,
 			vX: 0,
 			vY: 0,	
 			height: 20,
@@ -53,29 +53,29 @@ define({
 			}
 
 		},
-		{ 
-			x: 300,
-			y: 460,
-			vX: 0,
-			vY: 0,	
-			height: 30,
-			width: 30,
-			model: {
-				name: 'Sarah',
-				color: '#350',
-				weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
-			}, 
-			keyBindings: {
-				left: 65, //a
-				up: 87, // w
-				right: 68, //d
-				down: 83,// s 
-				jump: [ 'control-l' ],
-				shoot: 9, // tab-l
-				prevWeapon: [ 65, 'shift-l' ],
-				nextWeapon: [ 68, 'shift-l' ]				
-			}
-		}		
+		// { 
+		// 	x: 460,
+		// 	y: 460,
+		// 	vX: 0,
+		// 	vY: 0,	
+		// 	height: 30,
+		// 	width: 30,
+		// 	model: {
+		// 		name: 'Sarah',
+		// 		color: '#350',
+		// 		weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
+		// 	}, 
+		// 	keyBindings: {
+		// 		left: 65, //a
+		// 		up: 87, // w
+		// 		right: 68, //d
+		// 		down: 83,// s 
+		// 		jump: [ 'control-l' ],
+		// 		shoot: 9, // tab-l
+		// 		prevWeapon: [ 65, 'shift-l' ],
+		// 		nextWeapon: [ 68, 'shift-l' ]				
+		// 	}
+		// }		
 	],
 	weapons: {
 		gun: {
@@ -203,7 +203,7 @@ define({
 			model: {
 				name: 'Bullet',
 				color: '#000',
-				delayToExplosion: 1000,
+				delayToExplosion: 3000,
 				delayToExplosionVariability: 0, 
 				explosion: 'small'
 			},

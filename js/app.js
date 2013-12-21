@@ -85,7 +85,8 @@ define([
 
 			_.each( this.settings.players, function( playerSpec ){
 				settings.player.type = 'player';
-				players.push( new Player( _.extend( playerSpec, settings.player ) )); 
+				var player = new Player( _.extend( playerSpec, settings.player ) );
+				players[ player.id ] = player; 
 			});
 			return players;			
 		}		
@@ -137,12 +138,7 @@ define([
 				that.map.adjustForMapCollision( mapObject ); 
 
 			});	
-			this.map.handleObjectCollisions();
-
 		}
-
-
-
 
 		this.start = function(){
 			this.ticker = createjs.Ticker;

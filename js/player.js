@@ -17,8 +17,8 @@ define([
 		eventBinding: {
 			left: 'moveLeft',
 			right: 'moveRight',
-			up: 'aimUp',
-			down: 'aimDown',
+			up: 'moveUp',
+			down: 'moveDown',
 			'jump:start': 'jump',
 			'shoot:start': 'startShooting',
 			'shoot:end': 'endShooting',
@@ -34,19 +34,19 @@ define([
 		},	
 		initialize: function( spec ){
 			var that = this;
-			// set the passed key bindings to trigger the appropriate events
-			_.each( spec.keyBindings, function( keyCodes, eventName ){
-                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
-            });
             // pass the id to the model
             spec.model.id = this.id;
+
             spec.model.width = this.w;
             spec.model.height = this.h;
 			this.model = new PlayerM( spec.model );
 			this.view = new PlayerV({ model: this.model });
-			
 			this.moveSpeed = spec.moveSpeed;
 			this.jumpPower = spec.jumpPower;
+			// set the passed key bindings to trigger the appropriate events
+			_.each( spec.keyBindings, function( keyCodes, eventName ){
+                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
+            });			
 
 			this.on( 'collision', this.handleCollision );
 		},
@@ -62,6 +62,12 @@ define([
 		moveRight: function(){
 			this.model.set( 'facing', 'right' );		
 			this.vX += this.moveSpeed; 
+		},
+		moveDown: function(){
+			this.vY += this.moveSpeed; 
+		},
+		moveUp: function(){
+			this.vY -= this.moveSpeed; 
 		},
 		aimUp: function(){
 			this.model.set({ 'aim': this.model.get( 'aim' ) - 3 }, { validate: true });
@@ -89,7 +95,6 @@ define([
 				if ( newWeapon < 0 ) newWeapon = weapons.length - 1; 
 			}
 			this.model.set( 'activeWeapon', newWeapon );
-			console.log( 'Player '+ this.model.get( 'name' ) + ' switched to ' + weapons[newWeapon].get('name'));
 		},
 		startShooting: function(){
 			this.model.getActiveWeapon().startShooting();

@@ -86,7 +86,7 @@ define([
 					that._delay = false;
 				}, 1000/this.get('reload') );
 
-				console.log( count++, this.get( 'name' ) + ': fired ' + this.get('perShot') +' '+ this.get( 'projectile' ).model.name );
+				console.log( count++, this.getHoldingPlayer().model.get( 'name' ) + ' -> ' + this.get( 'name' ) + ': fired ' + this.get('perShot') +' '+ this.get( 'projectile' ).model.name );
 				this.launchProjectile();
 			} else {
 				console.log( this.get( 'name' ) + ': too soon to fire ')

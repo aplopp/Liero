@@ -2,8 +2,9 @@ define([
 	'underscore', 
 	'backbone',
 	'createjs',
-	'settings'
-], function( _, Backbone, createjs, settings ){
+	'settings', 
+	'functions/ndarray'
+], function( _, Backbone, createjs, settings, ndarray ){
 	var defaults = {
 		width: 1000, 
 		height: 500,
@@ -61,20 +62,9 @@ define([
 	// creates an empty grid of -1,
 	// same width and height as map,
 	// on which to record object motion
-	var cachedGrid = [];
-	var emptyGrid = [];
+	var emptyGrid = false;
 	Map.prototype.getEmptyGrid = function(){
-		if ( cachedGrid.length === 0 ){
-			for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
-				cachedGrid[ y ] = [];
-				for( var x = 0, lenX = this.grid[0].length; x < lenX; x++ ){
-					cachedGrid[ y ].push( -1 );
-				}
-			}
-		}
-		emptyGrid = [];
-		for (var i = 0, len = cachedGrid.length; i < len; i++)
-		    emptyGrid[i] = cachedGrid[i].slice();	
+		emptyGrid = ndarray( new Int32Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );
 		return emptyGrid;
 	}
 	/**
@@ -125,6 +115,7 @@ define([
 		return true;
 	}
 	Map.prototype.clearFrame = function(){
+		this._frameCollisions = [];
 		this.frameGrid = this.getEmptyGrid();
 	}
 	Map.prototype.isObjectInOccupiedSpace = function( mapObject ){
@@ -147,17 +138,33 @@ define([
 		var h = mapObject.h;
 
 		// counter vars
-		var y, x;
-		// record all edges at start.
-		this.handleMapObjectMove( mapObject, x1, y1, w, h, 1, 1 );
-		this.handleMapObjectMove( mapObject, x1, y1, w, h, 0, 0 )
-		// this massive loop checks the leading edges for the 4 directions the mapObject could go.
-		if ( x2 >= x1 ){
-			if ( y2 >= y1 ){
+		var y, x, cy, cx;
+		var movingRight = x2 >= x1;
+		var movingDown = y2 >= y1;
+
+		// to start, record edges opposite of movement.
+		cy = movingDown ? y : y + h;		
+		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
+			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
+				this.recordMotion( cx, cy, mapObject );
+			}
+		}
+		cx = movingRight ? x : x + w;		
+		for( cy = y, lenY = y + h; cy<lenY; cy++ ){
+			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
+				this.recordMotion( cx, cy, mapObject );
+			}
+		}		
+
+	
+		// this massive loop checks the leading edges 
+		// for each pixel in the mapObject's path.
+		if ( movingRight ){
+			if ( movingDown ){
 				// both positive (down + right)
 				for( x = x1; x <= x2; x++){
 					for ( y = y1; y <= y2; y++){
-						if( ! this.handleMapObjectMove( mapObject, x, y, w, h, 1, 1 ) ){
+						if( ! this.handleMapObjectMove( mapObject, x, y, w, h, movingRight, movingDown ) ){
 							return;
 						}
 					}
@@ -166,18 +173,18 @@ define([
 				// x pos, y neg (up + right)
 				for( x = x1; x <= x2; x++){
 					for ( y = y1; --y>=y2;){
-						if ( ! this.handleMapObjectMove( mapObject, x, y, w, h, 1, 0 ) ){
+						if ( ! this.handleMapObjectMove( mapObject, x, y, w, h, movingRight, movingDown ) ){
 							return;
 						}
 					}
 				}	
 			}
 		} else {
-			if ( y2 >= y1 ){
+			if ( movingDown ){
 				// x neg, y pos (down + left)
 				for( x = x1; --x>=x2; ){
 					for ( y = y1; y <= y2; y++){
-						if ( ! this.handleMapObjectMove( mapObject, x, y, w, h, 0, 1 ) ){
+						if ( ! this.handleMapObjectMove( mapObject, x, y, w, h, movingRight, movingDown ) ){
 							return;
 						}
 					}
@@ -186,7 +193,7 @@ define([
 				// x neg, y neg ( up + left )
 				for( x = x1; --x>=x2; ){
 					for ( y = y1; --y>=y2;){
-						this.handleMapObjectMove( mapObject, x, y, w, h, 0, 0 );
+						this.handleMapObjectMove( mapObject, x, y, w, h, movingRight, movingDown );
 
 					}
 				}					
@@ -204,31 +211,40 @@ define([
 		this._verticalEdge = [];
 		var cx, cy, lenX, lenY;
 		// above top or below bottom
-		cy = movingDown ? y + h + 1 : y - 1;		
+		var vEdge = movingDown ? y + h : y;
+		var hEdge = movingRight ? x + w : x ;				
+		
+		cy = movingDown ? vEdge + 1 : vEdge - 1;
 		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
-			if ( cx < ( this.canvas.width - 1 ) ){
+			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
 				this.recordMotion( cx, cy, mapObject );
-				this._verticalEdge.push({ x: cx, y: cy });
 			}
+			this._verticalEdge.push({ x: cx, y: cy });
 		}
-		// left of left or right of right
-		cx = movingRight ? x + w + 1 : x - 1;				
+		cx = movingRight ? hEdge + 1 : hEdge - 1;
 		for( cy = y, lenY = y + h; cy<lenY; cy++ ){
-			if ( cy < ( this.canvas.height - 1 )){
+			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
 				this.recordMotion( cx, cy, mapObject )
-				this._horizontalEdge.push({ x: cx, y: cy });
 			}
-		}						
-		this._occupiedHorizontal = this.checkForImpassablePixels( mapObject, this._horizontalEdge, true );
-		this._occupiedVertical = this.checkForImpassablePixels( mapObject, this._verticalEdge, false );
+			this._horizontalEdge.push({ x: cx, y: cy });
+		}		
+		console.log( 'no horiz check')
+		if ( mapObject.vX > 0 && movingRight || mapObject.vX < 0 && !movingRight){
+			this._occupiedHorizontal = this.checkForImpassablePixels( this._horizontalEdge, true );
+		} else {
+			this._occupiedHorizontal = false;
+		}
+		if ( mapObject.vY > 0 && movingDown || mapObject.vY < 0 && !movingDown){
+			this._occupiedVertical = this.checkForImpassablePixels( this._verticalEdge, false );
+		} else {
+			this._occupiedVertical = false;
+		}
 		if ( this._occupiedHorizontal || this._occupiedVertical ){
-			// var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x2 - x1 ) * ( y2 - y1 ));
-
 			if ( this._occupiedHorizontal ){
-				this.handleLeftRightCollision( mapObject, x );
+				this.handleHorizontalCollision( mapObject, x );
 			}
 			if ( this._occupiedVertical ){
-				this.handleTopBottomCollision( mapObject, y );
+				this.handleVerticalCollision( mapObject, y );
 			}
 			return false;
 		}
@@ -241,7 +257,7 @@ define([
 	 * @param lr {bool} - true if this is a rl wall (a column)
 	 * @returns {bool} - true if any of the pixels are occupied
 	 */
-	Map.prototype.checkForImpassablePixels = function( mapObject, pixels, lr ){
+	Map.prototype.checkForImpassablePixels = function( pixels, lr ){
 
 		for( var i =0, len = pixels.length; i<len;i++ ){
 
@@ -250,7 +266,7 @@ define([
 					return true;
 				}
 			} else {
-				if ( pixels[i].y < 0 || pixels[i].y > ( this.impassibleGrid.length - 1 ) ){
+				if ( pixels[i].y < 0 || pixels[i].y > ( this.impassibleGrid.length ) ){
 					return true;
 				}
 			}
@@ -262,64 +278,77 @@ define([
 		}
 		return false;
 	}
-	Map.prototype.handleLeftRightCollision = function( mapObject, x ){
-		// 1) flip destination coordinate to be ( current coordinate - remaining distance) * bounce
-		mapObject.x = x - ( mapObject.x - x ) * mapObject.physics.bounce;	
-		mapObject.lastPos.x = x;	
+	Map.prototype.handleHorizontalCollision = function( mapObject, x ){
+		mapObject.x = x - ( mapObject.x - x ) * mapObject.physics.bounce;
+		// adjust to collide with the pixel prior to actually overlapping.
+		if ( mapObject.vX > 0 ){
+			if ( mapObject.x > (x - 1) ) mapObject.x = x - 1;
+		} else {
+			if ( mapObject.x < (x + 1) ) mapObject.x = x + 1;			
+		}
+
+		// failsafe
+		if ( mapObject.x > this.canvas.width ) mapObject.x = this.canvas.width;
+		if ( mapObject.x < 0 ) mapObject.x = 0;
+
+		mapObject.lastPos.x = x;
+		// reverse velocity and multiply by bounce
 		mapObject.vX *= -1 * mapObject.physics.bounce;
-		// 2) add friction to crossing direction
+		// add friction to crossing direction
 		mapObject.vY *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
+
 		mapObject.view.setPos({
-			x: mapObject.x, 
+			x: mapObject.x
+		});	
+	}
+	Map.prototype.handleVerticalCollision = function( mapObject, y ){
+		mapObject.y = y - ( mapObject.y - y ) * mapObject.physics.bounce;
+		// adjust to collide with the piyel prior to actually overlapping.
+		if ( mapObject.vY > 0 ){
+			if ( mapObject.y > (y - 1) ) mapObject.y = y - 1;
+		} else {
+			if ( mapObject.y < (y + 1) ) mapObject.y = y + 1;
+		}
+		// failsafe
+		if ( mapObject.y > this.canvas.height ) mapObject.y = this.canvas.width;
+		if ( mapObject.y < 0 ) mapObject.y = 1;
+		
+		mapObject.lastPos.y = y;
+		// reverse velocity and multiply by bounce
+		mapObject.vY *= -1 * mapObject.physics.bounce;
+		// add friction to crossing direction
+		mapObject.vY *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
+
+		mapObject.view.setPos({
 			y: mapObject.y
 		});	
 	}
-	Map.prototype.handleTopBottomCollision = function( mapObject, y ){
-		// 1) flip destination coordinate to be ( current coordinate - remaining distance) * bounce
-		mapObject.y = y - ( mapObject.y - y ) * mapObject.physics.bounce;
-		mapObject.lastPos.y = y;
-		mapObject.vY *= -1 * mapObject.physics.bounce;
-		// 2) add friction to crossing direction
-		mapObject.vX *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
-		mapObject.view.setPos({
-			x: mapObject.x, 
-			y: mapObject.y
-		});			
-	}
 	Map.prototype.recordMotion = function( x, y, mapObject ){
-		if ( mapObject.type === 'player' || mapObject.hitsPlayer ){			
-			if ( this.frameGrid[ y ] ){
-				var val = this.frameGrid[y][x];
-				if ( val === -1 ){
-					this.frameGrid[y][x] = mapObject.id;
+		if ( mapObject.type === 'player' || mapObject.hitsPlayer ){	
+			var val = this.frameGrid.get( x, y );
+			if ( val === 'undefined' ){
+				// off the map
+				
+			} else {
+				if ( val === 0 ){
+					this.frameGrid.set( x, y, mapObject.id );
 				} else if ( _.isNumber( val ) && val !== mapObject.id  ){
-					this.frameGrid[y][x]  = [ this.frameGrid[y][x], mapObject.id ];
+					this.executeObjectCollision( x, y, val, mapObject.id );
 				}
 			}
 		}
 	}	
-	Map.prototype.frameCollisions = [];
-	Map.prototype.handleObjectCollisions = function( ){
-		var objectsWCollisions = [];
-		for( var y = 0; y< this.frameGrid.length; y++ ){
-			for( var x = 0; x< this.frameGrid[0].length; x++ ){
-				if ( _.isArray( this.frameGrid[y][x] ) ){
-					// if neither object is in any collisions so far.
-					if ( _.difference( this.frameGrid[y][x], this.frameCollisions ).length == 2 ){
-						this.executeObjectCollision( x, y, this.frameGrid[y][x][0], this.frameGrid[y][x][1]);
-					}
-				}
-			}
-		}
-	}
 	// tracker variables
 	Map.prototype._mo1 = false;
 	Map.prototype._mo2 = false;
 	Map.prototype._p = false;
 	Map.prototype._o = false;
+	Map.prototype._frameCollisions = [];
 	Map.prototype.executeObjectCollision = function( x, y, mapObject1_id, mapObject2_id ){
+
 		this._mo1 = app.getObject( mapObject1_id );
 		this._mo2 = app.getObject( mapObject2_id );
+
 		if ( ! ( this._mo1 && this._mo2 ) )	return;
 		// both players
 		if ( this._mo1.type === 'player' && this._mo2.type === 'player'){
@@ -328,6 +357,12 @@ define([
 		} else if (this._mo1.type !== 'player' && this._mo2.type !== 'player' ){
 			return; // disable collisions
 		} 
+		if ( _.indexOf( this._frameCollisions, this._mo1.id ) !== -1 || _.indexOf( this.frameCollisions, this._mo2.id ) !== -1 ){
+			// one of the objects has already had a collision this frame
+			return;
+		}	
+		this._frameCollisions.push( this._p.id, this._o.id );
+
 
 		if ( this._mo1.type === 'player' ){
 			this._p = this._mo1; 
@@ -339,10 +374,9 @@ define([
 
 		// handle player intersecting object
 		if ( ! this._o.hitsPlayer ){
-			return false; // no collision if object doesn't hit player
+			return; // no collision if object doesn't hit player
 		}
 		
-		this.frameCollisions.push( this._p, this._o );
 		this._p.trigger( 'collision', this._o, x, y );			
 		this._o.trigger( 'collision', this._o, x, y );
 	}

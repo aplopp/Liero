@@ -1,5 +1,5 @@
 define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], function( _, Backbone, settings, keys, MathFunctions ){
-	var id = 0;
+	var id = 1;
 	function prefixEventName( event ){
 		return 'mo-'+id+'-' + event ;
 	}	
