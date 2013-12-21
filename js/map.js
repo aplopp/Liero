@@ -133,6 +133,7 @@ define([
 			y: this.checkOffY( mapObject.y, mapObject.h )
 		}
 	}
+
 	/**
 	 * 1) Checks to see if the path of the item intersects any map particles, 
 	 * 2) resolves resulting path position and velocity accordingly
@@ -145,55 +146,18 @@ define([
 		var w = mapObject.w;
 		var h = mapObject.h;
 
-		for( var cx = x1, lenX = x1 + w; cx<lenX; cx++ ){
-			// above top edge 
-			this.recordMotion( cx, y1 - 1, mapObject );
-			// below bottom edge 
-			this.recordMotion( cx, y1 + h + 1, mapObject );
-		}
-		for( var cy = y1, lenY = y1 + h; cy<lenY; cy++ ){
-			// left of left edge
-			this.recordMotion( x1 - 1, cy, mapObject )
-			// right of right edge 
-			this.recordMotion( x1 + w + 1, cy, mapObject )
-		}
-
 		// counter vars
-		var y;
-		var x;
-		var i;
-		var edgeR, edgeL, edgeT, edgeB, occupiedR, occupiedL, occupiedT, occupiedB;
+		var y, x;
+		// record all edges at start.
+		this.handleMapObjectMove( mapObject, x1, y1, w, h, 1, 1 );
+		this.handleMapObjectMove( mapObject, x1, y1, w, h, 0, 0 )
 		// this massive loop checks the leading edges for the 4 directions the mapObject could go.
 		if ( x2 >= x1 ){
 			if ( y2 >= y1 ){
 				// both positive (down + right)
 				for( x = x1; x <= x2; x++){
 					for ( y = y1; y <= y2; y++){
-						edgeR = [];
-						edgeB = [];
-						for( i = 0; i < h; i++){
-							if ( ( y + i ) < ( this.canvas.height - 1 ) ){
-								this.recordMotion( x + w, y + i, mapObject );
-								edgeR.push({ x: x + w + 1, y: y + i });
-							}
-						}
-						for( i = 0; i < w; i++){
-							if ( ( x + i ) < ( this.canvas.width - 1 )){							
-								this.recordMotion( x + i, y + h, mapObject );
-								edgeB.push({ x: x+ i, y: y + h + 1  });
-							}
-						}
-						occupiedR = this.checkForImpassablePixels( mapObject, edgeR, true );
-						occupiedB = this.checkForImpassablePixels( mapObject, edgeB, false );
-						if ( occupiedR || occupiedB ){
-							// var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x2 - x1 ) * ( y2 - y1 ));
-
-							if ( occupiedR ){
-								this.handleLeftRightCollision( mapObject, x );
-							}
-							if ( occupiedB ){
-								this.handleTopBottomCollision( mapObject, y );
-							}
+						if( ! this.handleMapObjectMove( mapObject, x, y, w, h, 1, 1 ) ){
 							return;
 						}
 					}
@@ -202,26 +166,7 @@ define([
 				// x pos, y neg (up + right)
 				for( x = x1; x <= x2; x++){
 					for ( y = y1; --y>=y2;){
-						edgeT = [];
-						edgeR = [];
-						for( i = 0; i < h; i++){
-							this.recordMotion( x + w, y + i, mapObject );
-							edgeR.push({ x: x + w + 1, y: y + i });
-						}
-						for( i = 0; i < w; i++){
-							this.recordMotion( x + i, y, mapObject );
-							edgeT.push({ x: x+ i, y: y - 2  });
-						}
-						occupiedR = this.checkForImpassablePixels( mapObject, edgeR, true );
-						occupiedT = this.checkForImpassablePixels( mapObject, edgeT, false );
-						if ( occupiedR || occupiedT ){
-							// var percentThroughPath = ( (x - x1)*(y - y2) ) / ((x2 - x1 ) * ( y1 - y2 ));
-							if ( occupiedR ){
-								this.handleLeftRightCollision( mapObject, x );
-							}
-							if ( occupiedT ){
-								this.handleTopBottomCollision( mapObject, y );
-							}
+						if ( ! this.handleMapObjectMove( mapObject, x, y, w, h, 1, 0 ) ){
 							return;
 						}
 					}
@@ -232,26 +177,7 @@ define([
 				// x neg, y pos (down + left)
 				for( x = x1; --x>=x2; ){
 					for ( y = y1; y <= y2; y++){
-						edgeB = [];
-						edgeL = [];
-						for( i = 0; i < h; i++){
-							this.recordMotion( x, y + i, mapObject );
-							edgeL.push({ x: x - 1, y: y + i });
-						}
-						for( i = 0; i < w; i++){
-							this.recordMotion( x + i, y + h, mapObject );
-							edgeB.push({ x: x+ i, y: y + h + 1  });
-						}
-						occupiedL = this.checkForImpassablePixels( mapObject, edgeL, true );
-						occupiedB = this.checkForImpassablePixels( mapObject, edgeB, false );
-						if ( occupiedL || occupiedB ){
-							// var percentThroughPath = ( (x - x2)*(y - y1) ) / ((x1 - x2 ) * ( y2 - y1 ));
-							if ( occupiedL ){
-								this.handleLeftRightCollision( mapObject, x );
-							}
-							if ( occupiedB ){
-								this.handleTopBottomCollision( mapObject, y );
-							}
+						if ( ! this.handleMapObjectMove( mapObject, x, y, w, h, 0, 1 ) ){
 							return;
 						}
 					}
@@ -260,34 +186,54 @@ define([
 				// x neg, y neg ( up + left )
 				for( x = x1; --x>=x2; ){
 					for ( y = y1; --y>=y2;){
-						edgeT = [];
-						edgeL = [];
-						for( i = 0; i < h; i++){
-							this.recordMotion( x, y + i, mapObject.id );
-							edgeL.push({ x: x - 1, y: y + i });
-						}
-						for( i = 0; i < w; i++){
-							this.recordMotion( x + i, y, mapObject.id );
-							edgeT.push({ x: x+ i, y: y - 2  });
-						}
-						occupiedL = this.checkForImpassablePixels( mapObject, edgeL, true );
-						occupiedT = this.checkForImpassablePixels( mapObject, edgeT, false );
-						if ( occupiedL || occupiedT ){
-							// var percentThroughPath = ( (x - x2)*(y - y2) ) / ((x1 - x2 ) * ( y1 - y2 ));
-							if ( occupiedL ){
-								this.handleLeftRightCollision( mapObject, x );
-							}
-							if ( occupiedT ){
-								this.handleTopBottomCollision( mapObject, y );
-							}
-							return;
-						}
+						this.handleMapObjectMove( mapObject, x, y, w, h, 0, 0 );
+
 					}
 				}					
 			}
 		}
-		
+		 
 	};
+
+	Map.prototype._horizontalEdge = [];
+	Map.prototype._verticalEdge = [];
+	Map.prototype._occupiedHorizontal = [];
+	Map.prototype._occupiedVertical = [];
+	Map.prototype.handleMapObjectMove = function( mapObject, x, y, w, h, movingRight, movingDown){
+		this._horizontalEdge = [];
+		this._verticalEdge = [];
+		var cx, cy, lenX, lenY;
+		// above top or below bottom
+		cy = movingDown ? y + h + 1 : y - 1;		
+		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
+			if ( cx < ( this.canvas.width - 1 ) ){
+				this.recordMotion( cx, cy, mapObject );
+				this._verticalEdge.push({ x: cx, y: cy });
+			}
+		}
+		// left of left or right of right
+		cx = movingRight ? x + w + 1 : x - 1;				
+		for( cy = y, lenY = y + h; cy<lenY; cy++ ){
+			if ( cy < ( this.canvas.height - 1 )){
+				this.recordMotion( cx, cy, mapObject )
+				this._horizontalEdge.push({ x: cx, y: cy });
+			}
+		}						
+		this._occupiedHorizontal = this.checkForImpassablePixels( mapObject, this._horizontalEdge, true );
+		this._occupiedVertical = this.checkForImpassablePixels( mapObject, this._verticalEdge, false );
+		if ( this._occupiedHorizontal || this._occupiedVertical ){
+			// var percentThroughPath = ( (x - x1)*(y - y1) ) / ((x2 - x1 ) * ( y2 - y1 ));
+
+			if ( this._occupiedHorizontal ){
+				this.handleLeftRightCollision( mapObject, x );
+			}
+			if ( this._occupiedVertical ){
+				this.handleTopBottomCollision( mapObject, y );
+			}
+			return false;
+		}
+		return true;
+	}	
 
 	/**
 	 * Simply compares an array of pixel coordinates to the simple grid to detect if they are occupied
