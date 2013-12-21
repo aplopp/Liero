@@ -228,7 +228,6 @@ define([
 			}
 			this._horizontalEdge.push({ x: cx, y: cy });
 		}		
-		console.log( 'no horiz check')
 		if ( mapObject.vX > 0 && movingRight || mapObject.vX < 0 && !movingRight){
 			this._occupiedHorizontal = this.checkForImpassablePixels( this._horizontalEdge, true );
 		} else {

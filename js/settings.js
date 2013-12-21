@@ -8,7 +8,7 @@ define({
 	},
 	physics: {
 		/** acceleration from gravity, in px/s */		
-		gravity: 0, 
+		gravity: 1000, 
 		/** deceleration from groundFriction, in decimal lost per frame */
 		surfaceFriction: .05,
 		/** deceleration from airFriction, in px/s */
@@ -53,29 +53,29 @@ define({
 			}
 
 		},
-		// { 
-		// 	x: 460,
-		// 	y: 460,
-		// 	vX: 0,
-		// 	vY: 0,	
-		// 	height: 30,
-		// 	width: 30,
-		// 	model: {
-		// 		name: 'Sarah',
-		// 		color: '#350',
-		// 		weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
-		// 	}, 
-		// 	keyBindings: {
-		// 		left: 65, //a
-		// 		up: 87, // w
-		// 		right: 68, //d
-		// 		down: 83,// s 
-		// 		jump: [ 'control-l' ],
-		// 		shoot: 9, // tab-l
-		// 		prevWeapon: [ 65, 'shift-l' ],
-		// 		nextWeapon: [ 68, 'shift-l' ]				
-		// 	}
-		// }		
+		{ 
+			x: 460,
+			y: 460,
+			vX: 0,
+			vY: 0,	
+			height: 30,
+			width: 30,
+			model: {
+				name: 'Sarah',
+				color: '#350',
+				weapons: [ 'machineGun', 'gun', 'grenadeLauncher', 'hugeGun']
+			}, 
+			keyBindings: {
+				left: 65, //a
+				up: 87, // w
+				right: 68, //d
+				down: 83,// s 
+				jump: [ 'control-l' ],
+				shoot: 9, // tab-l
+				prevWeapon: [ 65, 'shift-l' ],
+				nextWeapon: [ 68, 'shift-l' ]				
+			}
+		}		
 	],
 	weapons: {
 		gun: {

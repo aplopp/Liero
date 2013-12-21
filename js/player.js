@@ -17,8 +17,8 @@ define([
 		eventBinding: {
 			left: 'moveLeft',
 			right: 'moveRight',
-			up: 'moveUp',
-			down: 'moveDown',
+			up: 'aimUp',
+			down: 'aimDown',
 			'jump:start': 'jump',
 			'shoot:start': 'startShooting',
 			'shoot:end': 'endShooting',
