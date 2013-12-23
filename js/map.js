@@ -323,17 +323,12 @@ define([
 		});	
 	}
 	Map.prototype.recordMotion = function( x, y, mapObject ){
-		if ( mapObject.type === 'player' || mapObject.hitsPlayer ){	
+		if ( mapObject.type === 'player' ){
+			this.frameGrid.set( x, y, mapObject.id );
+		} else if ( mapObject.hitsPlayer ){	
 			var val = this.frameGrid.get( x, y );
-			if ( val === 'undefined' ){
-				// off the map
-				
-			} else {
-				if ( val === 0 ){
-					this.frameGrid.set( x, y, mapObject.id );
-				} else if ( _.isNumber( val ) && val !== mapObject.id  ){
-					this.executeObjectCollision( x, y, val, mapObject.id );
-				}
+			if ( val && val !== mapObject.id  ){
+				this.executeObjectCollision( x, y, val, mapObject.id );
 			}
 		}
 	}	
