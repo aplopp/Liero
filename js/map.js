@@ -49,12 +49,12 @@ define([
 	/**
 	 * simplifies the grid to a single 'type' number...whether the player (or objects) can pass through, or no. 
 	 */
-	var impassibleGrid = [];	
+	var impassibleGrid = false;	
 	Map.prototype.getImpassibleGrid = function(){
+		impassibleGrid = ndarray( new Int8Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );;
 		for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
-			impassibleGrid[ y ] = [];
 			for( var x = 0, lenX = this.grid[0].length; x < lenX; x++ ){
-				impassibleGrid[ y ].push( this.grid[y][x].type );
+				impassibleGrid.set( x, y, this.grid[y][x].type );
 			}
 		}
 		return impassibleGrid; 
@@ -257,23 +257,19 @@ define([
 
 		for( var i =0, len = pixels.length; i<len;i++ ){
 
+			// off map on x or y axis, depending on direction
 			if ( lr ){
-				if ( pixels[i].x < 0 || pixels[i].x > ( this.impassibleGrid[0].length - 1 ) ){
+				if ( pixels[i].x < 0 || pixels[i].x > ( this.grid[0].length - 1 ) ){
 					return true;
 				}
 			} else {
-				if ( pixels[i].y < 0 || pixels[i].y > ( this.impassibleGrid.length ) ){
+				if ( pixels[i].y < 0 || pixels[i].y > ( this.grid.length ) ){
 					return true;
 				}
 			}
-			if ( ! this.impassibleGrid[ pixels[i].y ] ){
-				if ( !lr ){
-					return true;
-				}
-			} else {
-				if ( this.impassibleGrid[ pixels[i].y ][ pixels[i].x ] === 1 ){
-					return true; 
-				}
+
+			if ( this.impassibleGrid.get( pixels[i].x, pixels[i].y ) === 1 ){
+				return true; 
 			}
 		}
 		return false;
