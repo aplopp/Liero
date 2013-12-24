@@ -9,13 +9,14 @@ define({
 	physics: {
 		/** acceleration from gravity, in px/s */		
 		gravity: 1000, 
+		// gravity: 0,
 		/** deceleration from groundFriction, in decimal lost per frame */
 		surfaceFriction: .05,
 		/** deceleration from airFriction, in px/s */
 		airFriction: 0
 	},
 	player: {
-		weight: 50,
+		weight: 100,
 		/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
 		moveSpeed: 10, 
 		/** change in vY from player.jump() px/s */
@@ -31,9 +32,9 @@ define({
 	players: [
 		{ 
 			x: 0,
-			y: 475,
+			y: 200,
 			vX: 0,
-			vY: 0,	
+			vY: -100,	
 			height: 20,
 			width: 20,
 			model: {
@@ -81,7 +82,7 @@ define({
 		gun: {
 			name: 'Gun', 
 			reload: 2, // shots/s
-			recoil: 0, // pixels/s
+			recoil:  0, // pixels/s
 			speed: 600, // pixels/s
 			projectile: 'bullet', 
 			auto: false,

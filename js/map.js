@@ -193,8 +193,9 @@ define([
 				// x neg, y neg ( up + left )
 				for( x = x1; --x>=x2; ){
 					for ( y = y1; --y>=y2;){
-						this.handleMapObjectMove( mapObject, x, y, w, h, movingRight, movingDown );
-
+						if( ! this.handleMapObjectMove( mapObject, x, y, w, h, movingRight, movingDown ) ){
+							return;
+						}
 					}
 				}					
 			}
@@ -213,31 +214,27 @@ define([
 		// above top or below bottom
 		var tbEdge = movingDown ? y + h : y;
 		var lrEdge = movingRight ? x + w : x ;				
-		
-		cy = movingDown ? tbEdge + 1 : tbEdge - 1;
-		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
-			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
-				this.recordMotion( cx, cy, mapObject );
-			}
-			this._verticalEdge.push({ x: cx, y: cy });
-		}
+			
+		// left-right collisions
 		cx = movingRight ? lrEdge + 1 : lrEdge - 1;
 		for( cy = y, lenY = y + h; cy<lenY; cy++ ){
 			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
 				this.recordMotion( cx, cy, mapObject )
 			}
 			this._horizontalEdge.push({ x: cx, y: cy });
-		}		
-		if ( mapObject.vX > 0 && movingRight || mapObject.vX < 0 && !movingRight){
-			this._occupiedHorizontal = this.checkForImpassablePixels( this._horizontalEdge, true );
-		} else {
-			this._occupiedHorizontal = false;
-		}
-		if ( mapObject.vY > 0 && movingDown || mapObject.vY < 0 && !movingDown){
-			this._occupiedVertical = this.checkForImpassablePixels( this._verticalEdge, false );
-		} else {
-			this._occupiedVertical = false;
-		}
+		}	
+		this._occupiedHorizontal = this.checkForImpassablePixels( this._horizontalEdge, true );
+
+		// top-bottom collisions
+		cy = movingDown ? tbEdge + 1 : tbEdge - 1;
+		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
+
+			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
+				this.recordMotion( cx, cy, mapObject );
+			}
+			this._verticalEdge.push({ x: cx, y: cy });
+		}	
+		this._occupiedVertical = this.checkForImpassablePixels( this._verticalEdge, false );
 		if ( this._occupiedHorizontal || this._occupiedVertical ){
 			if ( this._occupiedHorizontal ){
 				this.handleHorizontalCollision( mapObject, x, movingRight );
@@ -270,9 +267,13 @@ define([
 				}
 			}
 			if ( ! this.impassibleGrid[ pixels[i].y ] ){
-				return true;
-			} else if ( this.impassibleGrid[ pixels[i].y ][ pixels[i].x ] === 1 ){
-				return true; 
+				if ( !lr ){
+					return true;
+				}
+			} else {
+				if ( this.impassibleGrid[ pixels[i].y ][ pixels[i].x ] === 1 ){
+					return true; 
+				}
 			}
 		}
 		return false;
@@ -295,8 +296,8 @@ define([
 		mapObject.vX *= -1 * mapObject.physics.bounce;
 		// add friction to crossing direction
 		mapObject.vY *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
-		if ( Math.abs( mapObject.vX ) < 100 ){
-			mapObject.vY = 0;
+		if ( Math.abs( mapObject.vX ) < 20 ){
+			mapObject.vX = 0;
 		}
 		mapObject.view.setPos({
 			x: mapObject.x
@@ -304,7 +305,6 @@ define([
 	}
 	Map.prototype.handleVerticalCollision = function( mapObject, y, movingDown ){
 		mapObject.y = y - ( mapObject.y - y ) * mapObject.physics.bounce;
-
 		// adjust to collide with the pixel prior to actually overlapping.
 		if ( movingDown ){
 			if ( mapObject.y > (y - 1) ) mapObject.y = y - 1;
@@ -313,7 +313,7 @@ define([
 		}
 
 		// failsafe
-		if ( mapObject.y > ( this.canvas.height - 1 ) ) mapObject.y = this.canvas.height - 1;
+		if ( mapObject.y > ( this.canvas.height ) ) mapObject.y = this.canvas.height;
 		if ( mapObject.y < 0 ) mapObject.y = 0;
 		
 		mapObject.lastPos.y = y;
@@ -321,7 +321,7 @@ define([
 		mapObject.vY *= -1 * mapObject.physics.bounce;
 		// add friction to crossing direction
 		mapObject.vX *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
-		if ( Math.abs( mapObject.vY ) < 50 ){
+		if ( Math.abs( mapObject.vY ) < 40 ){
 			mapObject.vY = 0;
 		}
 

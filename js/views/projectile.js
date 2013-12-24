@@ -3,22 +3,11 @@ define([
 	'jquery',	
 	'backbone',
 	'createjs', 
+	'views/map-object',
 	'functions/math',
 	'functions/animations'
-], function( _, $, Backbone, createjs, mathFunctions, animations ){
-	var ProjectileV = Backbone.View.extend({
-		shape: false,
-		initialize: function(){
-			var that = this;
-			this.shape = new createjs.Shape();
-			this.listenTo( this.model, 'change', function(){
-				that.render( that.model.changed );
-			}); 
-		}, 
-		setPos: function( pos ){
-		 	this.shape.x =  pos.x;
-		 	this.shape.y = pos.y; 
-		},
+], function( _, $, Backbone, createjs, MapObjectV, mathFunctions, animations ){
+	var ProjectileV = MapObjectV.extend({
 		/** render the model to the canvas as a shape */
 		render: function( changed ){
 			if ( ! changed ){
