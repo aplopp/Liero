@@ -181,8 +181,9 @@ define({
 			}
 		},
 		rocket: {
-			weight: 25,
+			weight: 100,
 			width: 20, 
+			hitsPlayer: true,
 			model: {
 				name: 'Rocket',
 				color: '#00cc00',
