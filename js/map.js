@@ -143,18 +143,18 @@ define([
 		var movingDown = y2 >= y1;
 
 		// to start, record edges opposite of movement.
-		cy = movingDown ? y : y + h;		
-		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
+		cy = movingDown ? y1 : y1 + h;		
+		for( cx = x1, lenX = x1 + w; cx<lenX; cx++ ){
 			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
 				this.recordMotion( cx, cy, mapObject );
 			}
 		}
-		cx = movingRight ? x : x + w;		
-		for( cy = y, lenY = y + h; cy<lenY; cy++ ){
+		cx = movingRight ? x1 : x1 + w;	
+		for( cy = y1, lenY = y1 + h; cy<lenY; cy++ ){
 			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
 				this.recordMotion( cx, cy, mapObject );
 			}
-		}		
+		}	
 
 	
 		// this massive loop checks the leading edges 
@@ -211,17 +211,17 @@ define([
 		this._verticalEdge = [];
 		var cx, cy, lenX, lenY;
 		// above top or below bottom
-		var vEdge = movingDown ? y + h : y;
-		var hEdge = movingRight ? x + w : x ;				
+		var tbEdge = movingDown ? y + h : y;
+		var lrEdge = movingRight ? x + w : x ;				
 		
-		cy = movingDown ? vEdge + 1 : vEdge - 1;
+		cy = movingDown ? tbEdge + 1 : tbEdge - 1;
 		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
 			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
 				this.recordMotion( cx, cy, mapObject );
 			}
 			this._verticalEdge.push({ x: cx, y: cy });
 		}
-		cx = movingRight ? hEdge + 1 : hEdge - 1;
+		cx = movingRight ? lrEdge + 1 : lrEdge - 1;
 		for( cy = y, lenY = y + h; cy<lenY; cy++ ){
 			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
 				this.recordMotion( cx, cy, mapObject )
@@ -240,10 +240,10 @@ define([
 		}
 		if ( this._occupiedHorizontal || this._occupiedVertical ){
 			if ( this._occupiedHorizontal ){
-				this.handleHorizontalCollision( mapObject, x );
+				this.handleHorizontalCollision( mapObject, x, movingRight );
 			}
 			if ( this._occupiedVertical ){
-				this.handleVerticalCollision( mapObject, y );
+				this.handleVerticalCollision( mapObject, y, movingDown );
 			}
 			return false;
 		}
@@ -277,17 +277,17 @@ define([
 		}
 		return false;
 	}
-	Map.prototype.handleHorizontalCollision = function( mapObject, x ){
+	Map.prototype.handleHorizontalCollision = function( mapObject, x, movingRight ){
 		mapObject.x = x - ( mapObject.x - x ) * mapObject.physics.bounce;
 		// adjust to collide with the pixel prior to actually overlapping.
-		if ( mapObject.vX > 0 ){
+		if ( movingRight ){
 			if ( mapObject.x > (x - 1) ) mapObject.x = x - 1;
 		} else {
 			if ( mapObject.x < (x + 1) ) mapObject.x = x + 1;			
 		}
 
 		// failsafe
-		if ( mapObject.x > this.canvas.width ) mapObject.x = this.canvas.width;
+		if ( mapObject.x > (this.canvas.width - 1) ) mapObject.x = ( this.canvas.width - 1 );
 		if ( mapObject.x < 0 ) mapObject.x = 0;
 
 		mapObject.lastPos.x = x;
@@ -295,29 +295,37 @@ define([
 		mapObject.vX *= -1 * mapObject.physics.bounce;
 		// add friction to crossing direction
 		mapObject.vY *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
-
+		if ( Math.abs( mapObject.vX ) < 100 ){
+			mapObject.vY = 0;
+		}
 		mapObject.view.setPos({
 			x: mapObject.x
 		});	
 	}
-	Map.prototype.handleVerticalCollision = function( mapObject, y ){
+	Map.prototype.handleVerticalCollision = function( mapObject, y, movingDown ){
 		mapObject.y = y - ( mapObject.y - y ) * mapObject.physics.bounce;
-		// adjust to collide with the piyel prior to actually overlapping.
-		if ( mapObject.vY > 0 ){
+
+		// adjust to collide with the pixel prior to actually overlapping.
+		if ( movingDown ){
 			if ( mapObject.y > (y - 1) ) mapObject.y = y - 1;
 		} else {
 			if ( mapObject.y < (y + 1) ) mapObject.y = y + 1;
 		}
+
 		// failsafe
-		if ( mapObject.y > this.canvas.height ) mapObject.y = this.canvas.width;
-		if ( mapObject.y < 0 ) mapObject.y = 1;
+		if ( mapObject.y > ( this.canvas.height - 1 ) ) mapObject.y = this.canvas.height - 1;
+		if ( mapObject.y < 0 ) mapObject.y = 0;
 		
 		mapObject.lastPos.y = y;
 		// reverse velocity and multiply by bounce
 		mapObject.vY *= -1 * mapObject.physics.bounce;
 		// add friction to crossing direction
-		mapObject.vY *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
+		mapObject.vX *= ( 1 - settings.physics.surfaceFriction * mapObject.physics.friction );
+		if ( Math.abs( mapObject.vY ) < 50 ){
+			mapObject.vY = 0;
+		}
 
+		mapObject.lastPos.y = y;
 		mapObject.view.setPos({
 			y: mapObject.y
 		});	

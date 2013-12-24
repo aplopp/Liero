@@ -81,7 +81,7 @@ define({
 		gun: {
 			name: 'Gun', 
 			reload: 2, // shots/s
-			recoil: 10, // pixels/s
+			recoil: 0, // pixels/s
 			speed: 600, // pixels/s
 			projectile: 'bullet', 
 			auto: false,
