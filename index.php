@@ -13,6 +13,7 @@
 			<p class="subheading">Canvas edition</p>
 		</header>
 		<div id="content">
+
 			<div class="stage-container">
 				<canvas id="stage-bg" width="1000" height="">
 					Upgrade to a modern browser to play this bad boy.
@@ -21,6 +22,7 @@
 					Upgrade to a modern browser to play this bad boy.
 				</canvas>
 			</div>
+			<div id="display" class="cf"></div>				
 		</div>
 	</body>	
 </html>

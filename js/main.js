@@ -9,9 +9,10 @@ require.config({
 		backbone: {
 			deps: [ 'underscore' ],
 			exports: 'Backbone'
-		}
+		},
 	}, 
 	paths: {
+		text: 'libs/text',
 		backbone: 'libs/backbone-min',
 		underscore: 'libs/underscore-min',
 		jquery:  'http://code.jquery.com/jquery-1.10.2.min',

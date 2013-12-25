@@ -5,11 +5,12 @@ define([
 	'createjs',
 	'map', 
 	'player', 
+	'display',
 	'keys', 
 	'functions/color', 
 	'settings',
 	'functions/lang'
-], function( _, Backbone, $, createjs, Map, Player, keys, ColorFunctions, settings ){
+], function( _, Backbone, $, createjs, Map, Player, Display, keys, ColorFunctions, settings ){
 	Backbone.$ = $;
 	var noop = function(){}
 
@@ -42,8 +43,8 @@ define([
 				that.map = map;
 				that.players = that.createPlayers();			
 				that.stage = that.createStage();
-				
 				that.addInitialObjectsToStage();
+				that.display = that.createDisplay();
 				that.start();
 			});
 		}
@@ -98,6 +99,13 @@ define([
 			canvas.width = this.map.settings.width; 
 			canvas.height = this.map.settings.height; 
 			return new createjs.Stage( canvas );
+		}
+		/**
+		 * Create display to show updates on various parts of the game
+		 * 
+		 */
+		this.createDisplay = function(){
+			return new Display( app );
 		}
 		this.mapObjects = [];
 		this.addInitialObjectsToStage = function(){

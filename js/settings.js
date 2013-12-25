@@ -1,5 +1,6 @@
 define({
 	canvasID: 'stage',
+	displayID: 'display',
 	/** frames/per second. */
 	FPS: 60,
 	map: 'map1',
