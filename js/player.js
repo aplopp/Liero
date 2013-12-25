@@ -41,50 +41,93 @@ define([
             spec.model.height = this.h;
 			this.model = new PlayerM( spec.model );
 			this.view = new PlayerV({ model: this.model });
-			this.moveSpeed = spec.moveSpeed;
-			this.jumpPower = spec.jumpPower;
+
 			// set the passed key bindings to trigger the appropriate events
 			_.each( spec.keyBindings, function( keyCodes, eventName ){
                 keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
             });			
 
 			this.on( 'collision', this.handleCollision );
+			this.model.on( 'change:health', function( arg, health ){
+				if ( health <= 0 ){
+					that.die();
+				}
+			});			
 		},
 		handleCollision: function( object, x, y, vX, vY ){
 			this.vX += (object.weight/this.weight ) * object.vX;
 			this.vY += (object.weight/this.weight ) * object.vX;
+			this.model.set( 'health', this.model.get( 'health' ) - object.hitDamage ); 
+		},
+		_dead: false,
+		die: function(){
+			if ( ! this._dead ){
+				this._dead = true;
+				var that = this;
+				this.endShooting();
+				this.vX = 0;
+				this.vY = 0;
+				app.removeObjectFromMap( this );
+				setTimeout( function(){
+					that.respawn();
+				}, this.model.get( 'delayTilRespawn' ) )
+			}
+		},
+		respawn: function(){
+			this.model.set( 'health', this.model.get( 'totalHealth'));
+			app.addObjectToMap( this );
+			this._dead = false;
 		},
 		// actions
 		moveLeft: function(){
+			if ( this._dead ) return;
 			this.model.set( 'facing', 'left' );
-			this.vX -= this.moveSpeed; 
+			this.vX -= this.model.get( 'moveSpeed' ); 
 		},
 		moveRight: function(){
+			if ( this._dead ) return;
+
 			this.model.set( 'facing', 'right' );		
-			this.vX += this.moveSpeed; 
+			this.vX += this.model.get( 'moveSpeed' ); 
 		},
 		moveDown: function(){
-			this.vY += this.moveSpeed; 
+			if ( this._dead ) return;
+
+			this.vY += this.model.get( 'moveSpeed' ); 
 		},
 		moveUp: function(){
-			this.vY -= this.moveSpeed; 
+			if ( this._dead ) return; 
+
+			this.vY -= this.model.get( 'moveSpeed' ); 
 		},
 		aimUp: function(){
+			if ( this._dead ) return;
+
 			this.model.set({ 'aim': this.model.get( 'aim' ) - 3 }, { validate: true });
 		},
 		aimDown: function(){
+			if ( this._dead ) return;
+
 			this.model.set({ 'aim': this.model.get( 'aim' ) + 3 }, { validate: true });
 		},
 		jump: function(){
-			this.vY -= this.jumpPower; 
+			if ( this._dead ) return;
+
+			this.vY -= this.model.get( 'jumpPower' ); 
 		},
 		prevWeapon: function(){
+			if ( this._dead ) return;
+
 			this.switchWeapon( false );
 		},
 		nextWeapon: function(){
+			if ( this._dead ) return;			
+			
 			this.switchWeapon( true );
 		},
 		switchWeapon: function( forward ){
+			if ( this._dead ) return;			
+			
 			var current = this.model.get( 'activeWeapon');
 			var weapons = this.model.get( 'weapons' );
 			if ( forward ){
@@ -97,9 +140,13 @@ define([
 			this.model.set( 'activeWeapon', newWeapon );
 		},
 		startShooting: function(){
+			if ( this._dead ) return;			
+
 			this.model.getActiveWeapon().startShooting();
 		},
 		endShooting: function(){
+			if ( this._dead ) return;
+
 			this.model.getActiveWeapon().stopShooting();
 		}		
 	});

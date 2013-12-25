@@ -32,6 +32,7 @@ define([
 	        this.fromPlayer = spec.fromPlayer;
             spec.model.width = this.w;
             spec.model.height = this.h;
+            this.hitDamage = spec.hitDamage;
 			this.model = new ProjectileM( spec.model );
 			this.view = new ProjectileV({ model: this.model });
 

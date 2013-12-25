@@ -13,7 +13,6 @@ define([
 				that.render( that.model.changed );
 			}); 
 			var attributes = this.model.attributes;
-			console.log( attributes );
 			this.$el.html( _.template( FullTemplate, attributes ) );
 		},
 		/** render the model to the canvas as a shape */

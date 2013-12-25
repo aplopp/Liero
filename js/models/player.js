@@ -16,6 +16,11 @@ define([
 			facing: 'left',
 			aim: 0, // -45 to 90
 			moving: 0, // -1, 0, or 1	
+			jumpPower: 0,
+			moveSpeed: 0,
+			health: 0,
+			totalHealth: 100,
+			delayTilRespawn: 3000,
 			weapons: [],
 			activeWeapon: 0,
 		},
@@ -35,7 +40,10 @@ define([
 				weapons.push( new WeaponM( weaponSpec ) );
 			});
 			this.set( 'weapons', weapons );
-		},		
+
+			this.set( 'health', this.get('totalHealth') );
+
+		},	
 		validate: function( attrs, options ){
 			if( attrs.aim < 0 || attrs.aim > 135 ){
 				return 'Outside accepted limits for range'; 

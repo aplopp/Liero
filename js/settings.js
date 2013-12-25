@@ -18,11 +18,24 @@ define({
 	},
 	player: {
 		weight: 100,
-		/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
-		moveSpeed: 10, 
-		/** change in vY from player.jump() px/s */
-		jumpPower: 500,
 		hitsPlayer: false,
+		x: 0,
+		y: 200,
+		vX: 0,
+		vY: 0,	
+		height: 20,
+		width: 20,		
+		model: {
+			/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
+			moveSpeed: 10, 
+			/** change in vY from player.jump() px/s */
+			jumpPower: 500,
+			name: 'Default Name', 
+			color: '#333',
+			totalHealth: 100,
+			delayTilRespawn: 3000,			
+			weapons: [ 'gun' ]
+		},
 		physics: {
 			acceleration: 0,
 			bounce: .7,
@@ -53,7 +66,6 @@ define({
 				prevWeapon: [ 37, 'shift-r' ],
 				nextWeapon: [ 39, 'shift-r' ]
 			}
-
 		},
 		{ 
 			x: 460,
@@ -172,7 +184,8 @@ define({
 		grenade: {
 			weight: 20,
 			width: 40,
-			hitsPlayer: true,			
+			hitsPlayer: true,
+			hitDamage: 30,
 			model: {
 				name: 'Grenade',
 				color: '#cc0000',
@@ -185,6 +198,7 @@ define({
 			weight: 100,
 			width: 20, 
 			hitsPlayer: true,
+			hitDamage: 15,
 			model: {
 				name: 'Rocket',
 				color: '#00cc00',
@@ -202,7 +216,8 @@ define({
 		bullet: {
 			weight: 5,
 			width: 2,
-			hitsPlayer: true,						
+			hitsPlayer: true,
+			hitDamage: 10,				
 			model: {
 				name: 'Bullet',
 				color: '#000',
@@ -218,6 +233,7 @@ define({
 		flame: {
 			weight: 1,
 			width: 10,
+			hitDamage: 5,
 			model: {
 				name: 'Flame',
 				color: 'orange',

@@ -86,7 +86,7 @@ define([
 
 			_.each( this.settings.players, function( playerSpec ){
 				settings.player.type = 'player';
-				var player = new Player( _.extend( playerSpec, settings.player ) );
+				var player = new Player( $.extend( true, {}, settings.player, playerSpec ) );
 				players[ player.id ] = player; 
 			});
 			return players;			
@@ -120,9 +120,7 @@ define([
 				delete mapObject;
 				return;
 			}				
-			var shape = mapObject.view.render();
-			this.mapObjects.push( mapObject );
-			this.stage.addChild( shape );
+			this.addObjectToMap( mapObject );
 		}
 		this.getObject = function( id ){
 			var object = _.findWhere( this.mapObjects, { id: id });
@@ -130,9 +128,17 @@ define([
 		}
 		this.removeObject = function( id ){
 			var object = _.findWhere( this.mapObjects, { id: id });
-			this.mapObjects = _.reject( this.mapObjects, function( mapObject ){ return mapObject.id === id });
-			this.stage.removeChild( object.view.render({}) );
+			this.removeObjectFromMap( object );
 			delete object;
+		}
+		this.addObjectToMap = function( mapObject ){
+			var shape = mapObject.view.render();
+			this.mapObjects.push( mapObject );
+			this.stage.addChild( shape );
+		} 
+		this.removeObjectFromMap = function( object ){
+			this.mapObjects = _.reject( this.mapObjects, function( mapObject ){ return mapObject.id === object.id });
+			this.stage.removeChild( object.view.render({}) );
 		}
 		/**
 		 * advance the objects position based on x and y velocity

@@ -20,12 +20,13 @@ define([
 			this.$height = this.$el.find( '.height .value' );
 			this.$aim = this.$el.find( '.aim .angle' );
 			this.$weapons = this.$el.find( '.weapons' );
+			this.$totalHealth = this.$el.find( '.health .total' );
+			this.$health = this.$el.find( '.health .current' );
 			_.each( this.model.get( 'weapons' ), function( weapon ){
 				var weaponV = new FullWeaponDisplayV({ model: weapon });
 				that.$weapons.append( weaponV.$el );
 			});
 			this.render();
-			console.log( this.model.get( 'weapons' ) );
 		},
 		/** render the model to the canvas as a shape */
 		render: function( changed ){
@@ -36,6 +37,14 @@ define([
 			if ( _.has( changed, 'name' ) ){
 				this.$name.html( changed.name )
 			} 
+			if ( _.has( changed, 'health' ) || _.has( changed, 'totalHealth' ) ){
+				if ( _.has( changed, 'health' ) ){
+					this.$health.html( changed.health );
+				}
+				if ( _.has( changed, 'totalHealth' ) ){
+					this.$totalHealth.html( changed.totalHealth );
+				}
+			}
 			if ( _.has( changed, 'width' ) ){
 				this.$width.html( changed.width )
 			} 
