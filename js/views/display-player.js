@@ -15,13 +15,7 @@ define([
 			}); 
 			var attributes = this.model.attributes;
 			this.$el.html( _.template( FullTemplate, attributes ) );
-			this.$name = this.$el.find( '.name .value' );
-			this.$width = this.$el.find( '.width .value' );
-			this.$height = this.$el.find( '.height .value' );
-			this.$aim = this.$el.find( '.aim .angle' );
 			this.$weapons = this.$el.find( '.weapons' );
-			this.$totalHealth = this.$el.find( '.health .total' );
-			this.$health = this.$el.find( '.health .current' );
 			_.each( this.model.get( 'weapons' ), function( weapon ){
 				var weaponV = new FullWeaponDisplayV({ model: weapon });
 				that.$weapons.append( weaponV.$el );
@@ -34,27 +28,12 @@ define([
 				changed = this.model.attributes
 			}
 			// set up the shape
-			if ( _.has( changed, 'name' ) ){
-				this.$name.html( changed.name )
-			} 
-			if ( _.has( changed, 'health' ) || _.has( changed, 'totalHealth' ) ){
-				if ( _.has( changed, 'health' ) ){
-					this.$health.html( changed.health );
-				}
-				if ( _.has( changed, 'totalHealth' ) ){
-					this.$totalHealth.html( changed.totalHealth );
+			for( prop in changed ){
+				var $field = this.$el.find( '.' + prop + ' .value');
+				if ( $field.size() > 0 ){
+					$field.html( changed[prop] );
 				}
 			}
-			if ( _.has( changed, 'width' ) ){
-				this.$width.html( changed.width )
-			} 
-			if ( _.has( changed, 'height' ) ){
-				this.$height.html( changed.height )
-			} 
-			if ( _.has( changed, 'aim' ) || _.has( changed, 'facing' ) ){
-				var aim = this.model.get( 'facing' ) === 'left' ? '-'+ this.model.get( 'aim' ) : this.model.get( 'aim' );
-				this.$aim.html( aim );
-			} 
 			if ( _.has( changed, 'activeWeapon' ) ){
 				this.$weapons.find( '.weapon-display.active-weapon' ).removeClass('active-weapon');
 

@@ -85,7 +85,6 @@ define([
 			var players = [];
 
 			_.each( this.settings.players, function( playerSpec ){
-				settings.player.type = 'player';
 				var player = new Player( $.extend( true, {}, settings.player, playerSpec ) );
 				players[ player.id ] = player; 
 			});

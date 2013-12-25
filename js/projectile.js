@@ -27,12 +27,12 @@ define([
 	                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
 	            }); 			
 	        }
-	        this.w = this.w;
 	        this.type = 'projectile';
+	        this.explodeOnCollision = spec.explodeOnCollision;
 	        this.fromPlayer = spec.fromPlayer;
+            this.hitDamage = spec.hitDamage;    
             spec.model.width = this.w;
             spec.model.height = this.h;
-            this.hitDamage = spec.hitDamage;
 			this.model = new ProjectileM( spec.model );
 			this.view = new ProjectileV({ model: this.model });
 

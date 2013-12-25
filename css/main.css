@@ -1,5 +1,11 @@
 @import url(reset.css);
 @import url(base.css);
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
 body {
   background: #000;
   color: #aaa;
@@ -43,6 +49,11 @@ header.site .heading {
 .player-display {
   float: left;
   width: 50%;
+  position: relative;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
 .player-display > .name {
   font-size: 2em;
@@ -58,6 +69,28 @@ header.site .heading {
 }
 .player-display .weapon-display.active-weapon ul {
   display: block;
+}
+.player-display.dead .is-dead {
+  z-index: 1;
+  opacity: 1;
+}
+.player-display .is-dead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 60px 10px;
+  z-index: -1;
+  opacity: 0;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  text-align: center;
+  height: 100%;
+  background: rgba(180, 180, 180, 0.8);
+  color: #990000;
+  font-size: 3em;
 }
 .weapon-display .name {
   font-weight: bold;

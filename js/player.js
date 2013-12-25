@@ -34,6 +34,7 @@ define([
 		},	
 		initialize: function( spec ){
 			var that = this;
+			this.type = 'player';
             // pass the id to the model
             spec.model.id = this.id;
 
@@ -48,25 +49,35 @@ define([
             });			
 
 			this.on( 'collision', this.handleCollision );
-			this.model.on( 'change:health', function( arg, health ){
+			this.on( 'kill', function( killedPlayer ){
+				that.model.set( 'kills', that.model.get( 'kills' ) + 1 );
+				if ( killedPlayer.id === that.id ){
+					that.model.set( 'suicides', that.model.get( 'suicides' ) + 1 );
+				}
+			});
+			this.model.on( 'change:health', function( model, health ){
 				if ( health <= 0 ){
+					that.model.set( 'health', 0 );
 					that.die();
 				}
 			});			
 		},
 		handleCollision: function( object, x, y, vX, vY ){
+			if ( this.model.get( 'dead' )) return;
 			this.vX += (object.weight/this.weight ) * object.vX;
 			this.vY += (object.weight/this.weight ) * object.vX;
+			this.model.set( 'lastHitBy', object.fromPlayer );
 			this.model.set( 'health', this.model.get( 'health' ) - object.hitDamage ); 
 		},
-		_dead: false,
 		die: function(){
-			if ( ! this._dead ){
-				this._dead = true;
+			if ( ! this.model.get( 'dead' ) ){
+				this.model.set( 'dead', true );
+				this.model.set( 'deaths', this.model.get( 'deaths' ) + 1 );
 				var that = this;
 				this.endShooting();
 				this.vX = 0;
 				this.vY = 0;
+				app.players[ this.model.get( 'lastHitBy') ].trigger( 'kill', this );
 				app.removeObjectFromMap( this );
 				setTimeout( function(){
 					that.respawn();
@@ -76,7 +87,7 @@ define([
 		respawn: function(){
 			this.model.set( 'health', this.model.get( 'totalHealth'));
 			app.addObjectToMap( this );
-			this._dead = false;
+			this.model.set( 'dead', false );
 		},
 		// actions
 		moveLeft: function(){

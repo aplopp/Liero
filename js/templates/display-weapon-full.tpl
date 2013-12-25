@@ -6,6 +6,7 @@
 		<li class="recoil"><span class="label">Recoil:</span> <span class="value"><%= recoil %></span></li>
 		<li class="reload"><span class="label">Reload:</span> <span class="value"><%= reload %></span></li>
 		<li class="scatter"><span class="label">Scatter:</span> <span class="value"><%= scatter %></span></li>
+		<li class="speed"><span class="label">Speed:</span> <span class="value"><%= speed %></span></li>
 		<li class="speed-variability"><span class="label">Speed Variability:</span> <span class="value"><%= speedVariability %></span></li>
 		<li class="width"><span class="label">Width:</span> <span class="value"><%= width %></span></li>
 		<li class="length"><span class="label">Length:</span> <span class="value"><%= length %></span></li>

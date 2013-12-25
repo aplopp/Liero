@@ -186,6 +186,7 @@ define({
 			width: 40,
 			hitsPlayer: true,
 			hitDamage: 30,
+			explodeOnCollision: false,
 			model: {
 				name: 'Grenade',
 				color: '#cc0000',
@@ -199,6 +200,7 @@ define({
 			width: 20, 
 			hitsPlayer: true,
 			hitDamage: 15,
+			explodeOnCollision: true,
 			model: {
 				name: 'Rocket',
 				color: '#00cc00',
@@ -217,7 +219,8 @@ define({
 			weight: 5,
 			width: 2,
 			hitsPlayer: true,
-			hitDamage: 10,				
+			hitDamage: 10,	
+			explodeOnCollision: true,			
 			model: {
 				name: 'Bullet',
 				color: '#000',
@@ -234,6 +237,7 @@ define({
 			weight: 1,
 			width: 10,
 			hitDamage: 5,
+			explodeOnCollision: true,
 			model: {
 				name: 'Flame',
 				color: 'orange',

@@ -21,7 +21,7 @@ define([
 				changed = this.model.attributes
 			}
 			for( prop in changed ){
-				var $field = this.$el.find( '.' + prop + '.value');
+				var $field = this.$el.find( '.' + prop + ' > .value');
 				if ( $field.size() > 0 ){
 					$field.html( changed[prop] );
 				}

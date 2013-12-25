@@ -2,9 +2,9 @@ affectedByPlayerMotion
 airFriction
 
 collisionDetection
-	resolveCollision
+	+ resolveCollision
 	explodeOnImpact
-	explodeOnPlayerHit
+	+ explodeOnPlayerHit
 	destroyMapOnExplosion
 	explosionParticles
 	explosionSubProjectiles
@@ -12,11 +12,11 @@ collisionDetection
 			scatter
 	sitOnSurface
 	playerStats
-		playerHealth
+		+ playerHealth
 		playerDeath
 		playerRespawn
 		playerScore
-		playerWeapon
+		+ playerWeapon
 	pickUpWeapons
 	ninjaRope
 	weapons

@@ -1,6 +1,6 @@
 @import url(reset.css);
 @import url(base.css);
-
+@import url(elements.less);
 body {
 	background: #000;
 	color: #aaa;
@@ -45,6 +45,8 @@ header.site .heading {
 .player-display {
 	float: left; 
 	width: 50%;
+	position: relative;
+	.transition( .3s, ease );
 	> .name {
 		font-size: 2em;
 	}
@@ -61,6 +63,27 @@ header.site .heading {
 				display: block;
 			}
 		}
+	}
+	&.dead {
+		.is-dead {
+			z-index: 1;
+			opacity: 1;
+		}
+	}
+	.is-dead {
+		position: absolute; 
+		top: 0;
+		left: 0;
+		width: 100%;
+		padding: 60px 10px;
+		z-index: -1;
+		opacity: 0;
+		.transition( .3s, ease );
+		text-align: center;
+		height: 100%;
+		background: rgba( 180, 180, 180, .8);
+		color: #990000;
+		font-size: 3em;
 	}
 }
 .weapon-display {
