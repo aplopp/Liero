@@ -127,8 +127,10 @@ define([
 		}
 		this.removeObject = function( id ){
 			var object = _.findWhere( this.mapObjects, { id: id });
-			this.removeObjectFromMap( object );
-			delete object;
+			if ( object ){
+				this.removeObjectFromMap( object );
+				delete object;
+			}
 		}
 		this.addObjectToMap = function( mapObject ){
 			var shape = mapObject.view.render();

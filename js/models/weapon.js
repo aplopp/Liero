@@ -49,26 +49,24 @@ define([
 				projectileSpec.aim = xDir * ( aim + randScatter );
 
 				var launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ) + randSpeedDiff, projectileSpec.aim );
-
-				var projectile = new Projectile({
+				projectileSpec = _.extend( projectileSpec, {
 					// e nd of barrel coordinates
 					x: player.x + barrelCoords.x - projectileSpec.width/2, 
 					y: player.y + barrelCoords.y - projectileSpec.width/2, 
 					// x/y components of speed, depending on angle of barrel
 					vX: launchVelocities.x,
-					vY: launchVelocities.y,
-					width: projectileSpec.width,
-					height: projectileSpec.width,
-					physics: projectileSpec.physics, 
-					hitsPlayer: projectileSpec.hitsPlayer,
-					hitDamage: projectileSpec.hitDamage,
+					vY: launchVelocities.y,		
 					fromPlayer: this.get( 'holdingPlayer'),
+					height: projectileSpec.width,
 					model: projectileSpec.onLaunch( projectileSpec.model, this )
 				});
+				var projectile = new Projectile( projectileSpec );
 				// if affected by player motion
-				projectile.vX += player.vX;
-				projectile.vY += player.vY;
-				
+				if ( projectile.affectedByPlayerMotion ){
+					projectile.vX += player.vX;
+					projectile.vY += player.vY;
+				}
+				projectile.nextPosition();
 				app.addObject( projectile );
 			}
 			if ( recoil = this.get( 'recoil' )){

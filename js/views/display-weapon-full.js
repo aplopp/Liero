@@ -26,7 +26,6 @@ define([
 					$field.html( changed[prop] );
 				}
 			}
-			return this;
 		}
 	}); 
 	return FullWeaponDisplayV;

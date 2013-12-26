@@ -29,10 +29,13 @@ define([
 			}
 			// set up the shape
 			for( prop in changed ){
-				var $field = this.$el.find( '.' + prop + ' .value');
+				var $field = this.$el.children( '.' + prop ).children( '.value');
 				if ( $field.size() > 0 ){
 					$field.html( changed[prop] );
 				}
+			}
+			if ( _.has( changed, 'dead' )){
+				this.$el.toggleClass( 'dead', changed.dead );
 			}
 			if ( _.has( changed, 'activeWeapon' ) ){
 				this.$weapons.find( '.weapon-display.active-weapon' ).removeClass('active-weapon');

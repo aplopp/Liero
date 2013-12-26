@@ -282,6 +282,7 @@ define([
 		} else {
 			if ( mapObject.x < (x + 1) ) mapObject.x = x + 1;			
 		}
+		mapObject.trigger( 'mapCollision', mapObject.x, mapObject.y );
 
 		// failsafe
 		if ( mapObject.x > (this.canvas.width - 1) ) mapObject.x = ( this.canvas.width - 1 );
@@ -307,6 +308,7 @@ define([
 		} else {
 			if ( mapObject.y < (y + 1) ) mapObject.y = y + 1;
 		}
+		mapObject.trigger( 'mapCollision', mapObject.x, mapObject.y );
 
 		// failsafe
 		if ( mapObject.y > ( this.canvas.height ) ) mapObject.y = this.canvas.height;
@@ -355,10 +357,6 @@ define([
 		} else if (this._mo1.type !== 'player' && this._mo2.type !== 'player' ){
 			return; // disable collisions
 		} 
-		if ( _.indexOf( this._frameCollisions, this._mo1.id ) !== -1 || _.indexOf( this.frameCollisions, this._mo2.id ) !== -1 ){
-			// one of the objects has already had a collision this frame
-			return;
-		}	
 		this._frameCollisions.push( this._p.id, this._o.id );
 
 
@@ -369,14 +367,18 @@ define([
 			this._o = this._mo1; 
 			this._p = this._mo2;
 		}
+		if ( _.indexOf( this._frameCollisions, this._o.id ) !== -1 ){
+			// the object has already had a collision this frame
+			return;
+		}	
 
 		// handle player intersecting object
 		if ( ! this._o.hitsPlayer ){
 			return; // no collision if object doesn't hit player
 		}
 		
-		this._p.trigger( 'collision', this._o, x, y );			
-		this._o.trigger( 'collision', this._o, x, y );
+		this._p.trigger( 'objectCollision', this._o, x, y );			
+		this._o.trigger( 'objectCollision', this._o, x, y );
 	}
 	return Map; 
 });

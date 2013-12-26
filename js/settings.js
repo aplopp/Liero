@@ -122,7 +122,7 @@ define({
 			projectile: 'grenade',
 			auto: false,
 			color: '#0f0',
-			length: 10, 
+			length: 20, 
 			width: 3	
 
 		},
@@ -142,7 +142,7 @@ define({
 			name: 'Rocket Launcher',
 			reload: 2,
 			recoil: 100,
-			speed: 50,
+			speed: 200,
 			scatter: 0,
 			projectile: 'rocket',
 			auto: false,
@@ -187,6 +187,7 @@ define({
 			hitsPlayer: true,
 			hitDamage: 30,
 			explodeOnCollision: false,
+			affectedByPlayerMotion: true,
 			model: {
 				name: 'Grenade',
 				color: '#cc0000',
@@ -201,6 +202,7 @@ define({
 			hitsPlayer: true,
 			hitDamage: 15,
 			explodeOnCollision: true,
+			affectedByPlayerMotion: true,
 			model: {
 				name: 'Rocket',
 				color: '#00cc00',
@@ -219,8 +221,9 @@ define({
 			weight: 5,
 			width: 2,
 			hitsPlayer: true,
-			hitDamage: 10,	
-			explodeOnCollision: true,			
+			hitDamage: 1,	
+			explodeOnCollision: true,
+			affectedByPlayerMotion: false,		
 			model: {
 				name: 'Bullet',
 				color: '#000',
@@ -238,6 +241,7 @@ define({
 			width: 10,
 			hitDamage: 5,
 			explodeOnCollision: true,
+			affectedByPlayerMotion: true,
 			model: {
 				name: 'Flame',
 				color: 'orange',

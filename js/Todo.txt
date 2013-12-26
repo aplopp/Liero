@@ -3,14 +3,14 @@ airFriction
 
 collisionDetection
 	+ resolveCollision
-	explodeOnImpact
+	+ explodeOnImpact
 	+ explodeOnPlayerHit
 	destroyMapOnExplosion
 	explosionParticles
 	explosionSubProjectiles
 		directional v allDirections
 			scatter
-	sitOnSurface
+	+ sitOnSurface
 	playerStats
 		+ playerHealth
 		playerDeath

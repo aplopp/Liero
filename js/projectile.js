@@ -31,6 +31,7 @@ define([
 	        this.explodeOnCollision = spec.explodeOnCollision;
 	        this.fromPlayer = spec.fromPlayer;
             this.hitDamage = spec.hitDamage;    
+            this.affectedByPlayerMotion = spec.affectedByPlayerMotion;
             spec.model.width = this.w;
             spec.model.height = this.h;
 			this.model = new ProjectileM( spec.model );
@@ -43,7 +44,7 @@ define([
 				that.explode();
 			}, MathFunctions.getRandomNumberBetween( delayMin, delayMax ) );
 
-			this.on( 'collision', function( mapObject, x, y ){
+			this.on( 'objectCollision', function( mapObject, x, y ){
 				clearTimeout( that._timedExplosion );
 				this.vX = 0;
 				this.vY = 0;
@@ -53,7 +54,15 @@ define([
 				if ( this.fromPlayer !== mapObject.id ){
 					that.explode();
 				}
-			});			
+			});		
+			this.on( 'mapCollision', function( x, y ){
+				if ( that.explodeOnCollision ){
+					clearTimeout( that._timedExplosion );
+					that.x = x;
+					that.y = y;
+					that.explode();
+				}
+			});
 		}, 
 		_timedExplosion: false,
 		explode: function(){

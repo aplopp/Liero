@@ -48,7 +48,7 @@ define([
                 keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
             });			
 
-			this.on( 'collision', this.handleCollision );
+			this.on( 'objectCollision', this.handleCollision );
 			this.on( 'kill', function( killedPlayer ){
 				that.model.set( 'kills', that.model.get( 'kills' ) + 1 );
 				if ( killedPlayer.id === that.id ){
@@ -124,7 +124,15 @@ define([
 		jump: function(){
 			if ( this._dead ) return;
 
-			this.vY -= this.model.get( 'jumpPower' ); 
+			var pixelsBelow = [];
+			for( var cx = this.x, lenX = this.x + this.w; cx<lenX; cx++ ){
+				for( var cy = this.y + this.h, lenY = this.y + this.h + 3; cy<lenY; cy++ ){
+					pixelsBelow.push({ x: cx, y: cy });
+				}
+			}	
+			if ( app.map.checkForImpassablePixels( pixelsBelow )){
+				this.vY -= this.model.get( 'jumpPower' );
+			}
 		},
 		prevWeapon: function(){
 			if ( this._dead ) return;
