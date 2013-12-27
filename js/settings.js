@@ -46,9 +46,9 @@ define({
 	players: [
 		{ 
 			x: 0,
-			y: 200,
+			y: 480,
 			vX: 0,
-			vY: -100,	
+			vY: 0,	
 			height: 20,
 			width: 20,
 			model: {
@@ -64,7 +64,8 @@ define({
 				jump: [ 'command-r' ],
 				shoot: [ 32 ], // space		
 				prevWeapon: [ 37, 'shift-r' ],
-				nextWeapon: [ 39, 'shift-r' ]
+				nextWeapon: [ 39, 'shift-r' ],
+				dig: [37,39] // l + r
 			}
 		},
 		{ 
@@ -87,7 +88,8 @@ define({
 				jump: [ 'control-l' ],
 				shoot: 9, // tab-l
 				prevWeapon: [ 65, 'shift-l' ],
-				nextWeapon: [ 68, 'shift-l' ]				
+				nextWeapon: [ 68, 'shift-l' ],
+				dig: [65,68] // l + r
 			}
 		}		
 	],

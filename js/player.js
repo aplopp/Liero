@@ -23,7 +23,8 @@ define([
 			'shoot:start': 'startShooting',
 			'shoot:end': 'endShooting',
 			'prevWeapon:start': 'prevWeapon',
-			'nextWeapon:start': 'nextWeapon'
+			'nextWeapon:start': 'nextWeapon',
+			'dig:start': 'dig'
 		},
 		/**
 		 * @override
@@ -126,11 +127,11 @@ define([
 
 			var pixelsBelow = [];
 			for( var cx = this.x, lenX = this.x + this.w; cx<lenX; cx++ ){
-				for( var cy = this.y + this.h, lenY = this.y + this.h + 3; cy<lenY; cy++ ){
-					pixelsBelow.push({ x: cx, y: cy });
+				for( var cy = this.y + this.h, lenY = this.y + this.h + 6; cy<lenY; cy++ ){
+					pixelsBelow.push({ x: Math.round( cx ), y: Math.round( cy ) });
 				}
 			}	
-			if ( app.map.checkForImpassablePixels( pixelsBelow )){
+			if ( app.map.checkForImpassablePixels( this, pixelsBelow )){
 				this.vY -= this.model.get( 'jumpPower' );
 			}
 		},
@@ -167,7 +168,14 @@ define([
 			if ( this._dead ) return;
 
 			this.model.getActiveWeapon().stopShooting();
-		}		
+		},
+		dig: function(){
+			if ( this.facing === 'left' ){
+				app.map.clearPixelsAroundPoint( this.x, this.y + this.h /2, this.w )
+			} else {
+				app.map.clearPixelsAroundPoint( this.x + this.w, this.y + this.h/2, this.w )
+			}
+		}	
 	});
 
 	return Player;

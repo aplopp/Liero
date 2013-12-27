@@ -7,6 +7,7 @@ collisionDetection
 	+ explodeOnPlayerHit
 	destroyMapOnExplosion
 	explosionParticles
+	explosionPlayerDamage
 	explosionSubProjectiles
 		directional v allDirections
 			scatter

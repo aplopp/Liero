@@ -18,30 +18,56 @@ define([
 		this.canvas.width = this.settings.width;
 		this.canvas.height = this.settings.height;
 
-		this.impassibleGrid = this.getImpassibleGrid(); 
+		this.refresh();
+
+	}
+	Map.prototype.refresh = function( p1, p2 ){
+		this.refreshImpassibleGrid( p1, p2 ); 
 		// create map, add generated pixels to canvas 
-		this.generateMap();
+		this.generateMapImage( p1, p2 );
 	}
 	/**
 	 * generates canvas based on the map data
 	 */
-	Map.prototype.generateMap = function(){
+	Map.prototype.generateMapImage = function( p1, p2 ){
 		var ctx = this.canvas.getContext( '2d' );
-		var imageData = ctx.createImageData( this.settings.width, this.settings.height );
-		var pixelIndex = 0;
-		var index = 0;
-		_.each( this.grid, function( col ){
-			_.each( col, function( row ){
-				if ( _.isArray( row.color )){
-					imageData.data[ index ] = row.color[0];
-					imageData.data[ index + 1] = row.color[1];
-					imageData.data[ index + 2] = row.color[2];
-					imageData.data[ index + 3] = row.color[3];
-				}				
-				index += 4;				
+		if ( p1 && p2 ){
+			var imageData = ctx.getImageData( 0, 0, this.settings.width, this.settings.height );			
+			var index;
+			var row;
+			for( var y = p1.y; y < p2.y; y++ ){
+				for( var x = p1.x; x < p2.x; x++ ){
+					row = this.grid[y][x]; 
+					index = ( y * this.canvas.width + (x + 1) ) * 4
+					if ( row ){
+						imageData.data[ index ] = row.color[0];
+						imageData.data[ index + 1] = row.color[1];
+						imageData.data[ index + 2] = row.color[2];
+						imageData.data[ index + 3] = row.color[3];					
+					} else {
+						imageData.data[ index ] = 0;
+						imageData.data[ index + 1] = 0;
+						imageData.data[ index + 2] = 0;
+						imageData.data[ index + 3] = 0;	
+					}					
+				}
+			}
+		} else {
+			var imageData = ctx.createImageData( this.settings.width, this.settings.height );
+			var index = 0;
+			_.each( this.grid, function( col ){
+				_.each( col, function( row ){
+					if ( _.isArray( row.color )){
+						imageData.data[ index ] = row.color[0];
+						imageData.data[ index + 1] = row.color[1];
+						imageData.data[ index + 2] = row.color[2];
+						imageData.data[ index + 3] = row.color[3];
+					}				
+					index += 4;				
+				});
 			});
-		});
-		ctx.putImageData( imageData, 0, 0 );		
+		}
+		ctx.putImageData( imageData, 0, 0 );
 	}
 	// internal index variables to maybe speed things up
 	Map.prototype.i = 0;
@@ -51,14 +77,30 @@ define([
 	 * simplifies the grid to a single 'type' number...whether the player (or objects) can pass through, or no. 
 	 */
 	var impassibleGrid = false;	
-	Map.prototype.getImpassibleGrid = function(){
-		impassibleGrid = ndarray( new Int8Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );;
-		for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
-			for( var x = 0, lenX = this.grid[0].length; x < lenX; x++ ){
-				impassibleGrid.set( x, y, this.grid[y][x].type );
-			}
+	Map.prototype.refreshImpassibleGrid = function( p1, p2 ){
+		if ( p1 && p2 ){
+			for( var y = p1.y; y < p2.y; y++ ){
+				for( var x = p1.x; x < p2.x; x++ ){
+					if ( this.grid[y][x] ){
+						this.impassibleGrid.set( x, y, this.grid[y][x].type );
+					} else {
+						this.impassibleGrid.set( x, y, 0 );	
+					}
+				}
+			} 
+		} else {
+			impassibleGrid = ndarray( new Int8Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );;
+			for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
+				for( var x = 0, lenX = this.grid[0].length; x < lenX; x++ ){
+					if ( this.grid[y][x] ){
+						impassibleGrid.set( x, y, this.grid[y][x].type );
+					} else {
+						impassibleGrid.set( x, y, 0 );	
+					}
+				}
+			} 
 		}
-		return impassibleGrid; 
+		this.impassibleGrid = impassibleGrid;
 	};
 	// creates an empty grid of -1,
 	// same width and height as map,
@@ -255,7 +297,6 @@ define([
 	 * @returns {bool} - true if any of the pixels are occupied
 	 */
 	Map.prototype.checkForImpassablePixels = function( mapObject, pixels, lr ){
-
 		for( var i =0, len = pixels.length; i<len;i++ ){
 
 			// off map on x or y axis, depending on direction
@@ -269,10 +310,12 @@ define([
 				}
 			}
 			var type = MapTypes.get( this.impassibleGrid.get( pixels[i].x, pixels[i].y ) );
-			if ( mapObject.type === 'player' && type.blockPlayer ){
-				return true; 
-			} else if ( mapObject.type === 'projectile' && type.blockShot ){
-				return true;
+			if ( type !== 0 ){
+				if ( mapObject.type === 'player' && type.blockPlayer ){
+					return true; 
+				} else if ( mapObject.type === 'projectile' && type.blockShot ){
+					return true;
+				}
 			}
 		}
 		return false;
@@ -383,5 +426,54 @@ define([
 		this._p.trigger( 'objectCollision', this._o, x, y );			
 		this._o.trigger( 'objectCollision', this._o, x, y );
 	}
+
+	/* ==== DIGGING and destroying map ============================================= */
+	Map.prototype.clearPixelsAroundPoint = function( cX, cY, r ){
+		cX = Math.round( cX );
+		cY = Math.round( cY );
+		var changed = false;
+		var p1={x:cX-r, y: cY-r}, p2={x: cX+r, y:cY+r};
+		for (var x = r; --x>=0;) {
+			for (var y = r; --y>=0;) {
+	        	if ( (x*x) + (y*y) <= r*r ){
+	        		if ( cX-x >= 0 ){
+	        			if ( cY-y >= 0 && this.grid[cY-y][cX-x] ){
+	        				changed = true;
+	        				if ( cX-x < p1.x ) p1.x = cX-x;
+	        				if ( cY-y < p1.y ) p1.y = cY-y;       				
+	        				this.grid[cY-y][cX-x] = false;	
+	        			}
+	        			if ( cY + y < this.grid.length && this.grid[cY+y][cX-x] ){
+	        				changed = true;	
+	        				if ( cX-x < p1.x ) p1.x = cX-x;
+	        				if ( cY+y > p2.y ) p2.y = cY+y;
+	        				this.grid[cY+y][cX-x] = false;		
+	        			}
+	        		}
+	        		if ( cX+x < this.grid[0].length ){
+	        			if ( cY-y >= 0 && this.grid[cY-y][cX+x] ){
+	        				changed = true;
+	        				if ( cX+x > p2.x ) p2.x = cX+x;
+	        				if ( cY-y < p1.y ) p1.y = cY-y;
+	        				this.grid[cY-y][cX+x] = false;	
+	        			}
+	        			if ( cY + y < this.grid.length && this.grid[cY+y][cX+x] ){
+	        				changed = true;	       
+	        				if ( cX+x > p2.x ) p2.x = cX+x;
+	        				if ( cY+y > p2.y ) p2.y = cY+y;
+	        				this.grid[cY+y][cX+x] = false;		
+	        			}
+	        		}
+	           	}
+		    }
+        }
+        if ( changed ){
+        	if ( p1.x < 0 ) p1.x = 0;
+        	if ( p1.y < 0 ) p1.y = 0;
+        	if ( p2.x >= this.canvas.width ) p2.x = this.canvas.width;
+        	if ( p2.y >= this.canvas.height ) p2.y = this.canvas.height;
+        	this.refresh(p1, p2);
+        }
+	};
 	return Map; 
 });

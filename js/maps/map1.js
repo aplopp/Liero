@@ -21,26 +21,16 @@ define( function(){
 				col.push({
 					location: x + ', '+ y,
 					color: [ 255,255,200, 255],
-					type: 1
+					type: 2
 				});
 			} else {
-				col.push({
-					location: x + ', '+ y,
-					color: [ 100, 100, 100, 255 ],
-					type: 0
-				});
+				col.push( false );
 			}
 		}
 		layout.push( col );
 	}	
 	var types = [
-		{ //  0
-			blockShot: 0,
-			blockPlayer: 0,
-			destructible: 0,
-			diggable: 0
-		}, 
-		{ // 1
+		{ // 0
 			blockShot: 1,
 			blockPlayer: 1,
 			destructible: 0,

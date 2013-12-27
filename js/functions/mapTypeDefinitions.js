@@ -14,7 +14,7 @@ define( function(){
 		},
 		{ // 2
 			blockShot: 1, 
-			blockPlayer: 0,
+			blockPlayer: 1,
 			destructible: 1,
 			diggable: 1
 		}
