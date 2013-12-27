@@ -13,9 +13,9 @@ collisionDetection
 	+ sitOnSurface
 	playerStats
 		+ playerHealth
-		playerDeath
-		playerRespawn
-		playerScore
+		+ playerDeath
+		+ playerRespawn
+		+ playerScore
 		+ playerWeapon
 	pickUpWeapons
 	ninjaRope

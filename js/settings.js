@@ -3,7 +3,7 @@ define({
 	displayID: 'display',
 	/** frames/per second. */
 	FPS: 60,
-	map: 'map1',
+	map: 'map2',
 	stage: {
 		ratio: 2,
 	},

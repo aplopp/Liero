@@ -2,9 +2,10 @@ define([
 	'underscore', 
 	'backbone',
 	'createjs',
-	'settings', 
+	'settings',
+	'functions/mapTypeDefinitions',
 	'functions/ndarray'
-], function( _, Backbone, createjs, settings, ndarray ){
+], function( _, Backbone, createjs, settings, MapTypes, ndarray ){
 	var defaults = {
 		width: 1000, 
 		height: 500,
@@ -223,7 +224,7 @@ define([
 			}
 			this._horizontalEdge.push({ x: cx, y: cy });
 		}	
-		this._occupiedHorizontal = this.checkForImpassablePixels( this._horizontalEdge, true );
+		this._occupiedHorizontal = this.checkForImpassablePixels( mapObject, this._horizontalEdge, true );
 
 		// top-bottom collisions
 		cy = movingDown ? tbEdge + 1 : tbEdge - 1;
@@ -234,7 +235,7 @@ define([
 			}
 			this._verticalEdge.push({ x: cx, y: cy });
 		}	
-		this._occupiedVertical = this.checkForImpassablePixels( this._verticalEdge, false );
+		this._occupiedVertical = this.checkForImpassablePixels( mapObject, this._verticalEdge, false );
 		if ( this._occupiedHorizontal || this._occupiedVertical ){
 			if ( this._occupiedHorizontal ){
 				this.handleHorizontalCollision( mapObject, x, movingRight );
@@ -253,7 +254,7 @@ define([
 	 * @param lr {bool} - true if this is a rl wall (a column)
 	 * @returns {bool} - true if any of the pixels are occupied
 	 */
-	Map.prototype.checkForImpassablePixels = function( pixels, lr ){
+	Map.prototype.checkForImpassablePixels = function( mapObject, pixels, lr ){
 
 		for( var i =0, len = pixels.length; i<len;i++ ){
 
@@ -267,9 +268,11 @@ define([
 					return true;
 				}
 			}
-
-			if ( this.impassibleGrid.get( pixels[i].x, pixels[i].y ) === 1 ){
+			var type = MapTypes.get( this.impassibleGrid.get( pixels[i].x, pixels[i].y ) );
+			if ( mapObject.type === 'player' && type.blockPlayer ){
 				return true; 
+			} else if ( mapObject.type === 'projectile' && type.blockShot ){
+				return true;
 			}
 		}
 		return false;
