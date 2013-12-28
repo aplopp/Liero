@@ -16,6 +16,8 @@ define({
 		/** deceleration from airFriction, in px/s */
 		airFriction: 0
 	},
+	jumpSurfaceDetection: 6,
+	digDepth: 4,
 	player: {
 		weight: 100,
 		hitsPlayer: false,
@@ -33,7 +35,8 @@ define({
 			name: 'Default Name', 
 			color: '#333',
 			totalHealth: 100,
-			delayTilRespawn: 3000,			
+			delayTilRespawn: 3000,	
+			digDepth: 4,		
 			weapons: [ 'gun' ]
 		},
 		physics: {

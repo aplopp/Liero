@@ -26,6 +26,7 @@ define([
 			deaths: 0,
 			kills: 0,
 			suicides: 0,
+			digDepth: 3,
 			weapons: [],
 			activeWeapon: 0,
 		},

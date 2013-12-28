@@ -13,15 +13,15 @@
       "outputAbbreviatedPath" : "\/js\/views\/player.min.js",
       "fileType" : 64
     },
-    "\/js\/libs\/backbone-min.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
+    "\/js\/functions\/ndarray.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/libs\/backbone-min.js",
+      "inputAbbreviatedPath" : "\/js\/functions\/ndarray.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/libs\/backbone-min.min.js",
+      "outputAbbreviatedPath" : "\/js\/functions\/ndarray.min.js",
       "fileType" : 64
     },
     "\/js\/maps\/map2.js" : {
@@ -218,17 +218,6 @@
       "outputAbbreviatedPath" : "\/js\/projectile.min.js",
       "fileType" : 64
     },
-    "\/js\/libs\/jquery-1.10.2.min.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/libs\/jquery-1.10.2.min.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/libs\/jquery-1.10.2.min.min.js",
-      "fileType" : 64
-    },
     "\/js\/js-test.min.js" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
@@ -251,17 +240,6 @@
       "outputAbbreviatedPath" : "\/js\/explosion.min.js",
       "fileType" : 64
     },
-    "\/js\/models\/player.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/models\/player.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/models\/player.min.js",
-      "fileType" : 64
-    },
     "\/js\/keys.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -273,15 +251,26 @@
       "outputAbbreviatedPath" : "\/js\/keys.min.js",
       "fileType" : 64
     },
-    "\/js\/functions\/mapTypeDefinitions.min.js" : {
-      "ignoreWasSetByUser" : 0,
+    "\/js\/models\/player.js" : {
+      "ignoreWasSetByUser" : 1,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/functions\/mapTypeDefinitions.min.js",
+      "inputAbbreviatedPath" : "\/js\/models\/player.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/functions\/mapTypeDefinitions.min.min.js",
+      "outputAbbreviatedPath" : "\/js\/models\/player.min.js",
+      "fileType" : 64
+    },
+    "\/js\/libs\/jquery-1.10.2.min.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/libs\/jquery-1.10.2.min.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/libs\/jquery-1.10.2.min.min.js",
       "fileType" : 64
     },
     "\/js\/functions\/color.js" : {
@@ -293,6 +282,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/functions\/color.min.js",
+      "fileType" : 64
+    },
+    "\/js\/functions\/mapTypeDefinitions.min.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/functions\/mapTypeDefinitions.min.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/functions\/mapTypeDefinitions.min.min.js",
       "fileType" : 64
     },
     "\/js\/functions\/mapTypeDefinitions.js" : {
@@ -350,17 +350,6 @@
       "outputAbbreviatedPath" : "\/js\/views\/display-player.min.js",
       "fileType" : 64
     },
-    "\/js\/views\/projectile.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/views\/projectile.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/views\/projectile.min.js",
-      "fileType" : 64
-    },
     "\/js\/map.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -370,6 +359,17 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/map.min.js",
+      "fileType" : 64
+    },
+    "\/js\/views\/projectile.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/views\/projectile.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/views\/projectile.min.js",
       "fileType" : 64
     },
     "\/css\/elements.less" : {
@@ -411,6 +411,17 @@
       "outputAbbreviatedPath" : "\/js\/display.min.min.js",
       "fileType" : 64
     },
+    "\/js\/app.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/app.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/app.min.js",
+      "fileType" : 64
+    },
     "\/js\/views\/explosion.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -433,17 +444,6 @@
       "outputAbbreviatedPath" : "\/js\/bootstrap.min.js",
       "fileType" : 64
     },
-    "\/js\/app.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/app.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/app.min.js",
-      "fileType" : 64
-    },
     "\/js\/player.js" : {
       "ignoreWasSetByUser" : 1,
       "ignore" : 1,
@@ -453,28 +453,6 @@
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
       "outputAbbreviatedPath" : "\/js\/player.min.js",
-      "fileType" : 64
-    },
-    "\/images\/stage-bg.png" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/images\/stage-bg.png",
-      "processed" : 0,
-      "outputAbbreviatedPath" : "\/images\/stage-bg.png",
-      "initialSize" : 232,
-      "fileType" : 8192
-    },
-    "\/js\/classes\/MapObject.js" : {
-      "ignoreWasSetByUser" : 1,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/classes\/MapObject.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/classes\/MapObject.min.js",
       "fileType" : 64
     },
     "\/js\/functions\/math.js" : {
@@ -488,16 +466,33 @@
       "outputAbbreviatedPath" : "\/js\/functions\/math.min.js",
       "fileType" : 64
     },
-    "\/js\/functions\/ndarray.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
+    "\/js\/classes\/MapObject.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/functions\/ndarray.js",
+      "inputAbbreviatedPath" : "\/js\/classes\/MapObject.js",
       "outputStyle" : 1,
       "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/functions\/ndarray.min.js",
+      "outputAbbreviatedPath" : "\/js\/classes\/MapObject.min.js",
       "fileType" : 64
+    },
+    "\/css\/main.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/css\/main.less",
+      "outputAbbreviatedPath" : "\/css\/main.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 0,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 0,
+      "fileType" : 1,
+      "debugStyle" : 0
     },
     "\/css\/base.css" : {
       "ignoreWasSetByUser" : 0,
@@ -507,6 +502,28 @@
       "inputAbbreviatedPath" : "\/css\/base.css",
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 16
+    },
+    "\/js\/views\/map-object.js" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/views\/map-object.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/views\/map-object.min.js",
+      "fileType" : 64
+    },
+    "\/images\/stage-bg.png" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 0,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/images\/stage-bg.png",
+      "processed" : 0,
+      "outputAbbreviatedPath" : "\/images\/stage-bg.png",
+      "initialSize" : 232,
+      "fileType" : 8192
     },
     "\/js\/functions\/lang.min.js" : {
       "ignoreWasSetByUser" : 0,
@@ -530,17 +547,6 @@
       "outputAbbreviatedPath" : "\/js\/maps\/map1.min.js",
       "fileType" : 64
     },
-    "\/js\/views\/map-object.js" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/js\/views\/map-object.js",
-      "outputStyle" : 1,
-      "syntaxCheckerStyle" : 1,
-      "outputAbbreviatedPath" : "\/js\/views\/map-object.min.js",
-      "fileType" : 64
-    },
     "\/index.php" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 0,
@@ -550,22 +556,16 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 2048
     },
-    "\/css\/main.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/css\/main.less",
-      "outputAbbreviatedPath" : "\/css\/main.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 0,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
+    "\/js\/libs\/backbone-min.js" : {
+      "ignoreWasSetByUser" : 1,
+      "ignore" : 1,
       "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 0,
-      "fileType" : 1,
-      "debugStyle" : 0
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/js\/libs\/backbone-min.js",
+      "outputStyle" : 1,
+      "syntaxCheckerStyle" : 1,
+      "outputAbbreviatedPath" : "\/js\/libs\/backbone-min.min.js",
+      "fileType" : 64
     }
   },
   "manualImportLinks" : [

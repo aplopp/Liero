@@ -10,6 +10,7 @@ define([
 	'functions/color'
 ], function( settings, _, Backbone, createjs, ExplosionM, ExplosionV, MapObject, MathFunctions, ColorFunctions ){
 	var _explosionAnimationsIndex = {};
+	var _maxRadiuses = {};
 	// helpers
 	function _createExplosionUniqueID( explosion ){
 		var duration = explosion.duration;
@@ -34,20 +35,29 @@ define([
         var eachFramePercent = msPerFrame / explosion.duration ;
         var frameCount = 0;
         var progress = 0;
+        var maxRadius = 0;
+        var radius;
         while( progress < 1){
 			progress = frameCount * eachFramePercent;
+			radius = MathFunctions.getGradiatedPropertyAtProgress( radiuses, progress )
 			animationFrames.push({
 				color: ColorFunctions.getRgbaString( MathFunctions.getGradiatedPropertyAtProgress( colors, progress )),
-				radius: MathFunctions.getGradiatedPropertyAtProgress( radiuses, progress )
+				radius: radius
 			});
+        	if ( radius > maxRadius ) maxRadius = radius;
         	frameCount++;
         }
+        // final position
+        radius = MathFunctions.getGradiatedPropertyAtProgress( radiuses, 1 );
+       	if ( radius > maxRadius ) maxRadius = radius;
         animationFrames.push({
 			color: MathFunctions.getGradiatedPropertyAtProgress( colors, 1 ),
-			radius: MathFunctions.getGradiatedPropertyAtProgress( radiuses, 1 )
+			radius: radius
 		});
-
-        return animationFrames;    
+        return {
+        	frames: animationFrames,
+        	maxRadius: maxRadius
+        };    
 	}
 	var Explosion = MapObject.extend({
 		initialize: function( spec ){
@@ -59,7 +69,7 @@ define([
 	                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
 	            }); 			
 	        }
-	        
+	        this.type = 'explosion';
 	        // explosions are stationary
 	        this.vX = 0;
 	        this.vY = 0; 
@@ -84,7 +94,10 @@ define([
 			}
 			
 			if ( ! _.has( _explosionAnimationsIndex, spec.model._type ) ){
-				_explosionAnimationsIndex[ spec.model._type ] = _recordAnimationFrames( spec.model );
+				var recorded = _recordAnimationFrames( spec.model )
+				_explosionAnimationsIndex[ spec.model._type ] = recorded.frames;
+				_maxRadiuses[ spec.model._type ] = recorded.maxRadius;
+
 			}
 			this._animationFrames = _explosionAnimationsIndex[ spec.model._type ];    
 		},		
@@ -98,6 +111,9 @@ define([
 			}
 			this.model.set( '_color', this._animationFrames[ this.frameCount ].color );
 			this.model.set( '_radius', this._animationFrames[ this.frameCount ].radius );
+			if ( this.model.get( '_radius') === _maxRadiuses[ this.model.get( '_type' ) ] ){
+				app.map.clearPixelsAroundPoint( this.x, this.y, _maxRadiuses[ this.model.get( '_type' ) ], this );
+			}
 			this.frameCount++;
 		}
  	});		

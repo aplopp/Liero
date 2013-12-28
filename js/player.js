@@ -171,11 +171,60 @@ define([
 		},
 		dig: function(){
 			if ( this.facing === 'left' ){
-				app.map.clearPixelsAroundPoint( this.x, this.y + this.h /2, this.w )
+				var dug = app.map.clearPixelsAroundPoint( this.x, this.y + this.h /2, Math.round( this.w *.66 ), this )
 			} else {
-				app.map.clearPixelsAroundPoint( this.x + this.w, this.y + this.h/2, this.w )
+				var dug = app.map.clearPixelsAroundPoint( this.x + this.w, this.y + this.h/2, Math.round( this.w *.66 ), this );
 			}
-		}	
+			if ( dug ){
+				this.x = this.lastPos.x;
+				this.y = this.lastPos.y;
+				this.vX *= .3;
+				this.vY *= .3;
+			}
+		},
+		// dig: function(){
+		// 	var pixels = [];
+		// 	if ( this.model.get( 'facing' ) === 'left' ){
+		// 		// var dug = app.map.clearPixelsAroundPoint( this.x, this.y + this.h /2, this.w )
+		// 		var amount = MathFunctions.getVelocityComponents( this.model.get( 'digDepth'), - this.model.get( 'aim' ) );
+		// 	} else {
+		// 		// var dug = app.map.clearPixelsAroundPoint( this.x + this.w, this.y + this.h/2, this.w )
+		// 		var amount = MathFunctions.getVelocityComponents( this.model.get( 'digDepth'), this.model.get( 'aim' ) );
+		// 	}
+		// 	var edgeX, startX, endX, edgeY, startY, endY;
+		// 	if ( amount.x > 0 ){
+		// 		edgeX = this.x + this.w;
+		// 		startX = 0;
+		// 		endX = amount.x
+		// 	} else {
+		// 		edgeX = this.x;
+		// 		startX = amount.x;
+		// 		endX = 0;
+		// 	}
+		// 	if ( amount.y > 0 ){
+		// 		edgeY = this.y + this.w;
+		// 		startY = 0;
+		// 		endY = amount.y
+		// 	} else {
+		// 		edgeY = this.y;
+		// 		startY = amount.y;
+		// 		endY = 0;
+		// 	}
+		// 	for ( var x = startX; x <= endX; x++ ){
+		// 		for ( var y = startY; y <= endY; y++ ){
+		// 			for( var i = 0; i < this.w; i++ ){
+		// 				pixels.push({ x: edgeX + x, y: edgeY + y });
+
+		// 			}
+		// 		}
+		// 	}
+		// 	console.log( pixels );
+ 	// 		var dug = app.map.clearPixels( pixels );
+		// 	if ( dug ){
+		// 		this.vX = this.lastPos.vX * .5;
+		// 		this.vY = this.lastPos.vY * .5;
+		// 	}
+		// }			
 	});
 
 	return Player;

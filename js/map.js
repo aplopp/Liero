@@ -428,42 +428,67 @@ define([
 	}
 
 	/* ==== DIGGING and destroying map ============================================= */
-	Map.prototype.clearPixelsAroundPoint = function( cX, cY, r ){
+	Map.prototype.clearPixels = function( pixels ){
+		var changed = false; 
+		for ( var p in pixels ){
+			if ( p.x >= 0 && p.x < this.settings.width ){
+				if ( p.y >= 0 && p.y < this.settings.height ){
+					if ( this.grid[p.y][p.x] ){
+						this.grid[p.y][p.x] = false;
+						changed = true;
+					}
+				}
+			}
+		}
+		return changed;
+	}
+	Map.prototype.objectDestroyPixel = function( x, y, mapObject ){
+		if ( x >= 0 && x < this.settings.width ){
+			if ( y >= 0 && y < this.settings.height ){
+				if ( this.grid[y][x] ){
+					var type = MapTypes.get( this.grid[y][x].type );
+					if (
+    					mapObject.type === 'explosion' && type.explodeable 
+    					|| mapObject.type === 'player' && type.diggable
+    				){
+
+    					this.grid[y][x] = false;
+						return true;
+    				}
+				}
+			}
+		}
+		return false;
+	}
+	Map.prototype.clearPixelsAroundPoint = function( cX, cY, r, causingObject ){
 		cX = Math.round( cX );
 		cY = Math.round( cY );
 		var changed = false;
 		var p1={x:cX-r, y: cY-r}, p2={x: cX+r, y:cY+r};
 		for (var x = r; --x>=0;) {
 			for (var y = r; --y>=0;) {
+				// point inside circle
 	        	if ( (x*x) + (y*y) <= r*r ){
-	        		if ( cX-x >= 0 ){
-	        			if ( cY-y >= 0 && this.grid[cY-y][cX-x] ){
-	        				changed = true;
-	        				if ( cX-x < p1.x ) p1.x = cX-x;
-	        				if ( cY-y < p1.y ) p1.y = cY-y;       				
-	        				this.grid[cY-y][cX-x] = false;	
-	        			}
-	        			if ( cY + y < this.grid.length && this.grid[cY+y][cX-x] ){
-	        				changed = true;	
-	        				if ( cX-x < p1.x ) p1.x = cX-x;
-	        				if ( cY+y > p2.y ) p2.y = cY+y;
-	        				this.grid[cY+y][cX-x] = false;		
-	        			}
-	        		}
-	        		if ( cX+x < this.grid[0].length ){
-	        			if ( cY-y >= 0 && this.grid[cY-y][cX+x] ){
-	        				changed = true;
-	        				if ( cX+x > p2.x ) p2.x = cX+x;
-	        				if ( cY-y < p1.y ) p1.y = cY-y;
-	        				this.grid[cY-y][cX+x] = false;	
-	        			}
-	        			if ( cY + y < this.grid.length && this.grid[cY+y][cX+x] ){
-	        				changed = true;	       
-	        				if ( cX+x > p2.x ) p2.x = cX+x;
-	        				if ( cY+y > p2.y ) p2.y = cY+y;
-	        				this.grid[cY+y][cX+x] = false;		
-	        			}
-	        		}
+					if ( this.objectDestroyPixel( cX-x, cY-y, causingObject ) ){	        				
+        				changed = true;
+        				if ( cX-x < p1.x ) p1.x = cX-x;
+        				if ( cY-y < p1.y ) p1.y = cY-y;       				
+        			}
+	        		if ( this.objectDestroyPixel( cX-x, cY+y, causingObject ) ){	        				
+        				changed = true;
+        				if ( cX-x < p1.x ) p1.x = cX-x;
+        				if ( cY+y > p2.y ) p2.y = cY+y;
+        			}
+        			if ( this.objectDestroyPixel( cX+x, cY-y, causingObject ) ){	        				
+        				changed = true;
+        				if ( cX+x > p2.x ) p2.x = cX+x;
+        				if ( cY-y < p1.y ) p1.y = cY-y;       				
+        			}
+					if ( this.objectDestroyPixel( cX+x, cY+y, causingObject ) ){	        				
+        				changed = true;
+        				if ( cX+x > p2.x ) p2.x = cX+x;
+        				if ( cY+y > p2.y ) p2.y = cY+y;
+        			}        			
 	           	}
 		    }
         }
@@ -474,6 +499,7 @@ define([
         	if ( p2.y >= this.canvas.height ) p2.y = this.canvas.height;
         	this.refresh(p1, p2);
         }
+        return changed;
 	};
 	return Map; 
 });
