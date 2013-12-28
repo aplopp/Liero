@@ -2,9 +2,9 @@ define( ['functions/mapTypeDefinitions'], function( mapTypes ){
 	var width = 1000;
 	var height = 500;
 	var layout = [];
-	for( var y = 0; y< height; y++){
+	for( var x = 0; x< width; x++){
 		var col = [];
-		for( var x = 0; x< width; x++){
+		for( var y = 0; y< height; y++){
 			if ( x > 500 && y > 400 ){
 				col.push({
 					color: [ 115,96,83, 255],

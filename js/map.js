@@ -13,13 +13,31 @@ define([
 	}
 	function Map( mapSpec ){
 		this.settings = _.extend( defaults, mapSpec );
-		this.grid = this.settings.layout;
 		this.canvas = document.getElementById( 'stage-bg' ); 
 		this.canvas.width = this.settings.width;
 		this.canvas.height = this.settings.height;
 
+		this.grid = this.makeGrid( this.settings.layout );
 		this.refresh();
 
+	}
+
+	Map.prototype.makeGrid = function( layout ){
+		// 5 deep, for colors and for type
+		var grid = ndarray( new Int16Array( this.canvas.width * this.canvas.height * 5 ), [ this.canvas.width, this.canvas.height, 5 ] );;
+		for( var x = 0; x < layout.length; x++ ){
+			for( var y = 0; y < layout[0].length; y++ ){
+				var p = layout[x][y];
+				if( p ){
+					grid.set( x, y, 0, p.color[0] );
+					grid.set( x, y, 1, p.color[1] );
+					grid.set( x, y, 2, p.color[2] );
+					grid.set( x, y, 3, p.color[3] );
+					grid.set( x, y, 4, p.type );
+				}
+			}
+		}
+		return grid;
 	}
 	Map.prototype.refresh = function( p1, p2 ){
 		this.refreshImpassibleGrid( p1, p2 ); 
@@ -35,37 +53,27 @@ define([
 			var imageData = ctx.getImageData( 0, 0, this.settings.width, this.settings.height );			
 			var index;
 			var row;
-			for( var y = p1.y; y < p2.y; y++ ){
-				for( var x = p1.x; x < p2.x; x++ ){
-					row = this.grid[y][x]; 
+			for( var x = p1.x; x < p2.x; x++ ){
+				for( var y = p1.y; y < p2.y; y++ ){
 					index = ( y * this.canvas.width + (x + 1) ) * 4
-					if ( row ){
-						imageData.data[ index ] = row.color[0];
-						imageData.data[ index + 1] = row.color[1];
-						imageData.data[ index + 2] = row.color[2];
-						imageData.data[ index + 3] = row.color[3];					
-					} else {
-						imageData.data[ index ] = 0;
-						imageData.data[ index + 1] = 0;
-						imageData.data[ index + 2] = 0;
-						imageData.data[ index + 3] = 0;	
-					}					
+					imageData.data[ index ] = this.grid.get( x, y, 0 );
+					imageData.data[ index + 1] = this.grid.get( x, y, 1 );
+					imageData.data[ index + 2] = this.grid.get( x, y, 2 );
+					imageData.data[ index + 3] = this.grid.get( x, y, 3 );
 				}
 			}
 		} else {
 			var imageData = ctx.createImageData( this.settings.width, this.settings.height );
 			var index = 0;
-			_.each( this.grid, function( col ){
-				_.each( col, function( row ){
-					if ( _.isArray( row.color )){
-						imageData.data[ index ] = row.color[0];
-						imageData.data[ index + 1] = row.color[1];
-						imageData.data[ index + 2] = row.color[2];
-						imageData.data[ index + 3] = row.color[3];
-					}				
+			for( var y = 0; y < this.settings.height; y++ ){			
+				for( var x = 0; x < this.settings.width; x++ ){
+					imageData.data[ index ] = this.grid.get( x, y, 0 );
+					imageData.data[ index + 1] = this.grid.get( x, y, 1 );
+					imageData.data[ index + 2] = this.grid.get( x, y, 2 );
+					imageData.data[ index + 3] = this.grid.get( x, y, 3 );			
 					index += 4;				
-				});
-			});
+				}
+			}
 		}
 		ctx.putImageData( imageData, 0, 0 );
 	}
@@ -81,8 +89,8 @@ define([
 		if ( p1 && p2 ){
 			for( var y = p1.y; y < p2.y; y++ ){
 				for( var x = p1.x; x < p2.x; x++ ){
-					if ( this.grid[y][x] ){
-						this.impassibleGrid.set( x, y, this.grid[y][x].type );
+					if ( this.grid.get( x, y, 4 ) ){ // if type && type !== 0
+						this.impassibleGrid.set( x, y, this.grid.get(x, y, 4 ) );
 					} else {
 						this.impassibleGrid.set( x, y, 0 );	
 					}
@@ -90,10 +98,10 @@ define([
 			} 
 		} else {
 			impassibleGrid = ndarray( new Int8Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );;
-			for( var y = 0, lenY = this.grid.length; y < lenY; y++ ){
-				for( var x = 0, lenX = this.grid[0].length; x < lenX; x++ ){
-					if ( this.grid[y][x] ){
-						impassibleGrid.set( x, y, this.grid[y][x].type );
+			for( var y = 0, lenY = this.settings.height; y < lenY; y++ ){
+				for( var x = 0, lenX = this.settings.width; x < lenX; x++ ){
+					if ( this.grid.get( x, y, 4 ) ){ // if type && type !== 0
+						impassibleGrid.set( x, y, this.grid.get( x, y, 4 ) );
 					} else {
 						impassibleGrid.set( x, y, 0 );	
 					}
@@ -261,18 +269,17 @@ define([
 		// left-right collisions
 		cx = movingRight ? lrEdge + 1 : lrEdge - 1;
 		for( cy = y, lenY = y + h; cy<lenY; cy++ ){
-			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
+			if ( cx < ( this.settings.width - 1 ) && cy < ( this.settings.height - 1 )){
 				this.recordMotion( cx, cy, mapObject )
 			}
 			this._horizontalEdge.push({ x: cx, y: cy });
 		}	
 		this._occupiedHorizontal = this.checkForImpassablePixels( mapObject, this._horizontalEdge, true );
-
 		// top-bottom collisions
 		cy = movingDown ? tbEdge + 1 : tbEdge - 1;
 		for( cx = x, lenX = x + w; cx<lenX; cx++ ){
 
-			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
+			if ( cx < ( this.settings.width - 1 ) && cy < ( this.settings.height - 1 )){
 				this.recordMotion( cx, cy, mapObject );
 			}
 			this._verticalEdge.push({ x: cx, y: cy });
@@ -301,16 +308,16 @@ define([
 
 			// off map on x or y axis, depending on direction
 			if ( lr ){
-				if ( pixels[i].x < 0 || pixels[i].x > ( this.grid[0].length - 1 ) ){
+				if ( pixels[i].x < 0 || pixels[i].x > ( this.settings.width ) ){
 					return true;
 				}
 			} else {
-				if ( pixels[i].y < 0 || pixels[i].y > ( this.grid.length ) ){
+				if ( pixels[i].y < 0 || pixels[i].y > ( this.settings.height ) ){
 					return true;
 				}
 			}
 			var type = MapTypes.get( this.impassibleGrid.get( pixels[i].x, pixels[i].y ) );
-			if ( type !== 0 ){
+			if ( type ){
 				if ( mapObject.type === 'player' && type.blockPlayer ){
 					return true; 
 				} else if ( mapObject.type === 'projectile' && type.blockShot ){
@@ -428,13 +435,21 @@ define([
 	}
 
 	/* ==== DIGGING and destroying map ============================================= */
+	Map.prototype.clearPixel = function(x, y){
+		if ( this.grid.get( x, y, 4 )){ // if type && type !== 0
+			for( var i = 5; --i>= 0;){ // set colors and type to 0
+				this.grid.set( x, y, i, 0)
+			}
+			return true;
+		}
+		return false;
+	}
 	Map.prototype.clearPixels = function( pixels ){
 		var changed = false; 
 		for ( var p in pixels ){
 			if ( p.x >= 0 && p.x < this.settings.width ){
 				if ( p.y >= 0 && p.y < this.settings.height ){
-					if ( this.grid[p.y][p.x] ){
-						this.grid[p.y][p.x] = false;
+					if ( this.clearPixel(x, y)){
 						changed = true;
 					}
 				}
@@ -445,15 +460,13 @@ define([
 	Map.prototype.objectDestroyPixel = function( x, y, mapObject ){
 		if ( x >= 0 && x < this.settings.width ){
 			if ( y >= 0 && y < this.settings.height ){
-				if ( this.grid[y][x] ){
-					var type = MapTypes.get( this.grid[y][x].type );
+				if ( this.grid.get( x, y, 4 ) ){ // type 
+					var type = MapTypes.get( this.grid.get( x, y, 4 ));
 					if (
     					mapObject.type === 'explosion' && type.explodeable 
     					|| mapObject.type === 'player' && type.diggable
     				){
-
-    					this.grid[y][x] = false;
-						return true;
+						return this.clearPixel( x, y );
     				}
 				}
 			}
