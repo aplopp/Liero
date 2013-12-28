@@ -104,7 +104,7 @@ define([
 		 * 
 		 */
 		this.createDisplay = function(){
-			return new Display( app );
+			// return new Display( app );
 		}
 		this.mapObjects = [];
 		this.addInitialObjectsToStage = function(){

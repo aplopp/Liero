@@ -40,7 +40,7 @@ define([
 		return grid;
 	}
 	Map.prototype.refresh = function( p1, p2 ){
-		this.refreshImpassibleGrid( p1, p2 ); 
+		this.refreshTypeGrid( p1, p2 ); 
 		// create map, add generated pixels to canvas 
 		this.generateMapImage( p1, p2 );
 	}
@@ -84,31 +84,31 @@ define([
 	/**
 	 * simplifies the grid to a single 'type' number...whether the player (or objects) can pass through, or no. 
 	 */
-	var impassibleGrid = false;	
-	Map.prototype.refreshImpassibleGrid = function( p1, p2 ){
+	var typeGrid = false;	
+	Map.prototype.refreshTypeGrid = function( p1, p2 ){
 		if ( p1 && p2 ){
 			for( var y = p1.y; y < p2.y; y++ ){
 				for( var x = p1.x; x < p2.x; x++ ){
 					if ( this.grid.get( x, y, 4 ) ){ // if type && type !== 0
-						this.impassibleGrid.set( x, y, this.grid.get(x, y, 4 ) );
+						this.typeGrid.set( x, y, this.grid.get(x, y, 4 ) );
 					} else {
-						this.impassibleGrid.set( x, y, 0 );	
+						this.typeGrid.set( x, y, 0 );	
 					}
 				}
 			} 
 		} else {
-			impassibleGrid = ndarray( new Int8Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );;
+			typeGrid = ndarray( new Int8Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );;
 			for( var y = 0, lenY = this.settings.height; y < lenY; y++ ){
 				for( var x = 0, lenX = this.settings.width; x < lenX; x++ ){
 					if ( this.grid.get( x, y, 4 ) ){ // if type && type !== 0
-						impassibleGrid.set( x, y, this.grid.get( x, y, 4 ) );
+						typeGrid.set( x, y, this.grid.get( x, y, 4 ) );
 					} else {
-						impassibleGrid.set( x, y, 0 );	
+						typeGrid.set( x, y, 0 );	
 					}
 				}
 			} 
 		}
-		this.impassibleGrid = impassibleGrid;
+		this.typeGrid = typeGrid;
 	};
 	// creates an empty grid of -1,
 	// same width and height as map,
@@ -189,21 +189,21 @@ define([
 		var h = mapObject.h;
 
 		// counter vars
-		var y, x, cy, cx;
+		var y, x;
 		var movingRight = x2 >= x1;
 		var movingDown = y2 >= y1;
 
 		// to start, record edges opposite of movement.
-		cy = movingDown ? y1 : y1 + h;		
-		for( cx = x1, lenX = x1 + w; cx<lenX; cx++ ){
-			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
-				this.recordMotion( cx, cy, mapObject );
+		y = movingDown ? y1 : y1 + h;		
+		for( x = x1, lenX = x1 + w; x<lenX; x++ ){
+			if ( x < ( this.canvas.width - 1 ) && y < ( this.canvas.height - 1 )){
+				this.recordMotion( x, y, mapObject );
 			}
 		}
-		cx = movingRight ? x1 : x1 + w;	
-		for( cy = y1, lenY = y1 + h; cy<lenY; cy++ ){
-			if ( cx < ( this.canvas.width - 1 ) && cy < ( this.canvas.height - 1 )){
-				this.recordMotion( cx, cy, mapObject );
+		x = movingRight ? x1 : x1 + w;	
+		for( y = y1, lenY = y1 + h; y<lenY; y++ ){
+			if ( x < ( this.canvas.width - 1 ) && y < ( this.canvas.height - 1 )){
+				this.recordMotion( x, y, mapObject );
 			}
 		}	
 
@@ -316,7 +316,7 @@ define([
 					return true;
 				}
 			}
-			var type = MapTypes.get( this.impassibleGrid.get( pixels[i].x, pixels[i].y ) );
+			var type = MapTypes.get( this.typeGrid.get( pixels[i].x, pixels[i].y ) );
 			if ( type ){
 				if ( mapObject.type === 'player' && type.blockPlayer ){
 					return true; 
@@ -436,20 +436,19 @@ define([
 
 	/* ==== DIGGING and destroying map ============================================= */
 	Map.prototype.clearPixel = function(x, y){
-		if ( this.grid.get( x, y, 4 )){ // if type && type !== 0
-			for( var i = 5; --i>= 0;){ // set colors and type to 0
-				this.grid.set( x, y, i, 0)
-			}
-			return true;
-		}
-		return false;
+		this.grid.set( x, y, 0, 0);
+		this.grid.set( x, y, 1, 0)
+		this.grid.set( x, y, 2, 0)
+		this.grid.set( x, y, 3, 0)
+		this.grid.set( x, y, 4, 0)
 	}
 	Map.prototype.clearPixels = function( pixels ){
 		var changed = false; 
 		for ( var p in pixels ){
 			if ( p.x >= 0 && p.x < this.settings.width ){
 				if ( p.y >= 0 && p.y < this.settings.height ){
-					if ( this.clearPixel(x, y)){
+					if ( this.typeGrid.get( x, y )){
+						this.clearPixel(x, y);
 						changed = true;
 					}
 				}
@@ -458,17 +457,14 @@ define([
 		return changed;
 	}
 	Map.prototype.objectDestroyPixel = function( x, y, mapObject ){
-		if ( x >= 0 && x < this.settings.width ){
-			if ( y >= 0 && y < this.settings.height ){
-				if ( this.grid.get( x, y, 4 ) ){ // type 
-					var type = MapTypes.get( this.grid.get( x, y, 4 ));
-					if (
-    					mapObject.type === 'explosion' && type.explodeable 
-    					|| mapObject.type === 'player' && type.diggable
-    				){
-						return this.clearPixel( x, y );
-    				}
-				}
+		if ( this.typeGrid.get( x, y ) ){ // type 
+			var type = MapTypes.get( this.typeGrid.get( x, y ) );
+			if (
+				mapObject.type === 'explosion' && type.explodeable 
+				|| mapObject.type === 'player' && type.diggable
+			){
+				this.clearPixel( x, y );
+				return true;
 			}
 		}
 		return false;
