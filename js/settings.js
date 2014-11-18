@@ -26,7 +26,7 @@ define({
 		vX: 0,
 		vY: 0,	
 		height: 20,
-		width: 20,		
+		width: 20,
 		model: {
 			/** acceleration from player.moveLeft() or player.moveRight(), in px/s */
 			moveSpeed: 10, 
@@ -36,7 +36,12 @@ define({
 			color: '#333',
 			totalHealth: 100,
 			delayTilRespawn: 3000,	
-			digDepth: 4,		
+			digDepth: 4,
+			rope: {
+				launchSpeed: 1000,
+				color: '#000',
+				launchDistanceFromCenter: 10
+			},
 			weapons: [ 'gun' ]
 		},
 		physics: {
@@ -68,6 +73,7 @@ define({
 				shoot: [ 32 ], // space		
 				prevWeapon: [ 37, 'shift-r' ],
 				nextWeapon: [ 39, 'shift-r' ],
+				launchNinjaRope: [ 'command-r', 188 ], // comma
 				dig: [37,39] // l + r
 			}
 		},
@@ -92,6 +98,7 @@ define({
 				shoot: 9, // tab-l
 				prevWeapon: [ 65, 'shift-l' ],
 				nextWeapon: [ 68, 'shift-l' ],
+				launchNinjaRope: [ 'control-l', 'shift-l' ], // comma
 				dig: [65,68] // l + r
 			}
 		}		
@@ -227,8 +234,8 @@ define({
 			width: 2,
 			hitsPlayer: true,
 			hitDamage: 1,	
-			explodeOnCollision: true,
-			affectedByPlayerMotion: false,		
+			explodeOnCollision: false,
+			affectedByPlayerMotion: true,		
 			model: {
 				name: 'Bullet',
 				color: '#000',

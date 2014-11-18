@@ -39,6 +39,15 @@ define([
 		 			.lineTo( end.x, end.y )
 
 		 	}
+
+		 	// handle the rope
+		 	if ( _.has( changed, '_ropeIsLaunched')){
+		 		this.shape.graphics
+		 			.moveTo( this.model.get( 'width')/2, this.model.get( 'height' )/2 )
+		 			.beginStroke( this.model.get( 'rope' ).get( 'coo') )
+		 			.setStrokeStyle( activeWeapon.get( 'width' ) )
+		 			.lineTo( end.x, end.y )
+		 	}
 	
 		 	return this.shape; 
 		}

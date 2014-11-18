@@ -17,12 +17,12 @@
 			<div class="stage-container">
 				<canvas id="stage-bg" width="1000" height="">
 					Upgrade to a modern browser to play this bad boy.
-				</canvas>		
+				</canvas>
 				<canvas id="stage" width="1000" height="">
 					Upgrade to a modern browser to play this bad boy.
 				</canvas>
 			</div>
-			<div id="display" class="cf"></div>				
+			<div id="display" class="cf"></div>
 		</div>
-	</body>	
+	</body>
 </html>

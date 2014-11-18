@@ -3,8 +3,9 @@ define([
 	'backbone',
 	'createjs', 
 	'models/weapon',
-	'settings'
-], function( _, Backbone, createjs, WeaponM, settings ){
+	'settings',
+	'models/rope'
+], function( _, Backbone, createjs, WeaponM, settings, RopeM ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -29,6 +30,8 @@ define([
 			digDepth: 3,
 			weapons: [],
 			activeWeapon: 0,
+			rope: false,
+			_ropeIsLaunched: false
 		},
 		getActiveWeapon: function(){
 			this.get( 'weapons')[ this.get('activeWeapon') ];
@@ -48,6 +51,9 @@ define([
 			this.set( 'weapons', weapons );
 
 			this.set( 'health', this.get('totalHealth') );
+			var ropeSpec = this.get( 'rope' );
+			ropeSpec.holdingPlayer = this;
+			this.set( 'rope', new RopeM( ropeSpec ) );
 
 		},	
 		validate: function( attrs, options ){

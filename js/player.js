@@ -6,8 +6,10 @@ define([
 	'models/player',
 	'views/player',
 	'classes/MapObject',
-	'keys'
-], function( settings, _, Backbone, createjs, PlayerM, PlayerV, MapObject, keys ){
+	'keys', 
+	'functions/math', 
+	'models/rope'
+], function( settings, _, Backbone, createjs, PlayerM, PlayerV, MapObject, keys, MathFunctions, RopeM ){
 	var Player = MapObject.extend({
 		/**
 		 * the eventBinding states which functions to call for which events
@@ -24,6 +26,7 @@ define([
 			'shoot:end': 'endShooting',
 			'prevWeapon:start': 'prevWeapon',
 			'nextWeapon:start': 'nextWeapon',
+			'launchNinjaRope:start': 'launchNinjaRope',
 			'dig:start': 'dig'
 		},
 		/**
@@ -168,6 +171,9 @@ define([
 			if ( this._dead ) return;
 
 			this.model.getActiveWeapon().stopShooting();
+		},
+		launchNinjaRope: function(){
+			this.model.get( 'rope' ).launch();
 		},
 		dig: function(){
 			if ( this.facing === 'left' ){
