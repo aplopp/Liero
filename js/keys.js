@@ -1,5 +1,5 @@
-define([ 
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
 	'jquery'
 ], function( _, Backbone, $ ){
@@ -8,49 +8,49 @@ define([
 
 
 	var Keys = function( keyBindings ){
-		var that = this; 
+		var that = this;
 		
 		/**
-		 * holds a reference to all keys with actions 
+		 * holds a reference to all keys with actions
 		 * NOTE: special keys - 'cmd', 'ctrl', 'alt', 'shift'
 		 */
 		var _bindings = [ {} ]; // one member array for how many keys are required in binding
 
-		var _modKeys = [ 'command-r', 'command-l', 'control-r', 'control-l', 'shift-r', 'shift-l', 'alt-r', 'alt-l' ]; 
+		var _modKeys = [ 'command-r', 'command-l', 'control-r', 'control-l', 'shift-r', 'shift-l', 'alt-r', 'alt-l' ];
 		this.getKeyCode = function(e){
-			var id = e.keyIdentifier; 
+			var id = e.keyIdentifier;
 			var loc = e.location;
 			switch( id ){
-				case 'Meta' : 
+				case 'Meta' :
 					if ( loc === 0 ){
-						return 'command-r'; 
+						return 'command-r';
 					} else if ( loc === 1) {
 						return 'command-l'
 					}
 					break;
-				case 'Control' : 
+				case 'Control' :
 					if ( loc === 1 ){
-						return 'control-l'; 
+						return 'control-l';
 					}
 					break;
-				case 'Shift' : 
+				case 'Shift' :
 					if ( loc === 1 ){
 						return 'shift-l';
 					} else if ( loc === 2){
 						return 'shift-r';
 					}
 					break;
-				case 'Alt' : 
+				case 'Alt' :
 					if ( loc === 1 ){
 						return 'alt-l';
 					} else if ( loc === 2 ){
 						return 'alt-r';
-					} 
+					}
 			}
-			return e.keyCode; 
+			return e.keyCode;
 		}
 		this.isModifierKey = function( keyCode ){
-			return _modKeys.indexOf( keyCode ) !== -1; 
+			return _modKeys.indexOf( keyCode ) !== -1;
 
 		}
 		this.getModifierKeyPriority = function( modKey ){
@@ -63,7 +63,7 @@ define([
 		 */
 		this.getBindings = function(){
 			return _bindings;
-		}		
+		}
 		/**
 		 * function to set multiple key bindings at once
 		 * @param {object} keyBindings
@@ -71,14 +71,14 @@ define([
 		this.setBindings = function( updatedKeyBindings ){
 			if ( !_.isObject( updatedKeyBindings ) ){
 				console.log( 'keys.setBindings() needs an object');
-				return false;				
+				return false;
 				
 			}
 			_.each( updatedKeyBindings, function( keyCodes, action ){
-				that.setBinding( action, keyCodes ); 
-			}); 
+				that.setBinding( action, keyCodes );
+			});
 			return _bindings;
-		}		
+		}
 		/**
 		 * Sets a key combination (single or multiple) to trigger an action
 		 * @param {string} action
@@ -88,40 +88,40 @@ define([
 			// single key event
 			if ( _.isString(keyCodes) || _.isNumber( keyCodes ) || ( _.isArray( keyCodes) && keyCodes.length === 1 ) ){
 				if ( _.isString( keyCodes ) || _.isNumber( keyCodes )){
-					var keyCode = keyCodes; 
+					var keyCode = keyCodes;
 				} else if ( _.isArray( keyCodes) && keyCodes.length === 1 ){
-					var keyCode = keyCodes[0]; 
+					var keyCode = keyCodes[0];
 				}
 				if ( _.isString( action ) ){
 					if ( _.isNumber(keyCode) || that.isModifierKey( keyCode ) ){
 						_bindings[0][ keyCode ] = action;
-						return _bindings; 
+						return _bindings;
 					}
 				}
-				return false; 		
+				return false;
 			
 			// multikey event
 			} else if (  _.isArray( keyCodes ) && keyCodes.length > 1 ){
 				if ( !_.has( _bindings, keyCodes.length - 1 )){
 					_bindings[ keyCodes.length - 1 ] = {};
 				}
-				// sort keys array, with modifier keys in order of priority at beginning, 
+				// sort keys array, with modifier keys in order of priority at beginning,
 				// followed by all other keycodes in order of number
 				keyCodes = this.sortKeyCodes( keyCodes );
 				var binding = action;
 				for(var i = keyCodes.length -1; i >= 0; i--){
 					var obj = {};
-					obj[ keyCodes[i] ] = binding; 
+					obj[ keyCodes[i] ] = binding;
 					binding = obj;
 				}
 				_bindings[ keyCodes.length - 1 ] = $.extend( true, _bindings[keyCodes.length - 1], binding );
 				return _bindings;
 			}
 			console.log( 'setBinding() requires a string, followed by either a string/number, or an array of string/numbers')
-			return false; 
+			return false;
 		}
 		// support events
-		_.extend(this, Backbone.Events); 
+		_.extend(this, Backbone.Events);
 
 		/** array of currently pressed keys
 		  * @private
@@ -134,7 +134,7 @@ define([
 		 */
 		this.pressKey = function( keyCode ){
 		    if ( currentlyPressed.indexOf( keyCode ) === -1 ){
-		    	currentlyPressed.push( keyCode ); 
+		    	currentlyPressed.push( keyCode );
 		    }
 		    this.setCurrentActions();
 		}
@@ -143,9 +143,9 @@ define([
 		 * @param {int} keyCode
 		 */
 		this.unPressKey = function( keyCode ){
-			currentlyPressed.splice( currentlyPressed.indexOf( keyCode ), 1 ); 
+			currentlyPressed.splice( currentlyPressed.indexOf( keyCode ), 1 );
 			this.setCurrentActions();
-		}			
+		}
 		/** get array of currently pressed keys */
 		this.getPressed = function(){
 			return that.sortKeyCodes( currentlyPressed );
@@ -153,17 +153,17 @@ define([
 		this.isPressed = function( keyCode ){
 		    if ( currentlyPressed.indexOf( keyCode ) !== -1 ){
 		    	return true;
-		    }			
+		    }
 		    return false;
 		}
 		this.sortKeyCodes = function( keyCodes ){
 			return _.sortBy( keyCodes, function( keyCode ){
 				if ( that.isModifierKey( keyCode ) ){
-					return that.getModifierKeyPriority( keyCode ) - _modKeys.length; 		
+					return that.getModifierKeyPriority( keyCode ) - _modKeys.length;
 				} else {
-					return keyCode; 
+					return keyCode;
 				}
-			}); 
+			});
 		}
 		/**
 		 * based on currently pressed keys, set actions to trigger if 'triggerActions' is called
@@ -174,41 +174,41 @@ define([
 		this.setCurrentActions = function(){
 
 			var pressedKeys = this.getPressed();
-			var actionFound = false; 
-			var actionsToTrigger = []; 
+			var actionFound = false;
+			var actionsToTrigger = [];
 
-			var bindings = _bindings; 		
+			var bindings = _bindings;
 			if ( pressedKeys.length > 1 ){
 				// check multi-key
 				for( var numKeys = pressedKeys.length ; numKeys >= 1; numKeys--){
 					if ( _.has( bindings, numKeys - 1 ) ){
-						var bindings = _bindings[numKeys -1]; 
+						var bindings = _bindings[numKeys -1];
 						for ( var i = 0; i< pressedKeys.length; i++ ){
-							var keyCode = pressedKeys[i]; 
+							var keyCode = pressedKeys[i];
 							if ( _.has( bindings, keyCode ) ){
-								var hasBinding = true;					
-								var binding = bindings[keyCode];	
-								var actionFound = false; 
-								var actionKeys = [ keyCode ];	
+								var hasBinding = true;
+								var binding = bindings[keyCode];
+								var actionFound = false;
+								var actionKeys = [ keyCode ];
 								while( !actionFound && hasBinding ){
-									hasBinding = false; 
+									hasBinding = false;
 									for( var j = i; j < pressedKeys.length; j++ ){
-										var extraKeyCode = pressedKeys[j]; 
+										var extraKeyCode = pressedKeys[j];
 										if ( _.has( binding, extraKeyCode )){
 											actionKeys.push( extraKeyCode );
 											binding = binding[extraKeyCode];
-											hasBinding = true; 
+											hasBinding = true;
 											if ( _.isString( binding )){
-												actionFound = true; 
+												actionFound = true;
 												actionsToTrigger.push( binding );
 												_.each( actionKeys, function( keyCode ){
-													pressedKeys[ pressedKeys.indexOf( keyCode ) ] = ':'+binding; 
+													pressedKeys[ pressedKeys.indexOf( keyCode ) ] = ':'+binding;
 												});
 											}
-										}							
-									}						
+										}
+									}
 								}
-							}				
+							}
 						}
 					}
 				}
@@ -219,28 +219,28 @@ define([
 				if ( _.has( _bindings[0], pressedKeys[i] ) ){
 					actionsToTrigger.push( _bindings[0][pressedKeys[i]] );
 				}
-			}	
-			this.prevActions = this.currentActions;			
-			this.currentActions = actionsToTrigger;	
+			}
+			this.prevActions = this.currentActions;
+			this.currentActions = actionsToTrigger;
 
 			// trigger start action
-			_.each( this.currentActions, function( action ){		
+			_.each( this.currentActions, function( action ){
 				if ( that.prevActions.indexOf( action ) === -1 ){
 					that.trigger( action + ':start' );
 				}
-			}); 
+			});
 			// trigger end action
 			_.each( this.prevActions, function( action ){
 				if ( that.currentActions.indexOf( action ) === -1 ){
 					that.trigger( action + ':end' );
-				}				
-			});			
+				}
+			});
 		}
 		this.triggerActions = function(){
 			var that = this;
-			// loop through actions and trigger an event by that name	
+			// loop through actions and trigger an event by that name
 			_.each( this.currentActions, function( action ){
-				that.trigger( action ); 
+				that.trigger( action );
 			});
 		}
 		/**
@@ -249,7 +249,7 @@ define([
 		var init = function(){
 			document.onkeydown = function(e){
 				if ( e.keyCode === 9 ){ // 'tab'
-					e.preventDefault(); 
+					e.preventDefault();
 				}
 				// console.log( 'DOWN', that.getKeyCode( e ), e );
 				that.pressKey( that.getKeyCode( e ) );
@@ -267,5 +267,5 @@ define([
 	}
 	
 	var pressedKeys = new Keys();
-	return pressedKeys; 	
+	return pressedKeys;
 });

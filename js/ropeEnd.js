@@ -1,12 +1,11 @@
-define([ 
-	'settings',
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
-	'createjs', 
+	'createjs',
 	'classes/mapObject',
 	'models/ropeEnd',
 	'views/ropeEnd',
-], function( settings, _, Backbone, createjs, MapObject, RopeEndM, RopeEndV ){
+], function( _, Backbone, createjs, MapObject, RopeEndM, RopeEndV ){
 	var RopeEnd = MapObject.extend({
 		/**
 		 * the eventBinding states which functions to call for which events
@@ -26,7 +25,7 @@ define([
 				if ( mapObject.type === 'player' ){
 
 				}
-			});		
+			});
 			this.on( 'mapCollision', function( x, y ){
 				
 			});

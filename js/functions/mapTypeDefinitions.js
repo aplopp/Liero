@@ -5,7 +5,7 @@ define( function(){
 			blockPlayer: 0,
 			explodeable: 0,
 			diggable: 0
-		}, 
+		},
 		{ // 1
 			blockShot: 1,
 			blockPlayer: 1,
@@ -13,7 +13,7 @@ define( function(){
 			diggable: 0
 		},
 		{ // 2
-			blockShot: 1, 
+			blockShot: 1,
 			blockPlayer: 1,
 			explodeable: 1,
 			diggable: 1

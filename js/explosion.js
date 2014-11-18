@@ -1,14 +1,13 @@
-define([ 
-	'settings',
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
-	'createjs', 
+	'createjs',
 	'models/explosion',
-	'views/explosion', 
+	'views/explosion',
 	'classes/MapObject',
 	'functions/math',
 	'functions/color'
-], function( settings, _, Backbone, createjs, ExplosionM, ExplosionV, MapObject, MathFunctions, ColorFunctions ){
+], function( _, Backbone, createjs, ExplosionM, ExplosionV, MapObject, MathFunctions, ColorFunctions ){
 	var _explosionAnimationsIndex = {};
 	var _maxRadiuses = {};
 	// helpers
@@ -18,14 +17,14 @@ define([
 		_.each( explosion.animation, function( propAnim, propName ){
 			id += propName;
 			_.each( propAnim, function( step ){
-				id += ( step.value + '-' + step.position ); 
+				id += ( step.value + '-' + step.position );
 			});
 		});
 		return id;
 	}
 	function _recordAnimationFrames( explosion ){
 		var animationFrames = [];
-		// handle animation 
+		// handle animation
 		var animationSpec = explosion.animation;
 		var colors = animationSpec.colors;
 		var radiuses = animationSpec.radius;
@@ -57,27 +56,27 @@ define([
         return {
         	frames: animationFrames,
         	maxRadius: maxRadius
-        };    
+        };
 	}
 	var Explosion = MapObject.extend({
 		initialize: function( spec ){
 			var that = this;
 
 			if ( _.has( spec, 'keyBindings') ){
-			// set the passed key bindings to trigger the appropriate events				
+			// set the passed key bindings to trigger the appropriate events
 				_.each( spec.keyBindings, function( keyCodes, eventName ){
-	                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
-	            }); 			
+	                keys.setBinding( that.prefixEventName( eventName ), keyCodes );
+	            });
 	        }
 	        this.type = 'explosion';
 	        // explosions are stationary
 	        this.vX = 0;
-	        this.vY = 0; 
+	        this.vY = 0;
 			this.model = new ExplosionM( spec.model );
 			this.view = new ExplosionV({ model: this.model });
 	        
 	        this.lastPos = {
-	        	x: this.x, 
+	        	x: this.x,
 	        	y: this.y,
 	        	vY: this.vY,
 	        	vX: this.vX
@@ -86,7 +85,7 @@ define([
 	        	x: this.x,
 	        	y: this.y
 	        });
-			// TODO	
+			// TODO
 			// check if there is a simple string type set
 			if ( ! spec.model._type ){
 				// if not, generate a unique id for its attributes
@@ -99,10 +98,10 @@ define([
 				_maxRadiuses[ spec.model._type ] = recorded.maxRadius;
 
 			}
-			this._animationFrames = _explosionAnimationsIndex[ spec.model._type ];    
-		},		
-		_animationFrames: [],		
-		frameCount: 0,	
+			this._animationFrames = _explosionAnimationsIndex[ spec.model._type ];
+		},
+		_animationFrames: [],
+		frameCount: 0,
 		nextPosition: function(){
 			// explosions don't change positions, no sir
 			if( this.frameCount > this._animationFrames.length - 1 ){
@@ -116,6 +115,6 @@ define([
 			}
 			this.frameCount++;
 		}
- 	});		
+ 	});
 	return Explosion;
 });

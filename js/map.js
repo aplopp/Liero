@@ -1,19 +1,18 @@
-define([ 
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
 	'createjs',
-	'settings',
 	'functions/mapTypeDefinitions',
 	'functions/ndarray'
-], function( _, Backbone, createjs, settings, MapTypes, ndarray ){
+], function( _, Backbone, createjs, MapTypes, ndarray ){
 	var defaults = {
-		width: 1000, 
+		width: 1000,
 		height: 500,
 		layout: []
 	}
 	function Map( mapSpec ){
 		this.settings = _.extend( defaults, mapSpec );
-		this.canvas = document.getElementById( 'stage-bg' ); 
+		this.canvas = document.getElementById( 'stage-bg' );
 		this.canvas.width = this.settings.width;
 		this.canvas.height = this.settings.height;
 
@@ -40,8 +39,8 @@ define([
 		return grid;
 	}
 	Map.prototype.refresh = function( p1, p2 ){
-		this.refreshTypeGrid( p1, p2 ); 
-		// create map, add generated pixels to canvas 
+		this.refreshTypeGrid( p1, p2 );
+		// create map, add generated pixels to canvas
 		this.generateMapImage( p1, p2 );
 	}
 	/**
@@ -50,7 +49,7 @@ define([
 	Map.prototype.generateMapImage = function( p1, p2 ){
 		var ctx = this.canvas.getContext( '2d' );
 		if ( p1 && p2 ){
-			var imageData = ctx.getImageData( 0, 0, this.settings.width, this.settings.height );			
+			var imageData = ctx.getImageData( 0, 0, this.settings.width, this.settings.height );
 			var index;
 			var row;
 			for( var x = p1.x; x < p2.x; x++ ){
@@ -65,13 +64,13 @@ define([
 		} else {
 			var imageData = ctx.createImageData( this.settings.width, this.settings.height );
 			var index = 0;
-			for( var y = 0; y < this.settings.height; y++ ){			
+			for( var y = 0; y < this.settings.height; y++ ){
 				for( var x = 0; x < this.settings.width; x++ ){
 					imageData.data[ index ] = this.grid.get( x, y, 0 );
 					imageData.data[ index + 1] = this.grid.get( x, y, 1 );
 					imageData.data[ index + 2] = this.grid.get( x, y, 2 );
-					imageData.data[ index + 3] = this.grid.get( x, y, 3 );			
-					index += 4;				
+					imageData.data[ index + 3] = this.grid.get( x, y, 3 );
+					index += 4;
 				}
 			}
 		}
@@ -82,9 +81,9 @@ define([
 	Map.prototype.x = 0;
 	Map.prototype.y = 0;
 	/**
-	 * simplifies the grid to a single 'type' number...whether the player (or objects) can pass through, or no. 
+	 * simplifies the grid to a single 'type' number...whether the player (or objects) can pass through, or no.
 	 */
-	var typeGrid = false;	
+	var typeGrid = false;
 	Map.prototype.refreshTypeGrid = function( p1, p2 ){
 		if ( p1 && p2 ){
 			for( var y = p1.y; y < p2.y; y++ ){
@@ -92,10 +91,10 @@ define([
 					if ( this.grid.get( x, y, 4 ) ){ // if type && type !== 0
 						this.typeGrid.set( x, y, this.grid.get(x, y, 4 ) );
 					} else {
-						this.typeGrid.set( x, y, 0 );	
+						this.typeGrid.set( x, y, 0 );
 					}
 				}
-			} 
+			}
 		} else {
 			typeGrid = ndarray( new Int8Array( this.canvas.width * this.canvas.height ), [ this.canvas.width, this.canvas.height ] );;
 			for( var y = 0, lenY = this.settings.height; y < lenY; y++ ){
@@ -103,10 +102,10 @@ define([
 					if ( this.grid.get( x, y, 4 ) ){ // if type && type !== 0
 						typeGrid.set( x, y, this.grid.get( x, y, 4 ) );
 					} else {
-						typeGrid.set( x, y, 0 );	
+						typeGrid.set( x, y, 0 );
 					}
 				}
-			} 
+			}
 		}
 		this.typeGrid = typeGrid;
 	};
@@ -134,22 +133,22 @@ define([
 	 */
 	Map.prototype.checkOffX = function(x, w){
 		if ( x + w > this.canvas.width ){
-			return x + w - this.canvas.width; 
+			return x + w - this.canvas.width;
 		} else if ( x < 0){
 			return x;
-		}	
-		return false; 		
+		}
+		return false;
 	};
 	/**
 	 * check if object is offscreen on the Y axis
-	 */	
+	 */
 	Map.prototype.checkOffY = function(y, h){
 		if ( ( y + h ) > this.canvas.height ){
-			return y + h - this.canvas.height; 
+			return y + h - this.canvas.height;
 		} else if ( y < 0){
 			return y;
 		}
-		return false; 
+		return false;
 	};
 	Map.prototype.adjustForMapCollision = function( mapObject ){
 		// handle collisions with static map, record object motion
@@ -177,7 +176,7 @@ define([
 	}
 
 	/**
-	 * 1) Checks to see if the path of the item intersects any map particles, 
+	 * 1) Checks to see if the path of the item intersects any map particles,
 	 * 2) resolves resulting path position and velocity accordingly
 	 */
 	Map.prototype.handleMapCollision = function( mapObject ){
@@ -194,21 +193,21 @@ define([
 		var movingDown = y2 >= y1;
 
 		// to start, record edges opposite of movement.
-		y = movingDown ? y1 : y1 + h;		
+		y = movingDown ? y1 : y1 + h;
 		for( x = x1, lenX = x1 + w; x<lenX; x++ ){
 			if ( x < ( this.canvas.width - 1 ) && y < ( this.canvas.height - 1 )){
 				this.recordMotion( x, y, mapObject );
 			}
 		}
-		x = movingRight ? x1 : x1 + w;	
+		x = movingRight ? x1 : x1 + w;
 		for( y = y1, lenY = y1 + h; y<lenY; y++ ){
 			if ( x < ( this.canvas.width - 1 ) && y < ( this.canvas.height - 1 )){
 				this.recordMotion( x, y, mapObject );
 			}
-		}	
+		}
 
 	
-		// this massive loop checks the leading edges 
+		// this massive loop checks the leading edges
 		// for each pixel in the mapObject's path.
 		if ( movingRight ){
 			if ( movingDown ){
@@ -219,7 +218,7 @@ define([
 							return;
 						}
 					}
-				}				
+				}
 			} else {
 				// x pos, y neg (up + right)
 				for( x = x1; x <= x2; x++){
@@ -228,7 +227,7 @@ define([
 							return;
 						}
 					}
-				}	
+				}
 			}
 		} else {
 			if ( movingDown ){
@@ -239,7 +238,7 @@ define([
 							return;
 						}
 					}
-				}					
+				}
 			} else {
 				// x neg, y neg ( up + left )
 				for( x = x1; --x>=x2; ){
@@ -248,7 +247,7 @@ define([
 							return;
 						}
 					}
-				}					
+				}
 			}
 		}
 		 
@@ -264,7 +263,7 @@ define([
 		var cx, cy, lenX, lenY;
 		// above top or below bottom
 		var tbEdge = movingDown ? y + h : y;
-		var lrEdge = movingRight ? x + w : x ;				
+		var lrEdge = movingRight ? x + w : x ;
 			
 		// left-right collisions
 		cx = movingRight ? lrEdge + 1 : lrEdge - 1;
@@ -273,7 +272,7 @@ define([
 				this.recordMotion( cx, cy, mapObject )
 			}
 			this._horizontalEdge.push({ x: cx, y: cy });
-		}	
+		}
 		this._occupiedHorizontal = this.checkForImpassablePixels( mapObject, this._horizontalEdge, true );
 		// top-bottom collisions
 		cy = movingDown ? tbEdge + 1 : tbEdge - 1;
@@ -283,7 +282,7 @@ define([
 				this.recordMotion( cx, cy, mapObject );
 			}
 			this._verticalEdge.push({ x: cx, y: cy });
-		}	
+		}
 		this._occupiedVertical = this.checkForImpassablePixels( mapObject, this._verticalEdge, false );
 		if ( this._occupiedHorizontal || this._occupiedVertical ){
 			if ( this._occupiedHorizontal ){
@@ -295,7 +294,7 @@ define([
 			return false;
 		}
 		return true;
-	}	
+	}
 
 	/**
 	 * Simply compares an array of pixel coordinates to the simple grid to detect if they are occupied
@@ -319,7 +318,7 @@ define([
 			var type = MapTypes.get( this.typeGrid.get( pixels[i].x, pixels[i].y ) );
 			if ( type ){
 				if ( mapObject.type === 'player' && type.blockPlayer ){
-					return true; 
+					return true;
 				} else if ( mapObject.type === 'projectile' && type.blockShot ){
 					return true;
 				}
@@ -333,7 +332,7 @@ define([
 		if ( movingRight ){
 			if ( mapObject.x > (x - 1) ) mapObject.x = x - 1;
 		} else {
-			if ( mapObject.x < (x + 1) ) mapObject.x = x + 1;			
+			if ( mapObject.x < (x + 1) ) mapObject.x = x + 1;
 		}
 		mapObject.trigger( 'mapCollision', mapObject.x, mapObject.y );
 
@@ -351,7 +350,7 @@ define([
 		}
 		mapObject.view.setPos({
 			x: mapObject.x
-		});	
+		});
 	}
 	Map.prototype.handleVerticalCollision = function( mapObject, y, movingDown ){
 		mapObject.y = y - ( mapObject.y - y ) * mapObject.physics.bounce;
@@ -379,18 +378,18 @@ define([
 		mapObject.lastPos.y = y;
 		mapObject.view.setPos({
 			y: mapObject.y
-		});	
+		});
 	}
 	Map.prototype.recordMotion = function( x, y, mapObject ){
 		if ( mapObject.type === 'player' ){
 			this.frameGrid.set( x, y, mapObject.id );
-		} else if ( mapObject.hitsPlayer ){	
+		} else if ( mapObject.hitsPlayer ){
 			var val = this.frameGrid.get( x, y );
 			if ( val && val !== mapObject.id  ){
 				this.executeObjectCollision( x, y, val, mapObject.id );
 			}
 		}
-	}	
+	}
 	// tracker variables
 	Map.prototype._mo1 = false;
 	Map.prototype._mo2 = false;
@@ -409,28 +408,28 @@ define([
 		// both non-players
 		} else if (this._mo1.type !== 'player' && this._mo2.type !== 'player' ){
 			return; // disable collisions
-		} 
+		}
 		this._frameCollisions.push( this._p.id, this._o.id );
 
 
 		if ( this._mo1.type === 'player' ){
-			this._p = this._mo1; 
+			this._p = this._mo1;
 			this._o = this._mo2;
 		} else {
-			this._o = this._mo1; 
+			this._o = this._mo1;
 			this._p = this._mo2;
 		}
 		if ( _.indexOf( this._frameCollisions, this._o.id ) !== -1 ){
 			// the object has already had a collision this frame
 			return;
-		}	
+		}
 
 		// handle player intersecting object
 		if ( ! this._o.hitsPlayer ){
 			return; // no collision if object doesn't hit player
 		}
 		
-		this._p.trigger( 'objectCollision', this._o, x, y );			
+		this._p.trigger( 'objectCollision', this._o, x, y );
 		this._o.trigger( 'objectCollision', this._o, x, y );
 	}
 
@@ -443,7 +442,7 @@ define([
 		this.grid.set( x, y, 4, 0)
 	}
 	Map.prototype.clearPixels = function( pixels ){
-		var changed = false; 
+		var changed = false;
 		for ( var p in pixels ){
 			if ( p.x >= 0 && p.x < this.settings.width ){
 				if ( p.y >= 0 && p.y < this.settings.height ){
@@ -457,10 +456,10 @@ define([
 		return changed;
 	}
 	Map.prototype.objectDestroyPixel = function( x, y, mapObject ){
-		if ( this.typeGrid.get( x, y ) ){ // type 
+		if ( this.typeGrid.get( x, y ) ){ // type
 			var type = MapTypes.get( this.typeGrid.get( x, y ) );
 			if (
-				mapObject.type === 'explosion' && type.explodeable 
+				mapObject.type === 'explosion' && type.explodeable
 				|| mapObject.type === 'player' && type.diggable
 			){
 				this.clearPixel( x, y );
@@ -478,26 +477,26 @@ define([
 			for (var y = r; --y>=0;) {
 				// point inside circle
 	        	if ( (x*x) + (y*y) <= r*r ){
-					if ( this.objectDestroyPixel( cX-x, cY-y, causingObject ) ){	        				
+					if ( this.objectDestroyPixel( cX-x, cY-y, causingObject ) ){
         				changed = true;
         				if ( cX-x < p1.x ) p1.x = cX-x;
-        				if ( cY-y < p1.y ) p1.y = cY-y;       				
+        				if ( cY-y < p1.y ) p1.y = cY-y;
         			}
-	        		if ( this.objectDestroyPixel( cX-x, cY+y, causingObject ) ){	        				
+	        		if ( this.objectDestroyPixel( cX-x, cY+y, causingObject ) ){
         				changed = true;
         				if ( cX-x < p1.x ) p1.x = cX-x;
         				if ( cY+y > p2.y ) p2.y = cY+y;
         			}
-        			if ( this.objectDestroyPixel( cX+x, cY-y, causingObject ) ){	        				
+        			if ( this.objectDestroyPixel( cX+x, cY-y, causingObject ) ){
         				changed = true;
         				if ( cX+x > p2.x ) p2.x = cX+x;
-        				if ( cY-y < p1.y ) p1.y = cY-y;       				
+        				if ( cY-y < p1.y ) p1.y = cY-y;
         			}
-					if ( this.objectDestroyPixel( cX+x, cY+y, causingObject ) ){	        				
+					if ( this.objectDestroyPixel( cX+x, cY+y, causingObject ) ){
         				changed = true;
         				if ( cX+x > p2.x ) p2.x = cX+x;
         				if ( cY+y > p2.y ) p2.y = cY+y;
-        			}        			
+        			}
 	           	}
 		    }
         }
@@ -510,5 +509,5 @@ define([
         }
         return changed;
 	};
-	return Map; 
+	return Map;
 });

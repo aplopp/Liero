@@ -1,8 +1,8 @@
-define([ 
-	'underscore', 
-	'jquery',	
+define([
+	'underscore',
+	'jquery',
 	'backbone',
-	'createjs', 
+	'createjs',
 	'views/map-object',
 	'functions/math',
 	'functions/animations'
@@ -14,10 +14,10 @@ define([
 				changed = this.model.attributes
 			}
 			// set up the shape
-			if ( 
-				_.has( changed, 'color' ) 
-				|| _.has( changed, 'width' )  
-				|| _.has( changed, 'height' )  
+			if (
+				_.has( changed, 'color' )
+				|| _.has( changed, 'width' )
+				|| _.has( changed, 'height' )
 			){				// draw body
 		 		this.shape.graphics
 		 			.clear()
@@ -29,8 +29,8 @@ define([
 		 			.endFill()
 		 	}
 			
-		 	return this.shape; 
+		 	return this.shape;
 		}
-	}); 
+	});
 	return ProjectileV;
 });

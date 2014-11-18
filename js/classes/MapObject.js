@@ -1,10 +1,15 @@
-define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], function( _, Backbone, settings, keys, MathFunctions ){
+define([
+	'underscore',
+	'backbone',
+	'keys',
+	'functions/math'
+], function( _, Backbone, keys, MathFunctions ){
 	var id = 1;
 	function prefixEventName( event ){
 		return 'mo-'+id+'-' + event ;
-	}	
+	}
 	var MapObject = function( options ){
-		this.id = id++;		
+		this.id = id++;
 		this.routeKeyPresses();
 		this.x = _.has(options, 'x') ? options.x : 0;
 		this.y = _.has(options, 'y') ? options.y : 0;
@@ -15,9 +20,9 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 		this.weight = _.has( options, 'weight' ) ? options.weight: 10;
 		this.type = _.has(options, 'type') ? options.type : false;
 		this.hitsPlayer = _.has(options, 'hitsPlayer') ? !! options.hitsPlayer : false;
-		var defaultPhysics = { 
-			friction: 0, 
-			gravity: 1, 
+		var defaultPhysics = {
+			friction: 0,
+			gravity: 1,
 			bounce: .8,
 			acceleration: false
 		};
@@ -39,11 +44,11 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 
 	}
 	var p = _.extend( MapObject.prototype, {
-		model: null, 
+		model: null,
 		view: null,
 		vX: 0,
 		vY: 1000,
-		x: 0, 
+		x: 0,
 		y: 0,
 		w: 2,
 		h: 2,
@@ -69,9 +74,9 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 
 			/* ---- update velocities for next frame -------------------------------------- */
 			// universal gravity * special gravity
-			this.vY += this.physics.gravity * settings.physics.gravity/settings.FPS; 
+			this.vY += this.physics.gravity * settings.physics.gravity/settings.FPS;
 
-			// special acceleration 	
+			// special acceleration
 			if( this.physics.acceleration ){
 				this.vX += this.physics.acceleration.x;
 				this.vY += this.physics.acceleration.y;
@@ -83,13 +88,13 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 
 			/* ---- advance position based on velocity -------------------------------------- */
 			this.x += this.vX/settings.FPS;
-			this.y += this.vY/settings.FPS;	
+			this.y += this.vY/settings.FPS;
 	
 			this.view.setPos({
-				x: this.x, 
+				x: this.x,
 				y: this.y
-			});			
-		}, 
+			});
+		},
 		prefixEventName: function( eventName ){
 			return 'mo-'+id+'-' + eventName ;
 		},
@@ -104,5 +109,5 @@ define([ 'underscore', 'backbone', 'settings', 'keys', 'functions/math' ], funct
 	});
 	_.extend(MapObject.prototype, Backbone.Events);
 	MapObject.extend = Backbone.Model.extend; // just borrow the extend function
-	return MapObject; 
+	return MapObject;
 });

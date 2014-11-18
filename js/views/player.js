@@ -1,9 +1,9 @@
-define([ 
-	'underscore', 
-	'jquery',	
+define([
+	'underscore',
+	'jquery',
 	'backbone',
-	'createjs', 
-	'views/map-object',	
+	'createjs',
+	'views/map-object',
 	'functions/math',
 	'functions/animations'
 ], function( _, $, Backbone, createjs, MapObjectV, mathFunctions, animations ){
@@ -14,13 +14,13 @@ define([
 				changed = this.model.attributes
 			}
 			// set up the shape
-			if ( 
-				_.has( changed, 'color' ) 
-				|| _.has( changed, 'height' ) 
-				|| _.has( changed, 'width' )  
-				|| _.has( changed, 'facing' ) 
-				|| _.has( changed, 'aim' )  
-				|| _.has( changed, 'activeWeapon' ) 
+			if (
+				_.has( changed, 'color' )
+				|| _.has( changed, 'height' )
+				|| _.has( changed, 'width' )
+				|| _.has( changed, 'facing' )
+				|| _.has( changed, 'aim' )
+				|| _.has( changed, 'activeWeapon' )
 			){				// draw body
 		 		this.shape.graphics
 		 			.clear()
@@ -49,8 +49,8 @@ define([
 		 			.lineTo( end.x, end.y )
 		 	}
 	
-		 	return this.shape; 
+		 	return this.shape;
 		}
-	}); 
+	});
 	return PlayerV;
 });

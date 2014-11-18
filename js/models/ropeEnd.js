@@ -1,11 +1,10 @@
-define([ 
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
-	'createjs', 
+	'createjs',
 	'models/weapon',
-	'settings', 
 	'functions/color'
-], function( _, Backbone, createjs, WeaponM, settings, ColorFunctions ){
+], function( _, Backbone, createjs, WeaponM, ColorFunctions ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -16,9 +15,9 @@ define([
 			color: '#ff0',
 			width: 10,
 			height: 10
-		},	
-		initialize: function(){	
+		},
+		initialize: function(){
 		}
-	}); 
+	});
 	return RopeEndM;
 });

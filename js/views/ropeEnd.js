@@ -1,8 +1,8 @@
-define([ 
-	'underscore', 
-	'jquery',	
+define([
+	'underscore',
+	'jquery',
 	'backbone',
-	'createjs', 
+	'createjs',
 	'views/map-object'
 ], function( _, $, Backbone, createjs, MapObjectV ){
 	var RopeEndV = MapObjectV.extend({
@@ -12,10 +12,10 @@ define([
 				changed = this.model.attributes
 			}
 			// set up the shape
-			if ( 
-				_.has( changed, 'color' ) 
-				|| _.has( changed, 'width' )  
-				|| _.has( changed, 'height' )  
+			if (
+				_.has( changed, 'color' )
+				|| _.has( changed, 'width' )
+				|| _.has( changed, 'height' )
 			){				// draw body
 		 		this.shape.graphics
 		 			.clear()
@@ -24,8 +24,8 @@ define([
 		 			.endFill()
 		 	}
 		 	console.log( 'rope end rendered' );
-		 	return this.shape; 
+		 	return this.shape;
 		}
-	}); 
+	});
 	return RopeEndV;
 });

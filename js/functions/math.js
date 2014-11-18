@@ -1,13 +1,13 @@
 define([], function(){
-	var functions = {}; 
+	var functions = {};
 
 	functions.getPointOnCircle  = function( originX, originY, radius, angleDegree ){
-		var angle = ( angleDegree - 90 )/180 * Math.PI; 
+		var angle = ( angleDegree - 90 )/180 * Math.PI;
 		var x = originX + radius * Math.cos( angle );
 		var y = originY + radius * Math.sin( angle );
 
 		return {
-			x: Math.round( x * 1000 ) / 1000, // rounded to 3 decimals 
+			x: Math.round( x * 1000 ) / 1000, // rounded to 3 decimals
 			y: Math.round( y * 1000 ) / 1000 // rounded to 3 decimals
 		}
 	};
@@ -31,8 +31,8 @@ define([], function(){
 	    return Math.random() * (max - min) + min;
 	};
 	functions.getGradiatedPropertyAtProgress = function( points, progress ){
-		var fromObj = false; 
-		var toObj = false; 
+		var fromObj = false;
+		var toObj = false;
 		var value = false;
 		_.each( points, function( obj, index ){
 			if ( value ) return; // if value found, done
@@ -40,7 +40,7 @@ define([], function(){
 			if ( progress === obj.position ){ // if on the head, obviously use that point
 				value = obj.value;
 			} else if ( progress > obj.position ){ // if you passed a points position, set to and from
-				fromObj = points[ index ]; 					
+				fromObj = points[ index ];
 				toObj = index <= points.length-1 ? points[ index + 1 ] : false;
 			}
 		});
@@ -65,7 +65,7 @@ define([], function(){
 					var from = fromObj.value[ i ];
 					var to = toObj.value[ i ];
 					value.push( Math.round( from + ( to - from ) * valueProg ) );
-				}			
+				}
 			}
 		}
 		return value;

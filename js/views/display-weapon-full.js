@@ -1,7 +1,7 @@
-define([ 
-	'underscore', 
-	'jquery',	
-	'backbone', 
+define([
+	'underscore',
+	'jquery',
+	'backbone',
 	'text!templates/display-weapon-full.tpl'
 ], function( _, $, Backbone, FullTemplate ){
 	var FullWeaponDisplayV = Backbone.View.extend({
@@ -11,7 +11,7 @@ define([
 			var that = this;
 			this.listenTo( this.model, 'change', function(){
 				that.render( that.model.changed );
-			}); 
+			});
 			var attributes = this.model.attributes;
 			this.$el.html( _.template( FullTemplate, attributes ) );
 		},
@@ -27,6 +27,6 @@ define([
 				}
 			}
 		}
-	}); 
+	});
 	return FullWeaponDisplayV;
 });

@@ -1,9 +1,8 @@
-define([ 
-	'settings',
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
 	'createjs'
-], function( settings, _, Backbone, createjs ){
+], function( _, Backbone, createjs ){
 	var MapObjectV = Backbone.View.extend({
 		shape: false,
 		initialize: function(){
@@ -11,8 +10,8 @@ define([
 			this.shape = new createjs.Shape();
 			this.listenTo( this.model, 'change', function(){
 				that.render( that.model.changed );
-			}); 
-		}, 		
+			});
+		},
 		setPos: function( pos ){
 			if ( _.has( pos, 'x' )){
 		 		this.shape.x =  pos.x;

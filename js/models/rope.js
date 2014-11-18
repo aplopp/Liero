@@ -1,11 +1,10 @@
-define([ 
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
-	'createjs', 
-	'settings',
+	'createjs',
 	'ropeEnd',
 	'functions/math'
-], function( _, Backbone, createjs, settings, RopeEnd, MathFunctions ){
+], function( _, Backbone, createjs, RopeEnd, MathFunctions ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -15,24 +14,24 @@ define([
 			holdingPlayer: false,
 			launchSpeed: 500, // pixels/s
 			color: '#fff',
-			width: 2, 
-			launchDistanceFromCenter: 10, 
+			width: 2,
+			launchDistanceFromCenter: 10,
 			end: false,
 			_launched: false
 		},
-		initialize: function(){	
+		initialize: function(){
 			this.set( 'holdingPlayer', this.get( 'holdingPlayer' ).id ); // reduce to simple ID for reference
 			this.set( 'end', new RopeEnd( this.get('end') ));
 		},
 		getHoldingPlayer: function(){
 			return app.players[ this.get( 'holdingPlayer' ) ];
-		},		
+		},
 		_endOnMap: false,
 		launch: function(){
 			if ( ! this._endOnMap ){
-				app.addObject( this.get( 'end' ) );	
+				app.addObject( this.get( 'end' ) );
 				this._endOnMap = true;
-			}			
+			}
 			var player = this.getHoldingPlayer();
 			var xDir = player.model.get( 'facing' ) === 'left' ? -1 : 1;
 			var aim = player.model.get( 'aim' );
@@ -49,7 +48,7 @@ define([
 			this.set( '_launched', true )
 			// get the velocities by finding the point at the right aim on a circle of radius speed.
 	
-		}	
-	}); 
+		}
+	});
 	return RopeM;
 });

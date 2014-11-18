@@ -25,7 +25,7 @@ define( ['functions/mapTypeDefinitions'], function( mapTypes ){
 			}
 		}
 		layout.push( col );
-	}		
+	}
 	return {
 		layout: layout,
 		height: height,

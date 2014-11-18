@@ -1,10 +1,9 @@
-define([ 
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
-	'createjs', 
-	'settings', 
+	'createjs',
 	'functions/color'
-], function( _, Backbone, createjs, settings, ColorFunctions ){
+], function( _, Backbone, createjs, ColorFunctions ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -28,7 +27,7 @@ define([
 			},
 			_color: false,
 			_radius: false
-		}, 
+		},
 		initialize: function(){
 			// set initial color
 			this.set( '_color', this.get( 'animation' ).colors[ 0 ].value );
@@ -37,6 +36,6 @@ define([
 			this.set( '_radius', this.get( 'animation' ).radius[ 0 ].value );
 
 		}
-	}); 
+	});
 	return ExplosionM;
 });

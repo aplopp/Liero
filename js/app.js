@@ -1,16 +1,14 @@
-define([ 
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
 	'jquery',
 	'createjs',
-	'map', 
-	'player', 
+	'map',
+	'player',
 	'display',
-	'keys', 
-	'functions/color', 
-	'settings',
-	'functions/lang'
-], function( _, Backbone, $, createjs, Map, Player, Display, keys, ColorFunctions, settings ){
+	'keys',
+	'functions/color',
+], function( _, Backbone, $, createjs, Map, Player, Display, keys, ColorFunctions ){
 	Backbone.$ = $;
 	var noop = function(){}
 
@@ -18,17 +16,17 @@ define([
 	 * Main function for game.
 	 */
 	function App( ){
-		var that = this; 
+		var that = this;
 		
 		// declare vars
 
 		this.settings;
 		this.map;
-		this.players; 
-		this.stage; 
+		this.players;
+		this.stage;
 
 		// support events
-		_.extend(this, Backbone.Events); 
+		_.extend(this, Backbone.Events);
 
 		/**
 		 * After setting up map, sets up players, other objects, and kicks it off.
@@ -41,12 +39,13 @@ define([
 
 			this.getMap( function( map ){
 				that.map = map;
-				that.players = that.createPlayers();			
+				that.players = that.createPlayers();
 				that.stage = that.createStage();
 				that.addInitialObjectsToStage();
 				that.display = that.createDisplay();
 				that.start();
 			});
+			return this;
 		}
 		/**
 		 * Goes through settings and converts values like colors
@@ -69,14 +68,14 @@ define([
 			return settings;
 		}
 		/**
-		 * Grab the map file specified in the settings, and based on that, create a new Map(). 
-		 * @param {function} callback 
+		 * Grab the map file specified in the settings, and based on that, create a new Map().
+		 * @param {function} callback
 		 */
 		this.getMap = function( cb ){
 			cb = cb || noop;
 			require([ 'maps/' + this.settings.map ], function( mapSpec ){
 				cb( new Map( mapSpec ) );
-			} );	
+			} );
 		}
 		/**
 		 * Add players to the map
@@ -86,29 +85,29 @@ define([
 
 			_.each( this.settings.players, function( playerSpec ){
 				var player = new Player( $.extend( true, {}, settings.player, playerSpec ) );
-				players[ player.id ] = player; 
+				players[ player.id ] = player;
 			});
-			return players;			
-		}		
+			return players;
+		}
 		/**
 		 * Create stage over the top of the map, and add players and other objects to it.
 		 */
 		this.createStage = function(){
 			var canvas = document.getElementById( this.settings.canvasID);
-			canvas.width = this.map.settings.width; 
-			canvas.height = this.map.settings.height; 
+			canvas.width = this.map.settings.width;
+			canvas.height = this.map.settings.height;
 			return new createjs.Stage( canvas );
 		}
 		/**
 		 * Create display to show updates on various parts of the game
-		 * 
+		 *
 		 */
 		this.createDisplay = function(){
 			return new Display( app );
 		}
 		this.mapObjects = [];
 		this.addInitialObjectsToStage = function(){
-			// add players to stage. 
+			// add players to stage.
 			_.each( this.players, function( player ){
 				that.addObject( player );
 			});
@@ -118,7 +117,7 @@ define([
 			if ( offMapCoords.x || offMapCoords.y ){
 				delete mapObject;
 				return;
-			}				
+			}
 			this.addObjectToMap( mapObject );
 		}
 		this.getObject = function( id ){
@@ -136,7 +135,7 @@ define([
 			var shape = mapObject.view.render();
 			this.mapObjects.push( mapObject );
 			this.stage.addChild( shape );
-		} 
+		}
 		this.removeObjectFromMap = function( object ){
 			this.mapObjects = _.reject( this.mapObjects, function( mapObject ){ return mapObject.id === object.id });
 			this.stage.removeChild( object.view.render({}) );
@@ -149,10 +148,10 @@ define([
 			_.each( this.mapObjects, function( mapObject ){
 				/** based on velocity and position, move pointer to next position */
 				mapObject.nextPosition();
-				/** adjust items that will be offscreen, and therefore have collided with the map edge. */				
-				that.map.adjustForMapCollision( mapObject ); 
+				/** adjust items that will be offscreen, and therefore have collided with the map edge. */
+				that.map.adjustForMapCollision( mapObject );
 
-			});	
+			});
 		}
 
 		this.start = function(){
@@ -160,13 +159,13 @@ define([
 			this.ticker.setFPS( this.settings.FPS );
 			if ( window.location.hash ){
 				$( '#' + this.settings.canvasID).on( 'click', function(){
-					that.keys.triggerActions(); 
+					that.keys.triggerActions();
 					that.nextObjectPositions();
 					that.nextFrame();
-				});					
+				});
 			} else {
 				this.ticker.addEventListener( 'tick', function(){
-					that.keys.triggerActions(); 
+					that.keys.triggerActions();
 					that.nextObjectPositions();
 					that.nextFrame();
 				});

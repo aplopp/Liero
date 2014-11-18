@@ -1,12 +1,11 @@
-define([ 
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
-	'createjs', 
-	'settings',
-	'projectile', 
+	'createjs',
+	'projectile',
 	'functions/math',
 	'functions/color'
-], function( _, Backbone, createjs, settings, Projectile, MathFunctions, ColorFunctions ){
+], function( _, Backbone, createjs, Projectile, MathFunctions, ColorFunctions ){
 	/**
 	 * maintains a model of the properties affecting the drawing of the object.
 	 * the view listens to these changes and adjusts the rendering accordingly
@@ -14,7 +13,7 @@ define([
 	var count = 0;
 	var WeaponM = Backbone.Model.extend({
 		defaults: {
-			name: 'Weapon Name', 
+			name: 'Weapon Name',
 			reload: 1, // shots/s
 			speed: 500, // pixels/s
 			speedVariability: 0,
@@ -51,11 +50,11 @@ define([
 				var launchVelocities = MathFunctions.getVelocityComponents( this.get( 'speed' ) + randSpeedDiff, projectileSpec.aim );
 				projectileSpec = _.extend( projectileSpec, {
 					// e nd of barrel coordinates
-					x: player.x + barrelCoords.x - projectileSpec.width/2, 
-					y: player.y + barrelCoords.y - projectileSpec.width/2, 
+					x: player.x + barrelCoords.x - projectileSpec.width/2,
+					y: player.y + barrelCoords.y - projectileSpec.width/2,
 					// x/y components of speed, depending on angle of barrel
 					vX: launchVelocities.x,
-					vY: launchVelocities.y,		
+					vY: launchVelocities.y,
 					fromPlayer: this.get( 'holdingPlayer'),
 					height: projectileSpec.width,
 					model: projectileSpec.onLaunch( projectileSpec.model, this )
@@ -73,12 +72,12 @@ define([
 				var recoilVelocities = MathFunctions.getVelocityComponents( recoil, xDir * ( aim - 180 ) );
 				player.vX += recoilVelocities.x;
 				player.vY += recoilVelocities.y;
-			}		
+			}
 		},
 		_delay: false,
 		fire: function(){
 			var that = this;
-			// set a delay that expires in 1s/reload. 
+			// set a delay that expires in 1s/reload.
 			if ( ! this._delay ){
 				this._delay = true;
 				setTimeout( function(){
@@ -93,15 +92,15 @@ define([
 		},
 		_shooting: false,
 		startShooting: function(){
-			var that = this;			
+			var that = this;
 			if ( ! this.get( 'auto' )){
 				this.fire();
 			} else {
 				that.fire();
 				this._shooting = setInterval( function(){
 					that.fire();
-				// delay slighly higher than required delay to make sure it fires after delay from previous .fire() expires					
-				}, 1030/this.get( 'reload' ) ); 
+				// delay slighly higher than required delay to make sure it fires after delay from previous .fire() expires
+				}, 1030/this.get( 'reload' ) );
 			}
 		},
 		stopShooting: function(){
@@ -129,21 +128,21 @@ define([
 				this.set( 'scatter', 90 );
 			}
 			if ( this.get( 'perShot' ) > 50 ) {
-				this.set( 'perShot', 50 );				
+				this.set( 'perShot', 50 );
 			} else if ( this.get( 'perShot' ) < 1 ){
 				this.set('perShot', 1 );
-			}		
+			}
 			this.set( 'holdingPlayer', this.get( 'holdingPlayer' ).id ); // reduce to simple ID for reference
 	
 		},
 		validate: function( attrs, options ){
 			if( attrs.scatter > 90 ){
-				return this.get( 'name' ) + ': Outside accepted limits for scatter.'; 
+				return this.get( 'name' ) + ': Outside accepted limits for scatter.';
 			}
 			if( attrs.perShot > 50 || attrs.perShot < 1 ){
-				return this.get( 'name' )+ ': PerShot must be between 1 and 50'; 
-			}			
-		}		
-	}); 
+				return this.get( 'name' )+ ': PerShot must be between 1 and 50';
+			}
+		}
+	});
 	return WeaponM;
 });

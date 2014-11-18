@@ -1,15 +1,14 @@
-define([ 
-	'settings',
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
 	'createjs',
 	'models/player',
 	'views/player',
 	'classes/MapObject',
-	'keys', 
-	'functions/math', 
+	'keys',
+	'functions/math',
 	'models/rope'
-], function( settings, _, Backbone, createjs, PlayerM, PlayerV, MapObject, keys, MathFunctions, RopeM ){
+], function( _, Backbone, createjs, PlayerM, PlayerV, MapObject, keys, MathFunctions, RopeM ){
 	var Player = MapObject.extend({
 		/**
 		 * the eventBinding states which functions to call for which events
@@ -35,7 +34,7 @@ define([
 		 */
 		prefixEventName: function( event ){
 			return 'p'+ this.id + '-' + event ;
-		},	
+		},
 		initialize: function( spec ){
 			var that = this;
 			this.type = 'player';
@@ -49,8 +48,8 @@ define([
 
 			// set the passed key bindings to trigger the appropriate events
 			_.each( spec.keyBindings, function( keyCodes, eventName ){
-                keys.setBinding( that.prefixEventName( eventName ), keyCodes );                
-            });			
+                keys.setBinding( that.prefixEventName( eventName ), keyCodes );
+            });
 
 			this.on( 'objectCollision', this.handleCollision );
 			this.on( 'kill', function( killedPlayer ){
@@ -64,14 +63,14 @@ define([
 					that.model.set( 'health', 0 );
 					that.die();
 				}
-			});			
+			});
 		},
 		handleCollision: function( object, x, y, vX, vY ){
 			if ( this.model.get( 'dead' )) return;
 			this.vX += (object.weight/this.weight ) * object.vX;
 			this.vY += (object.weight/this.weight ) * object.vX;
 			this.model.set( 'lastHitBy', object.fromPlayer );
-			this.model.set( 'health', this.model.get( 'health' ) - object.hitDamage ); 
+			this.model.set( 'health', this.model.get( 'health' ) - object.hitDamage );
 		},
 		die: function(){
 			if ( ! this.model.get( 'dead' ) ){
@@ -97,23 +96,23 @@ define([
 		moveLeft: function(){
 			if ( this._dead ) return;
 			this.model.set( 'facing', 'left' );
-			this.vX -= this.model.get( 'moveSpeed' ); 
+			this.vX -= this.model.get( 'moveSpeed' );
 		},
 		moveRight: function(){
 			if ( this._dead ) return;
 
-			this.model.set( 'facing', 'right' );		
-			this.vX += this.model.get( 'moveSpeed' ); 
+			this.model.set( 'facing', 'right' );
+			this.vX += this.model.get( 'moveSpeed' );
 		},
 		moveDown: function(){
 			if ( this._dead ) return;
 
-			this.vY += this.model.get( 'moveSpeed' ); 
+			this.vY += this.model.get( 'moveSpeed' );
 		},
 		moveUp: function(){
-			if ( this._dead ) return; 
+			if ( this._dead ) return;
 
-			this.vY -= this.model.get( 'moveSpeed' ); 
+			this.vY -= this.model.get( 'moveSpeed' );
 		},
 		aimUp: function(){
 			if ( this._dead ) return;
@@ -133,7 +132,7 @@ define([
 				for( var cy = this.y + this.h, lenY = this.y + this.h + 6; cy<lenY; cy++ ){
 					pixelsBelow.push({ x: Math.round( cx ), y: Math.round( cy ) });
 				}
-			}	
+			}
 			if ( app.map.checkForImpassablePixels( this, pixelsBelow )){
 				this.vY -= this.model.get( 'jumpPower' );
 			}
@@ -144,12 +143,12 @@ define([
 			this.switchWeapon( false );
 		},
 		nextWeapon: function(){
-			if ( this._dead ) return;			
+			if ( this._dead ) return;
 			
 			this.switchWeapon( true );
 		},
 		switchWeapon: function( forward ){
-			if ( this._dead ) return;			
+			if ( this._dead ) return;
 			
 			var current = this.model.get( 'activeWeapon');
 			var weapons = this.model.get( 'weapons' );
@@ -158,12 +157,12 @@ define([
 				if ( newWeapon > weapons.length - 1 ) newWeapon = 0;
 			} else {
 				var newWeapon = this.model.get( 'activeWeapon') - 1;
-				if ( newWeapon < 0 ) newWeapon = weapons.length - 1; 
+				if ( newWeapon < 0 ) newWeapon = weapons.length - 1;
 			}
 			this.model.set( 'activeWeapon', newWeapon );
 		},
 		startShooting: function(){
-			if ( this._dead ) return;			
+			if ( this._dead ) return;
 
 			this.model.getActiveWeapon().startShooting();
 		},
@@ -230,7 +229,7 @@ define([
 		// 		this.vX = this.lastPos.vX * .5;
 		// 		this.vY = this.lastPos.vY * .5;
 		// 	}
-		// }			
+		// }
 	});
 
 	return Player;

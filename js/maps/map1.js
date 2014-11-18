@@ -28,7 +28,7 @@ define( function(){
 			}
 		}
 		layout.push( col );
-	}	
+	}
 	var types = [
 		{ // 0
 			blockShot: 1,

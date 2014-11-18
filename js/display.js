@@ -1,10 +1,9 @@
-define([ 
-	'settings',
-	'underscore', 
+define([
+	'underscore',
 	'backbone',
 	'views/display-player',
 	'keys'
-], function( settings, _, Backbone, PlayerDisplayV, keys ){
+], function( _, Backbone, PlayerDisplayV, keys ){
 	var Display = function( app ){
 		var that = this;
 		this.$el = $( '#'+app.settings.displayID );

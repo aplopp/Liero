@@ -1,7 +1,7 @@
-define([ 
-	'underscore', 
-	'jquery',	
-	'backbone', 
+define([
+	'underscore',
+	'jquery',
+	'backbone',
 	'text!templates/display-player-full.tpl',
 	'views/display-weapon-full'
 ], function( _, $, Backbone, FullTemplate, FullWeaponDisplayV ){
@@ -12,7 +12,7 @@ define([
 			var that = this;
 			this.listenTo( this.model, 'change', function(){
 				that.render( that.model.changed );
-			}); 
+			});
 			var attributes = this.model.attributes;
 			this.$el.html( _.template( FullTemplate, attributes ) );
 			this.$weapons = this.$el.find( '.weapons' );
@@ -41,8 +41,8 @@ define([
 				this.$weapons.find( '.weapon-display.active-weapon' ).removeClass('active-weapon');
 
 				this.$weapons.find( '.weapon-display' ).eq( changed.activeWeapon ).addClass('active-weapon');
-			} 
+			}
 		}
-	}); 
+	});
 	return DisplayPlayerV;
 });
